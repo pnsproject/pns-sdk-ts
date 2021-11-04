@@ -226,6 +226,60 @@ export function getResolver(name: DomainString): Promise<HexAddress> {
   return pns.resolver(namehash);
 }
 
+/** 获得域名注册价格 */
+export async function totalRegisterPrice(name: DomainString, duration: number): Promise<BigNumber> {
+  return await controller.totalRegisterPrice(name, duration);
+}
+
+/** 域名注册 */
+export async function register(label: DomainString, account: string, duration: number ): Promise<{ wait: () => Promise<void>; }> {
+  const price = await totalRegisterPrice(label, duration);
+  return controller.nameRegister(label, account, duration, { value: price, gasLimit: 500000 });
+}
+
+export async function controllerRoot(): Promise<{ wait: () => Promise<void>; }> {
+  return controller.root();
+}
+
+/** 设置域名 resolver 参数，表示域名的解析器
+ * function setResolver(bytes32 name, address resolver)
+ * setResolver('hero.dot', '0x123456789') */
+export function setResolver(name: DomainString, resolver?: HexAddress): Promise<any> {
+  name = suffixTld(name)
+  let namehash = getNamehash(name);
+  resolver = resolver || resolverAddr
+  return pns.setResolver(namehash, resolver);
+}
+
+export function suffixTld(label: string): DomainString {
+  return label.replace(".dot", "") + ".dot";
+}
+
+export function removeTld(label: string): DomainString {
+  return label.replace(".dot", "")
+}
+
+export async function setKey(name: DomainString, key: string, value: string): Promise<void> {
+  const namehash = getNamehash(name);
+  await resolver.set(key, value, namehash)
+}
+
+export async function getKey(name: DomainString, key: string): Promise<HexAddress> {
+  const namehash = getNamehash(name);
+  return await resolver.get(key, namehash)
+}
+
+export async function setKeys(name: DomainString, key: string[], value: string[]): Promise<void> {
+  const namehash = getNamehash(name);
+  await resolver.setMany(key, value, namehash)
+}
+
+export async function getKeys(name: DomainString, key: string[]): Promise<HexAddress> {
+  const namehash = getNamehash(name);
+  return await resolver.getMany(key, namehash)
+}
+
+
 
 
 

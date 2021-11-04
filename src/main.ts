@@ -3,10 +3,21 @@ import './style.css'
 import {
   switchChain,
   setup,
+  getProvider,
+  getSigner,
+  getAccount,
   getOwner,
   ownerOf,
   exists,
   getResolver,
+  totalRegisterPrice,
+  register,
+  controllerRoot,
+  setResolver,
+  setKey,
+  getKey,
+  setKeys,
+  getKeys,
 } from "./sdk";
 
 async function main() {
@@ -24,6 +35,18 @@ async function main() {
   console.log("eth owner", await exists("eth"));
 
   console.log("gavinwood123.dot owner", await getOwner("gavinwood123.dot"));
+
+  let account = getAccount()
+  // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
+  // console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
+  console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
+
+  // console.log("gavinwood001.dot setKey", await setKey("gavinwood001.dot", "ETH", account));
+  console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
+
+  // console.log("gavinwood001.dot setKeys", await setKeys("gavinwood001.dot", ["BTC"], [account]));
+  console.log("gavinwood001.dot getKeys", await getKeys("gavinwood001.dot", ["BTC"]));
+
 }
 
 async function start() {
