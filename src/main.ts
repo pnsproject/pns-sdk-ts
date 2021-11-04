@@ -1,4 +1,4 @@
-import './style.css'
+import "./style.css";
 
 import {
   switchChain,
@@ -21,10 +21,10 @@ import {
 } from "./sdk";
 
 async function main() {
-  console.log('hello')
+  console.log("hello");
   // switchChain(43113)
   // switchChain(1287)
-  await setup()
+  await setup();
 
   console.log("dot owner", await getOwner("dot"));
   console.log("dot owner", await ownerOf("dot"));
@@ -36,7 +36,7 @@ async function main() {
 
   console.log("gavinwood123.dot owner", await getOwner("gavinwood123.dot"));
 
-  let account = getAccount()
+  let account = getAccount();
   // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
   // console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
   console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
@@ -46,20 +46,19 @@ async function main() {
 
   // console.log("gavinwood001.dot setKeys", await setKeys("gavinwood001.dot", ["BTC"], [account]));
   console.log("gavinwood001.dot getKeys", await getKeys("gavinwood001.dot", ["BTC"]));
-
 }
 
 async function start() {
-  let button = document.querySelector("button")
+  let button = document.querySelector("button");
   if (button) {
     button.addEventListener("click", async () => {
-      await main()
-    })
+      await main();
+    });
   }
 }
 
 if (document) {
   start()
-  .catch(console.error)
-  .finally(() => {});
+    .catch(console.error)
+    .finally(() => {});
 }

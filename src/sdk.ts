@@ -1,13 +1,12 @@
 import { ethers, Signer, BigNumber } from "ethers";
-import { keccak_256 } from 'js-sha3';
+import { keccak_256 } from "js-sha3";
 import { Buffer as Buffer } from "buffer/";
 
-import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider"
-import { Signer as Web3Signer } from "@ethersproject/abstract-signer"
+import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
+import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
 import { ResolverAbi, ControllerAbi, PnsAbi } from "./abi";
 import { Chains, IContractAddrs, IContractAddrsMap, ContractAddrMap } from "./constants";
-
 
 export type HexAddress = string;
 
@@ -42,7 +41,7 @@ export type DomainDetails = {
   }[];
 };
 
-export const formatEther = ethers.utils.formatEther
+export const formatEther = ethers.utils.formatEther;
 
 const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
@@ -52,7 +51,6 @@ const emptyNode = "0x00000000000000000000000000000000000000000000000000000000000
 const tld = "dot";
 const DAYS = 24 * 60 * 60;
 const INFURA_URL = "https://rinkeby.infura.io/v3/75e0d27975114086be0463cf2597549e";
-
 
 let provider: Web3Provider;
 let signer: Web3Signer;
@@ -67,29 +65,29 @@ let pnsAddr: string;
 let resolverAddr: string;
 let registrarAddr: string;
 
-export function sha3 (data: string) {
-  return "0x" + keccak_256(data)
+export function sha3(data: string) {
+  return "0x" + keccak_256(data);
 }
 
-export function getNamehash (name: string) {
-  let node = '0000000000000000000000000000000000000000000000000000000000000000'
+export function getNamehash(name: string) {
+  let node = "0000000000000000000000000000000000000000000000000000000000000000";
 
   if (name) {
-    let labels = name.split('.')
+    let labels = name.split(".");
 
-    for(let i = labels.length - 1; i >= 0; i--) {
-      let labelSha = keccak_256(labels[i])
-      node = keccak_256(Buffer.from(node + labelSha, 'hex'))
+    for (let i = labels.length - 1; i >= 0; i--) {
+      let labelSha = keccak_256(labels[i]);
+      node = keccak_256(Buffer.from(node + labelSha, "hex"));
     }
   }
 
-  return '0x' + node
+  return "0x" + node;
 }
 
 export async function switchChain(chainId: number): Promise<any> {
-  let chain: any = Chains[chainId]
+  let chain: any = Chains[chainId];
   if (!chain) {
-    throw new Error('chainId no exists')
+    throw new Error("chainId no exists");
   }
 
   const params = {
@@ -101,13 +99,13 @@ export async function switchChain(chainId: number): Promise<any> {
       decimals: chain.nativeCurrency.decimals,
     },
     rpcUrls: chain.rpc,
-    blockExplorerUrls: [ chain.infoURL ]
+    blockExplorerUrls: [chain.infoURL],
   };
 
   return await (window as any).ethereum.request({
-    method: 'wallet_addEthereumChain',
+    method: "wallet_addEthereumChain",
     params: [params, account],
-  })
+  });
 }
 
 export function getProvider(): Web3Provider {
@@ -133,7 +131,7 @@ export async function setProvider(providerOpt?: Web3Provider) {
       signer = await provider.getSigner();
       account = await signer.getAddress();
     } catch (e) {
-      console.log('provider has no signer')
+      console.log("provider has no signer");
     }
   } else {
     console.log("cannot find a global `ethereum` object");
@@ -149,8 +147,8 @@ export async function setup(pnsAddress?: string, resolverAddress?: string, contr
   await setProvider(providerOpt);
   console.log("set provider");
 
-  let addrMap = ContractAddrMap[networkId]
-  console.log('addrs', addrMap)
+  let addrMap = ContractAddrMap[networkId];
+  console.log("addrs", addrMap);
 
   pnsAddress = pnsAddress || addrMap.pns;
   resolverAddress = resolverAddress || addrMap.resolver;
@@ -182,9 +180,9 @@ export async function setupByContract(pnsContract: any, resolverContract: any, r
   await setProvider(providerOpt);
   console.log("set provider");
 
-  pns = pnsContract
-  resolver = resolverContract
-  controller = registrarContract
+  pns = pnsContract;
+  resolver = resolverContract;
+  controller = registrarContract;
 
   pnsAddr = pns.address;
   resolverAddr = resolver.address;
@@ -232,12 +230,12 @@ export async function totalRegisterPrice(name: DomainString, duration: number): 
 }
 
 /** 域名注册 */
-export async function register(label: DomainString, account: string, duration: number ): Promise<{ wait: () => Promise<void>; }> {
+export async function register(label: DomainString, account: string, duration: number): Promise<{ wait: () => Promise<void> }> {
   const price = await totalRegisterPrice(label, duration);
   return controller.nameRegister(label, account, duration, { value: price, gasLimit: 500000 });
 }
 
-export async function controllerRoot(): Promise<{ wait: () => Promise<void>; }> {
+export async function controllerRoot(): Promise<{ wait: () => Promise<void> }> {
   return controller.root();
 }
 
@@ -245,9 +243,9 @@ export async function controllerRoot(): Promise<{ wait: () => Promise<void>; }> 
  * function setResolver(bytes32 name, address resolver)
  * setResolver('hero.dot', '0x123456789') */
 export function setResolver(name: DomainString, resolver?: HexAddress): Promise<any> {
-  name = suffixTld(name)
+  name = suffixTld(name);
   let namehash = getNamehash(name);
-  resolver = resolver || resolverAddr
+  resolver = resolver || resolverAddr;
   return pns.setResolver(namehash, resolver);
 }
 
@@ -256,30 +254,25 @@ export function suffixTld(label: string): DomainString {
 }
 
 export function removeTld(label: string): DomainString {
-  return label.replace(".dot", "")
+  return label.replace(".dot", "");
 }
 
 export async function setKey(name: DomainString, key: string, value: string): Promise<void> {
   const namehash = getNamehash(name);
-  await resolver.set(key, value, namehash)
+  await resolver.set(key, value, namehash);
 }
 
 export async function getKey(name: DomainString, key: string): Promise<HexAddress> {
   const namehash = getNamehash(name);
-  return await resolver.get(key, namehash)
+  return await resolver.get(key, namehash);
 }
 
 export async function setKeys(name: DomainString, key: string[], value: string[]): Promise<void> {
   const namehash = getNamehash(name);
-  await resolver.setMany(key, value, namehash)
+  await resolver.setMany(key, value, namehash);
 }
 
 export async function getKeys(name: DomainString, key: string[]): Promise<HexAddress> {
   const namehash = getNamehash(name);
-  return await resolver.getMany(key, namehash)
+  return await resolver.getMany(key, namehash);
 }
-
-
-
-
-
