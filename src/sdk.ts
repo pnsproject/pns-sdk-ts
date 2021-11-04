@@ -42,6 +42,7 @@ export type DomainDetails = {
 };
 
 export const formatEther = ethers.utils.formatEther;
+export const abiCoder = ethers.utils.defaultAbiCoder;
 
 const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
@@ -355,4 +356,66 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     content: content,
     contentType: "ipfs",
   };
+}
+
+export async function mintRedeem(start: number, end: number): Promise<{ wait: () => Promise<void> }> {
+  return controller.mintRedeem(start, end);
+}
+
+export async function nameRedeemAny(
+  label: DomainString,
+  account: string,
+  duration: number,
+  nonce: number,
+  code: string
+): Promise<{ wait: () => Promise<void> }> {
+  return controller.nameRedeemAny(label, account, duration, nonce, code);
+}
+
+export async function renew(label: DomainString, duration: number): Promise<void> {
+  const price = await rentPrice(label, duration);
+  return controller.renew(label, duration, { value: price, gasLimit: 500000 });
+}
+
+export async function transfer(
+  name: DomainString,
+  newOwner: HexAddress
+): Promise<{
+  wait: () => Promise<void>;
+}> {
+  let namehash = getNamehash(name);
+  let oldOwner = await getOwner(name);
+  return await pns["safeTransferFrom(address,address,uint256)"](oldOwner, newOwner, namehash);
+}
+
+function encodeNameMsg(name: string, duration: number, nonce: number): Uint8Array {
+  let durationEncoded = abiCoder.encode(["uint"], [duration]).slice(2);
+  let durationBuffer = Buffer.from(durationEncoded, "hex");
+
+  let nonceEncoded = abiCoder.encode(["uint"], [nonce]).slice(2);
+  let nonceBuffer = Buffer.from(nonceEncoded, "hex");
+
+  let encodeName = Buffer.from(name.slice(2), "hex");
+  return Buffer.concat([encodeName, durationBuffer, nonceBuffer]);
+}
+
+function encodeMsg(duration: number, nonce: number): Uint8Array {
+  let durationEncoded = abiCoder.encode(["uint"], [duration]).slice(2);
+  let durationBuffer = Buffer.from(durationEncoded, "hex");
+
+  let nonceEncoded = abiCoder.encode(["uint"], [nonce]).slice(2);
+  let nonceBuffer = Buffer.from(nonceEncoded, "hex");
+
+  return Buffer.concat([durationBuffer, nonceBuffer]);
+}
+
+function hashMsg(data: Uint8Array): Uint8Array {
+  let hashed = "0x" + keccak_256(data);
+  return ethers.utils.arrayify(hashed);
+}
+
+export async function generateRedeemCode(duration: number, nonce: number): Promise<string> {
+  let hashedMsg = hashMsg(encodeMsg(duration, nonce));
+  let signer = getSigner();
+  return signer.signMessage(hashedMsg);
 }

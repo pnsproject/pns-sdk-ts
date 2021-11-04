@@ -10,9 +10,7 @@ import {
   ownerOf,
   exists,
   getResolver,
-  totalRegisterPrice,
   register,
-  controllerRoot,
   setResolver,
   setKey,
   getKey,
@@ -25,6 +23,10 @@ import {
   rentPrice,
   nameExpires,
   available,
+  renew,
+  mintRedeem,
+  nameRedeemAny,
+  transfer,
 } from "./sdk";
 
 async function main() {
@@ -67,6 +69,11 @@ async function main() {
   console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
   console.log("nameExpires", await nameExpires("gavinwood001.dot"));
   console.log("available", await available("gavinwood001.dot"));
+
+  // console.log("renew", await renew("gavinwood001", 86400 * 365));
+  console.log("nameExpires", await nameExpires("gavinwood001.dot"));
+
+  // console.log("mintRedeem", await mintRedeem(300, 301));
 }
 
 async function start() {
