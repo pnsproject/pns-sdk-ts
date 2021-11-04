@@ -110,6 +110,18 @@ export async function switchChain(chainId: number): Promise<any> {
   })
 }
 
+export function getProvider(): Web3Provider {
+  return provider;
+}
+
+export function getSigner(): Web3Signer {
+  return signer;
+}
+
+export function getAccount(): string {
+  return account;
+}
+
 export async function setProvider(providerOpt?: Web3Provider) {
   if (!!providerOpt) {
     provider = providerOpt;
@@ -186,6 +198,33 @@ export async function setupByContract(pnsContract: any, resolverContract: any, r
   };
 }
 
+/** 获取域名的当前所有者 */
+export async function getOwner(name: DomainString): Promise<HexAddress> {
+  let namehash = getNamehash(name);
+  if (await pns.exists(namehash)) {
+    return pns.ownerOf(namehash);
+  } else {
+    return emptyAddress;
+  }
+}
+
+/** 获取域名的当前所有者，如果域名为空，则抛出异常 */
+export async function ownerOf(name: DomainString): Promise<HexAddress> {
+  let namehash = getNamehash(name);
+  return pns.ownerOf(namehash);
+}
+
+/** 获取域名的当前所有者 */
+export async function exists(name: DomainString): Promise<HexAddress> {
+  let namehash = getNamehash(name);
+  return pns.exists(namehash);
+}
+
+/** 获取域名的解析器合约 */
+export function getResolver(name: DomainString): Promise<HexAddress> {
+  let namehash = getNamehash(name);
+  return pns.resolver(namehash);
+}
 
 
 
