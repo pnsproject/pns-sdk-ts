@@ -18,6 +18,13 @@ import {
   getKey,
   setKeys,
   getKeys,
+  getDomainDetails,
+  mintSubdomain,
+  controllerRoot,
+  totalRegisterPrice,
+  rentPrice,
+  nameExpires,
+  available,
 } from "./sdk";
 
 async function main() {
@@ -34,18 +41,32 @@ async function main() {
   console.log("eth owner", await getOwner("eth"));
   console.log("eth owner", await exists("eth"));
 
+  console.log("controllerRoot", await controllerRoot());
+
   console.log("gavinwood123.dot owner", await getOwner("gavinwood123.dot"));
 
   let account = getAccount();
+  console.log("account", account);
+
   // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
   // console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
   console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
+
+  // console.log("gavinwood123.dot mintSubdomain", await mintSubdomain("gavinwood123.dot", "sub", account));
+  // console.log("sub.gavinwood123.dot owner", await getOwner("sub.gavinwood123.dot"));
 
   // console.log("gavinwood001.dot setKey", await setKey("gavinwood001.dot", "ETH", account));
   console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
 
   // console.log("gavinwood001.dot setKeys", await setKeys("gavinwood001.dot", ["BTC"], [account]));
   console.log("gavinwood001.dot getKeys", await getKeys("gavinwood001.dot", ["BTC"]));
+
+  // console.log("getDomainDetails", await getDomainDetails("gavinwood001.dot"));
+
+  console.log("totalRegisterPrice", await totalRegisterPrice("gavinwood001", 86400 * 365));
+  console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
+  console.log("nameExpires", await nameExpires("gavinwood001.dot"));
+  console.log("available", await available("gavinwood001.dot"));
 }
 
 async function start() {

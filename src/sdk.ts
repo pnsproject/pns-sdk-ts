@@ -229,10 +229,32 @@ export async function totalRegisterPrice(name: DomainString, duration: number): 
   return await controller.totalRegisterPrice(name, duration);
 }
 
+export async function rentPrice(name: DomainString, duration: number): Promise<BigNumber> {
+  return await controller.rentPrice(name, duration);
+}
+
+export async function nameExpires(label: DomainString): Promise<BigNumber> {
+  label = suffixTld(label);
+  return controller.nameExpires(getNamehash(label));
+}
+
+export async function available(label: DomainString): Promise<boolean> {
+  label = suffixTld(label);
+  return controller.available(getNamehash(label));
+}
+
 /** 域名注册 */
 export async function register(label: DomainString, account: string, duration: number): Promise<{ wait: () => Promise<void> }> {
   const price = await totalRegisterPrice(label, duration);
   return controller.nameRegister(label, account, duration, { value: price, gasLimit: 500000 });
+}
+
+/** 设置子域名
+ * function mintSubdomain(bytes32 name, bytes32 label, address owner)
+ * mintSubdomain('hero.dot', 'sub', '0x123456789') */
+export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+  let namehash = getNamehash(name);
+  return pns.mintSubdomain(namehash, label, newOwner);
 }
 
 export async function controllerRoot(): Promise<{ wait: () => Promise<void> }> {
@@ -275,4 +297,62 @@ export async function setKeys(name: DomainString, key: string[], value: string[]
 export async function getKeys(name: DomainString, key: string[]): Promise<HexAddress> {
   const namehash = getNamehash(name);
   return await resolver.getMany(key, namehash);
+}
+
+function buildKeyValueObjects(keys: any, values: any) {
+  return values.map((record: any, i: any) => ({
+    key: keys[i],
+    value: record,
+  }));
+}
+
+export function getLabelhash(rawlabel: string): HexAddress {
+  if (rawlabel === "[root]") {
+    return "";
+  }
+
+  return rawlabel.startsWith("[") && rawlabel.endsWith("]") && rawlabel.length === 66 ? "0x" + rawlabel.slice(1, -1) : "0x" + keccak_256(rawlabel);
+}
+
+function decodeLabelhash(hash: string): string {
+  if (!(hash.startsWith("[") && hash.endsWith("]") && hash.length === 66)) {
+    throw Error("Expected encoded labelhash in [hash] form");
+  }
+  return `${hash.slice(1, -1)}`;
+}
+
+/** 获得域名详细信息 */
+export async function getDomainDetails(name: DomainString): Promise<DomainDetails> {
+  const nameArray = name.split(".");
+  const label = nameArray[0];
+  const labelhash = getLabelhash(label);
+  const nameResolver = await getResolver(name);
+  console.log("res", name, nameResolver);
+  const owner = await getOwner(name);
+
+  const promises = TEXT_RECORD_KEYS.map((key) => getKey(name, "text." + key));
+  const records = await Promise.all(promises);
+  let textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
+
+  const node = {
+    name,
+    label,
+    labelhash,
+    owner,
+    nameResolver,
+    textRecords: textRecords,
+  };
+
+  const content = await getKey(name, "contenthash");
+  return {
+    ...node,
+    addrs: [
+      { key: "BTC", value: await getKey(name, "BTC") },
+      { key: "ETH", value: await getKey(name, "ETH") },
+      { key: "DOT", value: await getKey(name, "DOT") },
+      { key: "KSM", value: await getKey(name, "KSM") },
+    ],
+    content: content,
+    contentType: "ipfs",
+  };
 }
