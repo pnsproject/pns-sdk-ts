@@ -1,0 +1,7 @@
+node_modules/
+other
+dist/
+lib/
+bundle.js
+
+.DS_Store

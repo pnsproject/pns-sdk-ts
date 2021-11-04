@@ -1,0 +1,30 @@
+{
+  "name": "pns-sdk",
+  "version": "0.4.0",
+  "description": "",
+  "keywords": [],
+  "author": "jiangplus",
+  "license": "MIT",
+  "main": "./lib/sdk.js",
+  "typings": "./lib/sdk.d.ts",
+  "scripts": {
+    "compile": "rm -rfv lib/* && tsc -d --project tsconfig.json --outDir lib/",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.1",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.0"
+  },
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "ethers": "^5.4.7",
+    "js-sha3": "^0.8.0",
+    "ws": ">=7.4.6"
+  }
+}
+
+
+

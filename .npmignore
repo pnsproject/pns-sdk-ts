@@ -1,0 +1,8 @@
+node_modules/
+other
+dist/
+bundle.js
+.DS_Store
+index.html
+favicon.svg
+src/
