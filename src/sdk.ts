@@ -61,7 +61,7 @@ let networkId: number;
 
 let pns: any;
 let resolver: any;
-let registrar: any;
+let controller: any;
 
 let pnsAddr: string;
 let resolverAddr: string;
@@ -85,6 +85,107 @@ export function getNamehash (name: string) {
 
   return '0x' + node
 }
+
+export async function switchChain(chainId: number): Promise<any> {
+  let chain: any = Chains[chainId]
+  if (!chain) {
+    throw new Error('chainId no exists')
+  }
+
+  const params = {
+    chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    chainName: chain.name,
+    nativeCurrency: {
+      name: chain.nativeCurrency.name,
+      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+      decimals: chain.nativeCurrency.decimals,
+    },
+    rpcUrls: chain.rpc,
+    blockExplorerUrls: [ chain.infoURL ]
+  };
+
+  return await (window as any).ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [params, account],
+  })
+}
+
+export async function setProvider(providerOpt?: Web3Provider) {
+  if (!!providerOpt) {
+    provider = providerOpt;
+    signer = await provider.getSigner();
+    account = await signer.getAddress();
+  } else if (!!window && typeof (window as any).ethereum !== "undefined") {
+    provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
+    try {
+      signer = await provider.getSigner();
+      account = await signer.getAddress();
+    } catch (e) {
+      console.log('provider has no signer')
+    }
+  } else {
+    console.log("cannot find a global `ethereum` object");
+    provider = new ethers.providers.JsonRpcProvider(INFURA_URL) as any;
+    account = "0x0";
+  }
+  networkId = (await provider.getNetwork()).chainId;
+  console.log("network", networkId);
+  return;
+}
+
+export async function setup(pnsAddress?: string, resolverAddress?: string, controllerAddress?: string, providerOpt?: Web3Provider) {
+  await setProvider(providerOpt);
+  console.log("set provider");
+
+  let addrMap = ContractAddrMap[networkId]
+  console.log('addrs', addrMap)
+
+  pnsAddress = pnsAddress || addrMap.pns;
+  resolverAddress = resolverAddress || addrMap.resolver;
+  controllerAddress = controllerAddress || addrMap.controller;
+
+  if (signer) {
+    pns = new ethers.Contract(pnsAddress, PnsAbi, signer);
+    resolver = new ethers.Contract(resolverAddress, ResolverAbi, signer);
+    controller = new ethers.Contract(controllerAddress, ControllerAbi, signer);
+  } else {
+    pns = new ethers.Contract(pnsAddress, PnsAbi, provider);
+    resolver = new ethers.Contract(resolverAddress, ResolverAbi, provider);
+    controller = new ethers.Contract(controllerAddress, ControllerAbi, provider);
+  }
+
+  pnsAddr = pnsAddress;
+  resolverAddr = resolverAddress;
+
+  return {
+    provider,
+    signer,
+    pns,
+    resolver,
+    controller,
+  };
+}
+
+export async function setupByContract(pnsContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider) {
+  await setProvider(providerOpt);
+  console.log("set provider");
+
+  pns = pnsContract
+  resolver = resolverContract
+  controller = registrarContract
+
+  pnsAddr = pns.address;
+  resolverAddr = resolver.address;
+
+  return {
+    provider,
+    signer,
+    pns,
+    resolver,
+    controller,
+  };
+}
+
 
 
 

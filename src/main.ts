@@ -1,7 +1,16 @@
 import './style.css'
 
+import {
+  switchChain,
+  setup,
+} from "./sdk";
+
 async function main() {
   console.log('hello')
+  // switchChain(43113)
+  // switchChain(1287)
+  setup()
+
 }
 
 async function start() {
