@@ -121,13 +121,13 @@ export function getAccount(): string {
   return account;
 }
 
-export function setSigner () {
-   try {
-      signer = await provider.getSigner();
-      account = await signer.getAddress();
-    } catch (e) {
-      console.log("provider has no signer");
-    }
+export async function setSigner() {
+  try {
+    signer = await provider.getSigner();
+    account = await signer.getAddress();
+  } catch (e) {
+    console.log("provider has no signer");
+  }
 }
 
 export async function setProvider(providerOpt?: Web3Provider) {
@@ -415,4 +415,42 @@ export function hashMsg(data: Uint8Array): Uint8Array {
 export async function generateRedeemCode(duration: number, nonce: number, signer: any): Promise<string> {
   let hashedMsg = hashMsg(encodeMsg(duration, nonce));
   return signer.signMessage(hashedMsg);
+}
+
+/** 列出用户的域名列表 */
+export async function getDomains(account: string) {
+  let query =
+    '{"query":"{\\n  subdomains(where: {owner: \\"' +
+    account +
+    '\\",\\n  parent: \\"0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
+  let resp = await fetch("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", {
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: query,
+    method: "POST",
+  });
+  resp = await resp.json();
+  return (resp as any).data.subdomains;
+}
+
+/** 列出子域名列表 */
+export async function getSubdomains(domain: string) {
+  domain = "0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f";
+  domain = getNamehash(domain);
+  let query =
+    '{"query":"{\\n  subdomains(where: {parent: \\"' +
+    domain +
+    '\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
+  let resp = await fetch("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", {
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: query,
+    method: "POST",
+  });
+  resp = await resp.json();
+  return (resp as any).data.subdomains;
 }

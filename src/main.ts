@@ -3,6 +3,7 @@ import "./style.css";
 import {
   switchChain,
   setup,
+  setSigner,
   getProvider,
   getSigner,
   getAccount,
@@ -28,6 +29,10 @@ import {
   nameRedeemAny,
   transfer,
   generateRedeemCode,
+  getDomains,
+  getSubdomains,
+  getNamehash,
+  sha3,
 } from "./sdk";
 
 async function main() {
@@ -35,6 +40,11 @@ async function main() {
   // switchChain(43113)
   // switchChain(1287)
   await setup();
+  await setSigner();
+
+  console.log(sha3("dot"));
+  console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
+  console.log("getSubdomains", await getSubdomains("dot"));
 
   console.log("dot owner", await getOwner("dot"));
   console.log("dot owner", await ownerOf("dot"));
@@ -46,17 +56,17 @@ async function main() {
 
   console.log("controllerRoot", await controllerRoot());
 
-  console.log("gavinwood123.dot owner", await getOwner("gavinwood123.dot"));
+  console.log("gavinwood001.dot owner", await getOwner("gavinwood001.dot"));
 
   let account = getAccount();
   console.log("account", account);
 
-  // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
-  // console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
+  console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
+  console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
   console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
 
-  // console.log("gavinwood123.dot mintSubdomain", await mintSubdomain("gavinwood123.dot", "sub123", account));
-  console.log("sub123.gavinwood123.dot owner", await getOwner("sub123.gavinwood123.dot"));
+  // console.log("gavinwood001.dot mintSubdomain", await mintSubdomain("gavinwood001.dot", "sub123", account));
+  console.log("sub123.gavinwood001.dot owner", await getOwner("sub123.gavinwood001.dot"));
 
   // console.log("gavinwood001.dot setKey", await setKey("gavinwood001.dot", "ETH", account));
   console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
