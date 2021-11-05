@@ -454,3 +454,28 @@ export async function getSubdomains(domain: string) {
   resp = await resp.json();
   return (resp as any).data.subdomains;
 }
+
+const backendUrl = "https://pns.gigalixirapp.com";
+
+export async function getRedeemCode(code: string) {
+  let resp = await fetch(`${backendUrl}/api/redeem_codes/${code}`, {
+    headers: {
+      "content-type": "application/json",
+    },
+    method: "GET",
+  });
+  resp = await resp.json();
+  return resp as any;
+}
+
+export async function useRedeemCode(code: string, owner: string) {
+  let resp = await fetch(`${backendUrl}/api/redeem_codes/${code}/use`, {
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ owner: owner }),
+    method: "POST",
+  });
+  resp = await resp.json();
+  return resp as any;
+}
