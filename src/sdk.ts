@@ -177,7 +177,7 @@ export async function setup(pnsAddress?: string, resolverAddress?: string, contr
   };
 }
 
-export async function setupByContract(pnsContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider) {
+export async function setupByContract(pnsContract: any, resolverContract: any, registrarContract: any, providerOpt: Web3Provider) {
   await setProvider(providerOpt);
   console.log("set provider");
 
@@ -255,7 +255,7 @@ export async function register(label: DomainString, account: string, duration: n
  * mintSubdomain('hero.dot', 'sub', '0x123456789') */
 export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(name);
-  return pns.mintSubdomain(namehash, label, newOwner);
+  return controller.setSubdomain(namehash, label, newOwner);
 }
 
 export async function controllerRoot(): Promise<{ wait: () => Promise<void> }> {
@@ -388,34 +388,30 @@ export async function transfer(
   return await pns["safeTransferFrom(address,address,uint256)"](oldOwner, newOwner, namehash);
 }
 
-function encodeNameMsg(name: string, duration: number, nonce: number): Uint8Array {
-  let durationEncoded = abiCoder.encode(["uint"], [duration]).slice(2);
-  let durationBuffer = Buffer.from(durationEncoded, "hex");
+export function abiDataEncode(data: any, datatype: string): Buffer {
+  let encoded = abiCoder.encode([datatype], [data]).slice(2);
+  return Buffer.from(encoded, "hex");
+}
 
-  let nonceEncoded = abiCoder.encode(["uint"], [nonce]).slice(2);
-  let nonceBuffer = Buffer.from(nonceEncoded, "hex");
-
+export function encodeNameMsg(name: string, duration: number, nonce: number): Uint8Array {
+  let durationBuffer = abiDataEncode(duration, "uint");
+  let nonceBuffer = abiDataEncode(nonce, "uint");
   let encodeName = Buffer.from(name.slice(2), "hex");
   return Buffer.concat([encodeName, durationBuffer, nonceBuffer]);
 }
 
-function encodeMsg(duration: number, nonce: number): Uint8Array {
-  let durationEncoded = abiCoder.encode(["uint"], [duration]).slice(2);
-  let durationBuffer = Buffer.from(durationEncoded, "hex");
-
-  let nonceEncoded = abiCoder.encode(["uint"], [nonce]).slice(2);
-  let nonceBuffer = Buffer.from(nonceEncoded, "hex");
-
+export function encodeMsg(duration: number, nonce: number): Uint8Array {
+  let durationBuffer = abiDataEncode(duration, "uint");
+  let nonceBuffer = abiDataEncode(nonce, "uint");
   return Buffer.concat([durationBuffer, nonceBuffer]);
 }
 
-function hashMsg(data: Uint8Array): Uint8Array {
+export function hashMsg(data: Uint8Array): Uint8Array {
   let hashed = "0x" + keccak_256(data);
   return ethers.utils.arrayify(hashed);
 }
 
-export async function generateRedeemCode(duration: number, nonce: number): Promise<string> {
+export async function generateRedeemCode(duration: number, nonce: number, signer: any): Promise<string> {
   let hashedMsg = hashMsg(encodeMsg(duration, nonce));
-  let signer = getSigner();
   return signer.signMessage(hashedMsg);
 }

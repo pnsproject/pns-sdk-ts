@@ -27,6 +27,7 @@ import {
   mintRedeem,
   nameRedeemAny,
   transfer,
+  generateRedeemCode,
 } from "./sdk";
 
 async function main() {
@@ -54,8 +55,8 @@ async function main() {
   // console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
   console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
 
-  // console.log("gavinwood123.dot mintSubdomain", await mintSubdomain("gavinwood123.dot", "sub", account));
-  // console.log("sub.gavinwood123.dot owner", await getOwner("sub.gavinwood123.dot"));
+  // console.log("gavinwood123.dot mintSubdomain", await mintSubdomain("gavinwood123.dot", "sub123", account));
+  console.log("sub123.gavinwood123.dot owner", await getOwner("sub123.gavinwood123.dot"));
 
   // console.log("gavinwood001.dot setKey", await setKey("gavinwood001.dot", "ETH", account));
   console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
@@ -73,7 +74,12 @@ async function main() {
   // console.log("renew", await renew("gavinwood001", 86400 * 365));
   console.log("nameExpires", await nameExpires("gavinwood001.dot"));
 
-  // console.log("mintRedeem", await mintRedeem(300, 301));
+  // console.log("gavinwood196.dot owner", await getOwner("gavinwood196.dot"));
+  // console.log("mintRedeem", await mintRedeem(196, 200));
+  // let signer = getSigner()
+  // let sig = await generateRedeemCode(86400 * 365, 196, signer)
+  // console.log('redeem', sig)
+  // nameRedeemAny('gavinwood196', account, 86400*365, 196, sig)
 }
 
 async function start() {

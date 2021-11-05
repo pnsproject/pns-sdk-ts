@@ -6,3 +6,5 @@ bundle.js
 index.html
 favicon.svg
 src/
+lib/main.js.map
+lib/main.js
