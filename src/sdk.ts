@@ -121,19 +121,20 @@ export function getAccount(): string {
   return account;
 }
 
-export async function setProvider(providerOpt?: Web3Provider) {
-  if (!!providerOpt) {
-    provider = providerOpt;
-    signer = await provider.getSigner();
-    account = await signer.getAddress();
-  } else if (!!window && typeof (window as any).ethereum !== "undefined") {
-    provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
-    try {
+export function setSigner () {
+   try {
       signer = await provider.getSigner();
       account = await signer.getAddress();
     } catch (e) {
       console.log("provider has no signer");
     }
+}
+
+export async function setProvider(providerOpt?: Web3Provider) {
+  if (!!providerOpt) {
+    provider = providerOpt;
+  } else if (!!window && typeof (window as any).ethereum !== "undefined") {
+    provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
   } else {
     console.log("cannot find a global `ethereum` object");
     provider = new ethers.providers.JsonRpcProvider(INFURA_URL) as any;
