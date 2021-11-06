@@ -121,12 +121,17 @@ export function getAccount(): string {
   return account;
 }
 
-export async function setSigner() {
-  try {
-    signer = await provider.getSigner();
-    account = await signer.getAddress();
-  } catch (e) {
-    console.log("provider has no signer");
+export async function setSigner(clean: boolean = false) {
+  if (clean) {
+    signer = null;
+    account = '0x0';
+  } else {
+    try {
+      signer = await provider.getSigner();
+      account = await signer.getAddress();
+    } catch (e) {
+      console.log("provider has no signer");
+    }
   }
 }
 
