@@ -5,3 +5,4 @@ lib/
 bundle.js
 
 .DS_Store
+.idea/*

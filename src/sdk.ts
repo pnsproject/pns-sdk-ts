@@ -442,7 +442,6 @@ export async function getDomains(account: string) {
 
 /** 列出子域名列表 */
 export async function getSubdomains(domain: string) {
-  domain = "0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f";
   domain = getNamehash(domain);
   let query =
     '{"query":"{\\n  subdomains(where: {parent: \\"' +

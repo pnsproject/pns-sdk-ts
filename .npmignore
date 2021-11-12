@@ -8,3 +8,4 @@ favicon.svg
 src/
 lib/main.js.map
 lib/main.js
+.idea/*
