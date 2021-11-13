@@ -121,18 +121,24 @@ export function getAccount(): string {
   return account;
 }
 
-export async function setSigner(clean: boolean = false) {
-  if (clean) {
-    signer = null;
-    account = '0x0';
-  } else {
-    try {
-      signer = await provider.getSigner();
-      account = await signer.getAddress();
-    } catch (e) {
-      console.log("provider has no signer");
-    }
+export async function login() {
+  if (!provider) {
+    console.log("provider has not setting");
   }
+  try {
+    await (window as any).ethereum.request({ method: 'eth_requestAccounts' })
+    signer = await provider.getSigner();
+    account = await signer.getAddress();
+    await setup()
+  } catch (e) {
+    console.log("provider has no signer");
+  }
+}
+
+export async function logout() {
+  signer = null;
+  account = '0x0';
+  await setup()
 }
 
 export async function setProvider(providerOpt?: Web3Provider) {

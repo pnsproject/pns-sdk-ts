@@ -3,7 +3,7 @@ import "./style.css";
 import {
   switchChain,
   setup,
-  setSigner,
+  login,
   getProvider,
   getSigner,
   getAccount,
@@ -32,6 +32,7 @@ import {
   getDomains,
   getSubdomains,
   getNamehash,
+  setProvider,
   sha3,
 } from "./sdk";
 
@@ -39,8 +40,8 @@ async function main() {
   console.log("hello");
   // switchChain(43113)
   // switchChain(1287)
-  await setup();
-  await setSigner();
+  await setProvider();
+  await login();
 
   console.log(sha3("dot"));
   console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
@@ -90,6 +91,8 @@ async function main() {
   // let sig = await generateRedeemCode(86400 * 365, 196, signer)
   // console.log('redeem', sig)
   // nameRedeemAny('gavinwood196', account, 86400*365, 196, sig)
+  let sig = '***REMOVED***'
+  console.log("nameRedeemAny", await nameRedeemAny('gavinwood193', account, 86400*365, 193, sig));
 }
 
 async function start() {
