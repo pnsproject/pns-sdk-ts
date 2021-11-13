@@ -381,6 +381,7 @@ export async function nameRedeemAny(
   nonce: number,
   code: string
 ): Promise<{ wait: () => Promise<void> }> {
+
   return controller.nameRedeemAny(label, account, duration, nonce, code);
 }
 

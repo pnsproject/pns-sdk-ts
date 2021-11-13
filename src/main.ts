@@ -62,9 +62,9 @@ async function main() {
   let account = getAccount();
   console.log("account", account);
 
-  console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
-  console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
-  console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
+  // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
+  // console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
+  // console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
 
   // console.log("gavinwood001.dot mintSubdomain", await mintSubdomain("gavinwood001.dot", "sub123", account));
   console.log("sub123.gavinwood001.dot owner", await getOwner("sub123.gavinwood001.dot"));
@@ -77,22 +77,23 @@ async function main() {
 
   // console.log("getDomainDetails", await getDomainDetails("gavinwood001.dot"));
 
-  console.log("totalRegisterPrice", await totalRegisterPrice("gavinwood001", 86400 * 365));
-  console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
-  console.log("nameExpires", await nameExpires("gavinwood001.dot"));
-  console.log("available", await available("gavinwood001.dot"));
+  // console.log("totalRegisterPrice", await totalRegisterPrice("gavinwood001", 86400 * 365));
+  // console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
+  // console.log("nameExpires", await nameExpires("gavinwood001.dot"));
+  // console.log("available", await available("gavinwood001.dot"));
 
   // console.log("renew", await renew("gavinwood001", 86400 * 365));
-  console.log("nameExpires", await nameExpires("gavinwood001.dot"));
+  // console.log("nameExpires", await nameExpires("gavinwood001.dot"));
 
   // console.log("gavinwood196.dot owner", await getOwner("gavinwood196.dot"));
   // console.log("mintRedeem", await mintRedeem(196, 200));
   // let signer = getSigner()
-  // let sig = await generateRedeemCode(86400 * 365, 196, signer)
+  // let sig = await generateRedeemCode(86400 * 365, 193, signer)
   // console.log('redeem', sig)
   // nameRedeemAny('gavinwood196', account, 86400*365, 196, sig)
-  let sig = '***REMOVED***'
-  console.log("nameRedeemAny", await nameRedeemAny('gavinwood193', account, 86400*365, 193, sig));
+  let sig = ''
+  console.log("nameRedeemAny", await nameRedeemAny('gavinwood298', account, 86400*365, 298, sig));
+  console.log("gavinwood298 owner", await getOwner("gavinwood298.dot"));
 }
 
 async function start() {
