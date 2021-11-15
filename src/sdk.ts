@@ -126,10 +126,10 @@ export async function login() {
     console.log("provider has not setting");
   }
   try {
-    await (window as any).ethereum.request({ method: 'eth_requestAccounts' })
+    await (window as any).ethereum.request({ method: "eth_requestAccounts" });
     signer = await provider.getSigner();
     account = await signer.getAddress();
-    await setup()
+    await setup();
   } catch (e) {
     console.log("provider has no signer");
   }
@@ -137,8 +137,8 @@ export async function login() {
 
 export async function logout() {
   signer = null;
-  account = '0x0';
-  await setup()
+  account = "0x0";
+  await setup();
 }
 
 export async function setProvider(providerOpt?: Web3Provider) {
@@ -292,6 +292,15 @@ export function removeTld(label: string): DomainString {
   return label.replace(".dot", "");
 }
 
+export async function setName(name: DomainString): Promise<void> {
+  const namehash = getNamehash(name);
+  await resolver.setName(namehash);
+}
+
+export async function getName(addr: string): Promise<BigNumber> {
+  return resolver.getName(addr);
+}
+
 export async function setKey(name: DomainString, key: string, value: string): Promise<void> {
   const namehash = getNamehash(name);
   await resolver.set(key, value, namehash);
@@ -368,6 +377,10 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     content: content,
     contentType: "ipfs",
   };
+}
+
+export async function checkRedeem(nonce: number): Promise<boolean> {
+  return controller.checkRedeem(nonce);
 }
 
 export async function mintRedeem(start: number, end: number): Promise<{ wait: () => Promise<void> }> {

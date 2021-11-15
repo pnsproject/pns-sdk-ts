@@ -33,6 +33,9 @@ import {
   getSubdomains,
   getNamehash,
   setProvider,
+  checkRedeem,
+  setName,
+  getName,
   sha3,
 } from "./sdk";
 
@@ -43,28 +46,28 @@ async function main() {
   await setProvider();
   await login();
 
-  console.log(sha3("dot"));
-  console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
-  console.log("getSubdomains", await getSubdomains("dot"));
+  // console.log(sha3("dot"));
+  // console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
+  // console.log("getSubdomains", await getSubdomains("dot"));
 
-  console.log("dot owner", await getOwner("dot"));
-  console.log("dot owner", await ownerOf("dot"));
-  console.log("dot owner", await exists("dot"));
-  console.log("dot owner", await getResolver("dot"));
+  // console.log("dot owner", await getOwner("dot"));
+  // console.log("dot owner", await ownerOf("dot"));
+  // console.log("dot owner", await exists("dot"));
+  // console.log("dot owner", await getResolver("dot"));
 
-  console.log("eth owner", await getOwner("eth"));
-  console.log("eth owner", await exists("eth"));
+  // console.log("eth owner", await getOwner("eth"));
+  // console.log("eth owner", await exists("eth"));
 
-  console.log("controllerRoot", await controllerRoot());
+  // console.log("controllerRoot", await controllerRoot());
 
   console.log("gavinwood001.dot owner", await getOwner("gavinwood001.dot"));
 
   let account = getAccount();
   console.log("account", account);
 
-  console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
-  console.log("gavinwood001.dot register", await setResolver("gavinwood001.dot"));
-  console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
+  // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
+  // console.log("gavinwood001.dot setResolver", await setResolver("gavinwood001.dot"));
+  // console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
 
   // console.log("gavinwood001.dot mintSubdomain", await mintSubdomain("gavinwood001.dot", "sub123", account));
   console.log("sub123.gavinwood001.dot owner", await getOwner("sub123.gavinwood001.dot"));
@@ -77,22 +80,31 @@ async function main() {
 
   // console.log("getDomainDetails", await getDomainDetails("gavinwood001.dot"));
 
-  console.log("totalRegisterPrice", await totalRegisterPrice("gavinwood001", 86400 * 365));
-  console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
-  console.log("nameExpires", await nameExpires("gavinwood001.dot"));
-  console.log("available", await available("gavinwood001.dot"));
+  // console.log("totalRegisterPrice", await totalRegisterPrice("gavinwood001", 86400 * 365));
+  // console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
+  // console.log("nameExpires", await nameExpires("gavinwood001.dot"));
+  // console.log("available", await available("gavinwood001.dot"));
 
   // console.log("renew", await renew("gavinwood001", 86400 * 365));
-  console.log("nameExpires", await nameExpires("gavinwood001.dot"));
+  // console.log("nameExpires", await nameExpires("gavinwood001.dot"));
 
   // console.log("gavinwood196.dot owner", await getOwner("gavinwood196.dot"));
   // console.log("mintRedeem", await mintRedeem(196, 200));
   // let signer = getSigner()
-  // let sig = await generateRedeemCode(86400 * 365, 196, signer)
+  // let sig = await generateRedeemCode(86400 * 365, 298, signer)
   // console.log('redeem', sig)
   // nameRedeemAny('gavinwood196', account, 86400*365, 196, sig)
-  let sig = '0xc589db625da0696920839131cc711ea6646192fd0bfe29ab0cf8f966cd503f01715e2420371803290b29f2e8ed0043b40b97feb0ada71ab9a6d32510fc4118b01c'
-  console.log("nameRedeemAny", await nameRedeemAny('gavinwood193', account, 86400*365, 193, sig));
+  // let sig = "";
+  // console.log("nameRedeemAny", await nameRedeemAny("gavinwood298", account, 86400 * 365, 298, sig));
+
+  // console.log("gavinwood298 owner", await getOwner("gavinwood298.dot"));
+  // console.log("gavinwood298 checkRedeem", await checkRedeem(298));
+  // console.log("gavinwood298 checkRedeem", await checkRedeem(299));
+  // console.log("gavinwood298 checkRedeem", await checkRedeem(399));
+
+  // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
+  console.log(getNamehash("gavinwood298.dot"))
+  console.log("account getName", (await getName(account)).toHexString());
 }
 
 async function start() {
