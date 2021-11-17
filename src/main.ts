@@ -103,8 +103,10 @@ async function main() {
   // console.log("gavinwood298 checkRedeem", await checkRedeem(399));
 
   // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
-  console.log(getNamehash("gavinwood298.dot"))
+  console.log(getNamehash("gavinwood298.dot"));
   console.log("account getName", (await getName(account)).toHexString());
+  console.log(await getDomains(account));
+  console.log(await getSubdomains("gavinwood298.dot"));
 }
 
 async function start() {

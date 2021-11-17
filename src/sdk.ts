@@ -441,13 +441,15 @@ export async function generateRedeemCode(duration: number, nonce: number, signer
   return signer.signMessage(hashedMsg);
 }
 
+let graphUrl = "https://fuji-graph.pns.link";
+
 /** 列出用户的域名列表 */
 export async function getDomains(account: string) {
   let query =
     '{"query":"{\\n  subdomains(where: {owner: \\"' +
     account +
     '\\",\\n  parent: \\"0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
-  let resp = await fetch("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", {
+  let resp = await fetch(graphUrl + "/subgraphs/name/name-graph", {
     headers: {
       accept: "application/json",
       "content-type": "application/json",
@@ -466,7 +468,7 @@ export async function getSubdomains(domain: string) {
     '{"query":"{\\n  subdomains(where: {parent: \\"' +
     domain +
     '\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
-  let resp = await fetch("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", {
+  let resp = await fetch(graphUrl + "/subgraphs/name/name-graph", {
     headers: {
       accept: "application/json",
       "content-type": "application/json",
