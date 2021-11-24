@@ -294,9 +294,9 @@ export function removeTld(label: string): DomainString {
   return label.replace(".dot", "");
 }
 
-export async function setName(name: DomainString): Promise<void> {
+export async function setName(name: DomainString): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
-  await resolver.setName(namehash);
+  return resolver.setName(namehash);
 }
 
 export async function getName(addr: string): Promise<BigNumber> {
@@ -313,9 +313,9 @@ export async function getKey(name: DomainString, key: string): Promise<HexAddres
   return await resolver.get(key, namehash);
 }
 
-export async function setKeys(name: DomainString, key: string[], value: string[]): Promise<void> {
+export async function setKeys(name: DomainString, key: string[], value: string[]): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
-  await resolver.setMany(key, value, namehash);
+  return resolver.setMany(key, value, namehash);
 }
 
 export async function getKeys(name: DomainString, key: string[]): Promise<HexAddress> {
@@ -447,7 +447,7 @@ export async function generateRedeemCode(duration: number, nonce: number, signer
 export async function getDomains(account: string) {
   const query = gql`
     query Subdomains($account: Bytes!) {
-      subdomains(where: { owner: $account, parent: "0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f" }) {
+      subdomains(where: { owner: $account, parent: "0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce" }) {
         id
         name
         parent
@@ -478,7 +478,7 @@ export async function getSubdomains(domain: string) {
   `;
 
   const variables = {
-    parent: domain,
+    parent: getNamehash(domain),
   };
 
   let resp = await request("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", query, variables);
