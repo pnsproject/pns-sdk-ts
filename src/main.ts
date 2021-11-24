@@ -1,5 +1,6 @@
 import "./style.css";
 
+
 import {
   switchChain,
   setup,
@@ -105,6 +106,8 @@ async function main() {
   // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
   console.log(getNamehash("gavinwood298.dot"));
   console.log("account getName", (await getName(account)).toHexString());
+  console.log("getDomains", (await getDomains('0x1C4E1D79049Dae82a901Ae501B0847d197395f47')));
+  console.log("getSubdomains", (await getSubdomains(getNamehash('gavinwood298.dot'))));
 }
 
 async function start() {

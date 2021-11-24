@@ -450,7 +450,6 @@ export async function getDomains(account: string) {
       subdomains(where: { owner: $account, parent: "0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f" }) {
         id
         name
-        namehash
         parent
         owner
       }
@@ -472,7 +471,6 @@ export async function getSubdomains(domain: string) {
       subdomains(where: { parent: $parent }) {
         id
         name
-        namehash
         parent
         owner
       }
