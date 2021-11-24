@@ -1,12 +1,14 @@
 import { ethers, Signer, BigNumber } from "ethers";
 import { keccak_256 } from "js-sha3";
-import { Buffer as Buffer } from "buffer/";
+import { Buffer } from "buffer/";
 
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
 import { ResolverAbi, ControllerAbi, PnsAbi } from "./abi";
 import { Chains, IContractAddrs, IContractAddrsMap, ContractAddrMap } from "./constants";
+
+import { request, gql } from "graphql-request";
 
 export type HexAddress = string;
 
@@ -443,39 +445,47 @@ export async function generateRedeemCode(duration: number, nonce: number, signer
 
 /** 列出用户的域名列表 */
 export async function getDomains(account: string) {
-  let query =
-    '{"query":"{\\n  subdomains(where: {owner: \\"' +
-    account +
-    '\\",\\n  parent: \\"0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
-  let resp = await fetch("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", {
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    body: query,
-    method: "POST",
-  });
-  resp = await resp.json();
-  return (resp as any).data.subdomains;
-}
+  const query = gql`
+    query Subdomains($account: Bytes!) {
+      subdomains(where: { owner: $account, parent: "0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f" }) {
+        id
+        name
+        namehash
+        parent
+        owner
+      }
+    }
+  `;
 
+  const variables = {
+    account: account,
+  };
+
+  let resp = await request("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", query, variables);
+
+  return JSON.stringify(resp.subdomains);
+}
 /** 列出子域名列表 */
 export async function getSubdomains(domain: string) {
-  domain = getNamehash(domain);
-  let query =
-    '{"query":"{\\n  subdomains(where: {parent: \\"' +
-    domain +
-    '\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
-  let resp = await fetch("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", {
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    body: query,
-    method: "POST",
-  });
-  resp = await resp.json();
-  return (resp as any).data.subdomains;
+  const query = gql`
+    query Subdomains($parent: Bytes!) {
+      subdomains(where: { parent: $parent }) {
+        id
+        name
+        namehash
+        parent
+        owner
+      }
+    }
+  `;
+
+  const variables = {
+    parent: domain,
+  };
+
+  let resp = await request("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", query, variables);
+
+  return JSON.stringify(resp.subdomains);
 }
 
 const backendUrl = "https://pns.gigalixirapp.com";

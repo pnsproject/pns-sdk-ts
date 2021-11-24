@@ -1,6 +1,6 @@
 {
   "name": "pns-sdk",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "",
   "keywords": [],
   "author": "jiangplus",
@@ -23,6 +23,8 @@
   "dependencies": {
     "buffer": "^6.0.3",
     "ethers": "^5.4.7",
+    "graphql": "^15.7.2",
+    "graphql-request": "^3.6.1",
     "js-sha3": "^0.8.0",
     "ws": ">=7.4.6"
   }
