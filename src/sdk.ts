@@ -23,6 +23,13 @@ declare abstract class Web3Provider extends AbstractWeb3Provider {
   abstract getSigner(): Promise<Web3Signer>;
 }
 
+export type GraphDomainDetails = {
+  id: string;
+  name: string;
+  parent: string;
+  owner: string;
+}
+
 export type DomainDetails = {
   name: string;
   label: string;
@@ -267,7 +274,7 @@ export async function register(label: DomainString, account: string, duration: n
 /** 设置子域名
  * function mintSubdomain(bytes32 name, bytes32 label, address owner)
  * mintSubdomain('hero.dot', 'sub', '0x123456789') */
-export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<{ wait: () => Promise<void> }> {
   let namehash = getNamehash(name);
   return controller.setSubdomain(namehash, label, newOwner);
 }
@@ -444,7 +451,7 @@ export async function generateRedeemCode(duration: number, nonce: number, signer
 }
 
 /** 列出用户的域名列表 */
-export async function getDomains(account: string) {
+export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
   const query = gql`
     query Subdomains($account: Bytes!) {
       subdomains(where: { owner: $account, parent: "0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce" }) {
@@ -462,10 +469,10 @@ export async function getDomains(account: string) {
 
   let resp = await request("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", query, variables);
 
-  return JSON.stringify(resp.subdomains);
+  return resp.subdomains;
 }
 /** 列出子域名列表 */
-export async function getSubdomains(domain: string) {
+export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
   const query = gql`
     query Subdomains($parent: Bytes!) {
       subdomains(where: { parent: $parent }) {
@@ -483,7 +490,7 @@ export async function getSubdomains(domain: string) {
 
   let resp = await request("http://moonbeam.pns.link:8000/subgraphs/name/name-graph", query, variables);
 
-  return JSON.stringify(resp.subdomains);
+  return resp.subdomains
 }
 
 const backendUrl = "https://pns.gigalixirapp.com";
