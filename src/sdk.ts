@@ -292,33 +292,45 @@ export function removeTld(label: string): DomainString {
   return label.replace(".dot", "");
 }
 
-export async function setName(name: DomainString): Promise<void> {
+export async function setName(name: DomainString, resv?: any): Promise<void> {
   const namehash = getNamehash(name);
   await resolver.setName(namehash);
 }
 
-export async function getName(addr: string): Promise<BigNumber> {
+export async function getName(addr: string, resv?: any): Promise<BigNumber> {
   return resolver.getName(addr);
 }
 
-export async function setKey(name: DomainString, key: string, value: string): Promise<void> {
+export async function setKey(name: DomainString, key: string, value: string, resv?: any): Promise<void> {
   const namehash = getNamehash(name);
-  await resolver.set(key, value, namehash);
+  if (!resv) {
+    resv = resolver.attach(await getResolver(name));
+  }
+  await resv.set(key, value, namehash);
 }
 
-export async function getKey(name: DomainString, key: string): Promise<HexAddress> {
+export async function getKey(name: DomainString, key: string, resv?: any): Promise<HexAddress> {
   const namehash = getNamehash(name);
-  return await resolver.get(key, namehash);
+  if (!resv) {
+    resv = resolver.attach(await getResolver(name));
+  }
+  return await resv.get(key, namehash);
 }
 
-export async function setKeys(name: DomainString, key: string[], value: string[]): Promise<void> {
+export async function setKeys(name: DomainString, key: string[], value: string[], resv?: any): Promise<void> {
   const namehash = getNamehash(name);
-  await resolver.setMany(key, value, namehash);
+  if (!resv) {
+    resv = resolver.attach(await getResolver(name));
+  }
+  await resv.setMany(key, value, namehash);
 }
 
-export async function getKeys(name: DomainString, key: string[]): Promise<HexAddress> {
+export async function getKeys(name: DomainString, key: string[], resv?: any): Promise<HexAddress> {
   const namehash = getNamehash(name);
-  return await resolver.getMany(key, namehash);
+  if (!resv) {
+    resv = resolver.attach(await getResolver(name));
+  }
+  return await resv.getMany(key, namehash);
 }
 
 function buildKeyValueObjects(keys: any, values: any) {
@@ -349,7 +361,6 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   const label = nameArray[0];
   const labelhash = getLabelhash(label);
   const nameResolver = await getResolver(name);
-  console.log("res", name, nameResolver);
   const owner = await getOwner(name);
 
   const promises = TEXT_RECORD_KEYS.map((key) => getKey(name, "text." + key));
