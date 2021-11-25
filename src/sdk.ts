@@ -310,6 +310,14 @@ export async function getName(addr: string, resv?: any): Promise<BigNumber> {
   return resolver.getName(addr);
 }
 
+export async function setNftName(addr: string, nftTokenId: string, nameTokenId:string): Promise<{ wait: () => Promise<void> }> {
+  return resolver.setName(addr, nftTokenId, nameTokenId);
+}
+
+export async function getNftName(addr: string, nftTokenId: string): Promise<{ wait: () => Promise<void> }> {
+  return resolver.getNftName(addr, nftTokenId);
+}
+
 export async function setKey(name: DomainString, key: string, value: string, resv?: any): Promise<void> {
   const namehash = getNamehash(name);
   if (!resv) {
