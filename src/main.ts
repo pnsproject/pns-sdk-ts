@@ -107,6 +107,7 @@ async function main() {
   console.log("account getName", (await getName(account)).toHexString());
   console.log(await getDomains(account));
   console.log(await getSubdomains("gavinwood298.dot"));
+  console.log("getSubdomains", await getSubdomains(getNamehash("gavinwood298.dot")));
 }
 
 async function start() {

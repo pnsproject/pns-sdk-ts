@@ -1,12 +1,14 @@
 import { ethers, Signer, BigNumber } from "ethers";
 import { keccak_256 } from "js-sha3";
-import { Buffer as Buffer } from "buffer/";
+import { Buffer } from "buffer/";
 
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
 import { ResolverAbi, ControllerAbi, PnsAbi } from "./abi";
 import { Chains, IContractAddrs, IContractAddrsMap, ContractAddrMap } from "./constants";
+
+import { request, gql } from "graphql-request";
 
 export type HexAddress = string;
 
@@ -20,6 +22,13 @@ export interface ContentType {
 declare abstract class Web3Provider extends AbstractWeb3Provider {
   abstract getSigner(): Promise<Web3Signer>;
 }
+
+export type GraphDomainDetails = {
+  id: string;
+  name: string;
+  parent: string;
+  owner: string;
+};
 
 export type DomainDetails = {
   name: string;
@@ -265,7 +274,7 @@ export async function register(label: DomainString, account: string, duration: n
 /** 设置子域名
  * function mintSubdomain(bytes32 name, bytes32 label, address owner)
  * mintSubdomain('hero.dot', 'sub', '0x123456789') */
-export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<{ wait: () => Promise<void> }> {
   let namehash = getNamehash(name);
   return controller.setSubdomain(namehash, label, newOwner);
 }
@@ -292,9 +301,9 @@ export function removeTld(label: string): DomainString {
   return label.replace(".dot", "");
 }
 
-export async function setName(name: DomainString, resv?: any): Promise<void> {
+export async function setName(name: DomainString, resv?: any): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
-  await resolver.setName(namehash);
+  return resolver.setName(namehash);
 }
 
 export async function getName(addr: string, resv?: any): Promise<BigNumber> {
@@ -317,12 +326,12 @@ export async function getKey(name: DomainString, key: string, resv?: any): Promi
   return await resv.get(key, namehash);
 }
 
-export async function setKeys(name: DomainString, key: string[], value: string[], resv?: any): Promise<void> {
+export async function setKeys(name: DomainString, key: string[], value: string[], resv?: any): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
   if (!resv) {
     resv = resolver.attach(await getResolver(name));
   }
-  await resv.setMany(key, value, namehash);
+  return resv.setMany(key, value, namehash);
 }
 
 export async function getKeys(name: DomainString, key: string[], resv?: any): Promise<HexAddress> {
@@ -455,40 +464,47 @@ export async function generateRedeemCode(duration: number, nonce: number, signer
 let graphUrl = "https://fuji-graph.pns.link";
 
 /** 列出用户的域名列表 */
-export async function getDomains(account: string) {
-  let query =
-    '{"query":"{\\n  subdomains(where: {owner: \\"' +
-    account +
-    '\\",\\n  parent: \\"0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
-  let resp = await fetch(graphUrl + "/subgraphs/name/name-graph", {
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    body: query,
-    method: "POST",
-  });
-  resp = await resp.json();
-  return (resp as any).data.subdomains;
+export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
+  const query = gql`
+    query Subdomains($account: Bytes!) {
+      subdomains(where: { owner: $account, parent: "0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce" }) {
+        id
+        name
+        parent
+        owner
+      }
+    }
+  `;
+
+  const variables = {
+    account: account,
+  };
+
+  let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+
+  return resp.subdomains;
 }
 
 /** 列出子域名列表 */
-export async function getSubdomains(domain: string) {
-  domain = getNamehash(domain);
-  let query =
-    '{"query":"{\\n  subdomains(where: {parent: \\"' +
-    domain +
-    '\\"}){\\n    id\\n    name\\n    namehash\\n    parent\\n    owner\\n  }\\n}\\n","variables":null,"operationName":null}';
-  let resp = await fetch(graphUrl + "/subgraphs/name/name-graph", {
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-    },
-    body: query,
-    method: "POST",
-  });
-  resp = await resp.json();
-  return (resp as any).data.subdomains;
+export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
+  const query = gql`
+    query Subdomains($parent: Bytes!) {
+      subdomains(where: { parent: $parent }) {
+        id
+        name
+        parent
+        owner
+      }
+    }
+  `;
+
+  const variables = {
+    parent: getNamehash(domain),
+  };
+
+  let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+
+  return resp.subdomains;
 }
 
 const backendUrl = "https://pns.gigalixirapp.com";
