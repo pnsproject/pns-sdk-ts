@@ -321,7 +321,8 @@ export async function getNftName(addr: string, nftTokenId: string): Promise<{ wa
 export async function setKey(name: DomainString, key: string, value: string, resv?: any): Promise<void> {
   const namehash = getNamehash(name);
   if (!resv) {
-    resv = resolver.attach(await getResolver(name));
+    const currResolver = await getResolver(name)
+    resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   await resv.set(key, value, namehash);
 }
@@ -329,7 +330,8 @@ export async function setKey(name: DomainString, key: string, value: string, res
 export async function getKey(name: DomainString, key: string, resv?: any): Promise<HexAddress> {
   const namehash = getNamehash(name);
   if (!resv) {
-    resv = resolver.attach(await getResolver(name));
+    const currResolver = await getResolver(name)
+    resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   return await resv.get(key, namehash);
 }
@@ -337,7 +339,8 @@ export async function getKey(name: DomainString, key: string, resv?: any): Promi
 export async function setKeys(name: DomainString, key: string[], value: string[], resv?: any): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
   if (!resv) {
-    resv = resolver.attach(await getResolver(name));
+    const currResolver = await getResolver(name)
+    resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   return resv.setMany(key, value, namehash);
 }
@@ -345,7 +348,8 @@ export async function setKeys(name: DomainString, key: string[], value: string[]
 export async function getKeys(name: DomainString, key: string[], resv?: any): Promise<HexAddress> {
   const namehash = getNamehash(name);
   if (!resv) {
-    resv = resolver.attach(await getResolver(name));
+    const currResolver = await getResolver(name)
+    resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   return await resv.getMany(key, namehash);
 }
