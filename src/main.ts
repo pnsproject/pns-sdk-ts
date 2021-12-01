@@ -37,6 +37,11 @@ import {
   setName,
   getName,
   sha3,
+  getCurrencyRate,
+  getUsdBasePrices,
+  getUsdRentPrices,
+  getBasePrices,
+  getRentPrices,
 } from "./sdk";
 
 async function main() {
@@ -103,11 +108,16 @@ async function main() {
   // console.log("gavinwood298 checkRedeem", await checkRedeem(399));
 
   // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
-  console.log(getNamehash("gavinwood298.dot"));
-  console.log("account getName", (await getName(account)).toHexString());
-  console.log(await getDomains(account));
-  console.log(await getSubdomains("gavinwood298.dot"));
-  console.log("getSubdomains", await getSubdomains(getNamehash("gavinwood298.dot")));
+  // console.log(getNamehash("gavinwood298.dot"));
+  // console.log("account getName", (await getName(account)).toHexString());
+  // console.log(await getDomains(account));
+  // console.log(await getSubdomains("gavinwood298.dot"));
+  // console.log("getSubdomains", await getSubdomains(getNamehash("gavinwood298.dot")));
+  console.log("getCurrencyRate", (await getCurrencyRate()).toString());
+  console.log("getUsdBasePrices", (await getUsdBasePrices()).toString());
+  console.log("getUsdRentPrices", (await getUsdRentPrices()).toString());
+  console.log("getBasePrices", (await getBasePrices()).toString());
+  console.log("getRentPrices", (await getRentPrices()).toString());
 }
 
 async function start() {

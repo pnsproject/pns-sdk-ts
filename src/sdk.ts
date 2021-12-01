@@ -248,11 +248,63 @@ export function getResolver(name: DomainString): Promise<HexAddress> {
 
 /** 获得域名注册价格 */
 export async function totalRegisterPrice(name: DomainString, duration: number): Promise<BigNumber> {
-  return await controller.totalRegisterPrice(name, duration);
+  return controller.totalRegisterPrice(name, duration);
+}
+
+export async function basePrice(name: DomainString): Promise<BigNumber> {
+  return controller.registerPrice(name);
 }
 
 export async function rentPrice(name: DomainString, duration: number): Promise<BigNumber> {
-  return await controller.rentPrice(name, duration);
+  return controller.rentPrice(name, duration);
+}
+
+export async function root(): Promise<string> {
+  return controller.root();
+}
+
+export async function transferRootOwnership(newRoot: string): Promise<void> {
+  return controller.transferRootOwnership(newRoot);
+}
+
+export async function setCurrencyRate(currencyRate: number): Promise<void> {
+  return controller.setCurrencyRate(currencyRate);
+}
+
+export async function setUsdBasePrices(rawBasePrices: number[]): Promise<void> {
+  return controller.setRawBasePrices(rawBasePrices);
+}
+
+export async function setUsdRentPrices(rawRentPrices: number[]): Promise<void> {
+  return controller.setRawRentPrices(rawRentPrices);
+}
+
+export async function getCurrencyRate(): Promise<void> {
+  return controller.getCurrencyRate();
+}
+
+export async function getUsdBasePrices(): Promise<void> {
+  return controller.getRawBasePrices();
+}
+
+export async function getUsdRentPrices(): Promise<void> {
+  return controller.getRawRentPrices();
+}
+
+export async function setBasePrices(basePrices: number[]): Promise<void> {
+  return controller.setBasePrices(basePrices);
+}
+
+export async function setRentPrices(rentPrices: number[]): Promise<void> {
+  return controller.setRentPrices(rentPrices);
+}
+
+export async function getBasePrices(): Promise<void> {
+  return controller.getBasePrices();
+}
+
+export async function getRentPrices(): Promise<void> {
+  return controller.getRentPrices();
 }
 
 export async function nameExpires(label: DomainString): Promise<BigNumber> {
@@ -310,7 +362,7 @@ export async function getName(addr: string, resv?: any): Promise<BigNumber> {
   return resolver.getName(addr);
 }
 
-export async function setNftName(addr: string, nftTokenId: string, nameTokenId:string): Promise<{ wait: () => Promise<void> }> {
+export async function setNftName(addr: string, nftTokenId: string, nameTokenId: string): Promise<{ wait: () => Promise<void> }> {
   return resolver.setName(addr, nftTokenId, nameTokenId);
 }
 
@@ -321,7 +373,7 @@ export async function getNftName(addr: string, nftTokenId: string): Promise<{ wa
 export async function setKey(name: DomainString, key: string, value: string, resv?: any): Promise<void> {
   const namehash = getNamehash(name);
   if (!resv) {
-    const currResolver = await getResolver(name)
+    const currResolver = await getResolver(name);
     resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   await resv.set(key, value, namehash);
@@ -330,7 +382,7 @@ export async function setKey(name: DomainString, key: string, value: string, res
 export async function getKey(name: DomainString, key: string, resv?: any): Promise<HexAddress> {
   const namehash = getNamehash(name);
   if (!resv) {
-    const currResolver = await getResolver(name)
+    const currResolver = await getResolver(name);
     resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   return await resv.get(key, namehash);
@@ -339,7 +391,7 @@ export async function getKey(name: DomainString, key: string, resv?: any): Promi
 export async function setKeys(name: DomainString, key: string[], value: string[], resv?: any): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
   if (!resv) {
-    const currResolver = await getResolver(name)
+    const currResolver = await getResolver(name);
     resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   return resv.setMany(key, value, namehash);
@@ -348,7 +400,7 @@ export async function setKeys(name: DomainString, key: string[], value: string[]
 export async function getKeys(name: DomainString, key: string[], resv?: any): Promise<HexAddress> {
   const namehash = getNamehash(name);
   if (!resv) {
-    const currResolver = await getResolver(name)
+    const currResolver = await getResolver(name);
     resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
   return await resv.getMany(key, namehash);
