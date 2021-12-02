@@ -338,7 +338,7 @@ export async function controllerRoot(): Promise<{ wait: () => Promise<void> }> {
 /** 设置域名 resolver 参数，表示域名的解析器
  * function setResolver(bytes32 name, address resolver)
  * setResolver('hero.dot', '0x123456789') */
-export function setResolver(name: DomainString, resolver?: HexAddress): Promise<any> {
+export function setResolver(name: DomainString, resolver?: HexAddress): Promise<{ wait: () => Promise<void> }> {
   name = suffixTld(name);
   let namehash = getNamehash(name);
   resolver = resolver || resolverAddr;
@@ -494,7 +494,7 @@ export async function transfer(
 }> {
   let namehash = getNamehash(name);
   let oldOwner = await getOwner(name);
-  return await pns["safeTransferFrom(address,address,uint256)"](oldOwner, newOwner, namehash);
+  return pns["safeTransferFrom(address,address,uint256)"](oldOwner, newOwner, namehash);
 }
 
 export function abiDataEncode(data: any, datatype: string): Buffer {
