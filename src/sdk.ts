@@ -338,11 +338,23 @@ export async function controllerRoot(): Promise<{ wait: () => Promise<void> }> {
 /** 设置域名 resolver 参数，表示域名的解析器
  * function setResolver(bytes32 name, address resolver)
  * setResolver('hero.dot', '0x123456789') */
-export function setResolver(name: DomainString, resolver?: HexAddress): Promise<{ wait: () => Promise<void> }> {
+export async function setResolver(name: DomainString, resolver?: HexAddress): Promise<{ wait: () => Promise<void> }> {
   name = suffixTld(name);
   let namehash = getNamehash(name);
   resolver = resolver || resolverAddr;
   return pns.setResolver(namehash, resolver);
+}
+
+export async function setOperator(name: DomainString, approved: HexAddress): Promise<{ wait: () => Promise<void> }> {
+  name = suffixTld(name);
+  let namehash = getNamehash(name);
+  return pns.approve(approved, namehash);
+}
+
+export async function getOperator(name: DomainString): Promise<string> {
+  name = suffixTld(name);
+  let namehash = getNamehash(name);
+  return await pns.getApproved(namehash);
 }
 
 export function suffixTld(label: string): DomainString {
