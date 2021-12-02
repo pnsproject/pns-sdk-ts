@@ -283,11 +283,11 @@ export async function getCurrencyRate(): Promise<BigNumber> {
   return controller.getCurrencyRate();
 }
 
-export async function getUsdBasePrices(): Promise<BigNumber> {
+export async function getUsdBasePrices(): Promise<BigNumber[]> {
   return controller.getRawBasePrices();
 }
 
-export async function getUsdRentPrices(): Promise<BigNumber> {
+export async function getUsdRentPrices(): Promise<BigNumber[]> {
   return controller.getRawRentPrices();
 }
 
@@ -299,11 +299,11 @@ export async function setRentPrices(rentPrices: number[]): Promise<void> {
   return controller.setRentPrices(rentPrices);
 }
 
-export async function getBasePrices(): Promise<BigNumber> {
+export async function getBasePrices(): Promise<BigNumber[]> {
   return controller.getBasePrices();
 }
 
-export async function getRentPrices(): Promise<BigNumber> {
+export async function getRentPrices(): Promise<BigNumber[]> {
   return controller.getRentPrices();
 }
 
