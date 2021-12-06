@@ -60,7 +60,7 @@ const emptyNode = "0x00000000000000000000000000000000000000000000000000000000000
 
 const tld = "dot";
 const DAYS = 24 * 60 * 60;
-const INFURA_URL = "https://rinkeby.infura.io/v3/75e0d27975114086be0463cf2597549e";
+const INFURA_URL = "https://api.avax-test.network/ext/bc/C/rpc";
 
 let provider: Web3Provider;
 let signer: Web3Signer;
