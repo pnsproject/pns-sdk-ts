@@ -130,6 +130,14 @@ export function getAccount(): string {
   return account;
 }
 
+export function getController(): any {
+  return controller;
+}
+
+export function getResovlerContract(): any {
+  return resolver;
+}
+
 export async function login() {
   if (!provider) {
     console.log("provider has not setting");
@@ -498,6 +506,81 @@ export async function renew(label: DomainString, duration: number): Promise<void
   return controller.renew(label, duration, { value: price, gasLimit: 500000 });
 }
 
+const payAddrs = {
+  eth: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  avax: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  movr: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  bsc: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  dot: "",
+  ksm: "",
+};
+
+export async function registerPayWithOtherCurrency(chain: string, label: DomainString, duration: number): Promise<void> {
+  // todo : if user close before tx success, need recovering
+  let price = await totalRegisterPrice(label, duration);
+  let tx = await signer.sendTransaction({
+    to: payAddrs[chain],
+    value: price,
+  });
+  return {
+    data: {
+      chain: chain,
+      label: label,
+      duration: duration,
+      txhash: tx.hash,
+      value: tx.value.toString(),
+      from: tx.from,
+      to: tx.to,
+      managed: true,
+    },
+    tx: tx,
+  };
+}
+
+const apiUrl = "http://localhost:3000";
+
+export async function registerWithProxy(data: any): Promise<void> {
+  let signer = getSigner();
+  let tokenId = getNamehash(`${data.label}.dot`);
+  let ts = Number(Date.now().toString());
+  let encoded = encodeData(tokenId, ts);
+  let sig = await signing(encoded, signer);
+
+  data.sig = sig;
+  data.ts = ts;
+
+  let resp = await fetch(`${apiUrl}/proxy/register`, {
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+    method: "POST",
+  });
+  resp = await resp.json();
+  return resp as any;
+}
+
+export async function updateWithProxy(data: any): Promise<void> {
+  let signer = getSigner();
+  let tokenId = data.tokenId;
+  let ts = Number(Date.now().toString());
+  let encoded = encodeData(tokenId, ts);
+  let sig = await signing(encoded, signer);
+
+  data.sig = sig;
+  data.ts = ts;
+
+  let resp = await fetch(`${apiUrl}/proxy/update`, {
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+    method: "POST",
+  });
+  resp = await resp.json();
+  return resp as any;
+}
+
 export async function transfer(
   name: DomainString,
   newOwner: HexAddress
@@ -535,6 +618,17 @@ export function hashMsg(data: Uint8Array): Uint8Array {
 export async function generateRedeemCode(duration: number, nonce: number, signer: any): Promise<string> {
   let hashedMsg = hashMsg(encodeMsg(duration, nonce));
   return signer.signMessage(hashedMsg);
+}
+
+export function encodeData(data: string, ts: number): Uint8Array {
+  let dataBuffer = abiDataEncode(data, "uint");
+  let tsBuffer = abiDataEncode(ts, "uint");
+  let combined = Buffer.concat([dataBuffer, tsBuffer]);
+  return hashMsg(combined);
+}
+
+export async function signing(data: any, signer: any): Promise<string> {
+  return signer.signMessage(data);
 }
 
 let graphUrl = "https://fuji-graph.pns.link";

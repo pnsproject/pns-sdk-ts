@@ -42,7 +42,16 @@ import {
   getUsdRentPrices,
   getBasePrices,
   getRentPrices,
+  registerPayWithOtherCurrency,
+  registerWithProxy,
+  updateWithProxy,
+  getController,
+  getResovlerContract,
+  signing,
+  encodeData,
 } from "./sdk";
+
+import { ethers, Signer, BigNumber } from "ethers";
 
 async function main() {
   console.log("hello");
@@ -65,7 +74,7 @@ async function main() {
 
   // console.log("controllerRoot", await controllerRoot());
 
-  console.log("gavinwood001.dot owner", await getOwner("gavinwood001.dot"));
+  // console.log("gavinwood001.dot owner", await getOwner("gavinwood001.dot"));
 
   let account = getAccount();
   console.log("account", account);
@@ -75,13 +84,13 @@ async function main() {
   // console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
 
   // console.log("gavinwood001.dot mintSubdomain", await mintSubdomain("gavinwood001.dot", "sub123", account));
-  console.log("sub123.gavinwood001.dot owner", await getOwner("sub123.gavinwood001.dot"));
+  // console.log("sub123.gavinwood001.dot owner", await getOwner("sub123.gavinwood001.dot"));
 
   // console.log("gavinwood001.dot setKey", await setKey("gavinwood001.dot", "ETH", account));
-  console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
+  // console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
 
   // console.log("gavinwood001.dot setKeys", await setKeys("gavinwood001.dot", ["BTC"], [account]));
-  console.log("gavinwood001.dot getKeys", await getKeys("gavinwood001.dot", ["BTC"]));
+  // console.log("gavinwood001.dot getKeys", await getKeys("gavinwood001.dot", ["BTC"]));
 
   // console.log("getDomainDetails", await getDomainDetails("gavinwood001.dot"));
 
@@ -104,8 +113,6 @@ async function main() {
 
   // console.log("gavinwood298 owner", await getOwner("gavinwood298.dot"));
   // console.log("gavinwood298 checkRedeem", await checkRedeem(298));
-  // console.log("gavinwood298 checkRedeem", await checkRedeem(299));
-  // console.log("gavinwood298 checkRedeem", await checkRedeem(399));
 
   // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
   // console.log(getNamehash("gavinwood298.dot"));
@@ -113,11 +120,28 @@ async function main() {
   // console.log(await getDomains(account));
   // console.log(await getSubdomains("gavinwood298.dot"));
   // console.log("getSubdomains", await getSubdomains(getNamehash("gavinwood298.dot")));
-  console.log("getCurrencyRate", (await getCurrencyRate()).toString());
-  console.log("getUsdBasePrices", (await getUsdBasePrices()).toString());
-  console.log("getUsdRentPrices", (await getUsdRentPrices()).toString());
-  console.log("getBasePrices", (await getBasePrices()).toString());
-  console.log("getRentPrices", (await getRentPrices()).toString());
+  // console.log("getCurrencyRate", (await getCurrencyRate()).toString());
+  // console.log("getUsdBasePrices", (await getUsdBasePrices()).toString());
+  // console.log("getUsdRentPrices", (await getUsdRentPrices()).toString());
+  // console.log("getBasePrices", (await getBasePrices()).toString());
+  // console.log("getRentPrices", (await getRentPrices()).toString());
+
+  // let res = await registerPayWithOtherCurrency("avax", "gavinwood3001", 86400*365)
+  // console.log(res.data)
+  // await res.tx.wait()
+  // res = await registerWithProxy(res.data)
+  // console.log('res', res)
+
+  // let provider = getProvider()
+  // console.log('tx', await provider.getTransaction(""))
+
+  console.log("gavinwood3001.dot owner", await getOwner("gavinwood3001.dot"));
+  console.log("gavinwood3001.dot getDomainDetails", await getDomainDetails("gavinwood3001.dot"));
+
+  // let keyHashes = [sha3("text.email")]
+  // let values = ["user@gmail.com"]
+  // let tokenId = getNamehash("gavinwood3001.dot")
+  // updateWithProxy({keyHashes, values, tokenId})
 }
 
 async function start() {

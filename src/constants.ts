@@ -45,9 +45,9 @@ export interface IContractAddrsMap {
 
 export const ContractAddrMap: IContractAddrsMap = {
   43113: {
-    pns: "0xAF63D217F82Bf7a59DDb739a29E5e85538EFFe89",
-    resolver: "0x4c92B5d701D5CB2e4A2D5f7B305bd09C5C46a084",
-    controller: "0xc53FF0c21D2d06685fa783da34C574dCd761995c",
+    pns: "0xC8470c4Ec64998d7C5499ae1F8Ab0b1Ec1dcf49F",
+    resolver: "0x62163A78469e1737cffF6211BB8DAbAb376c4806",
+    controller: "0xD27c46bA3E6038e5043b8241Bca828861f836222",
   },
   1287: {
     pns: "0x631D7e6927dD0b40a9fe2AadB04A1E7FE0B9a0A6",
