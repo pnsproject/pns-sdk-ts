@@ -43,11 +43,13 @@ export interface IContractAddrsMap {
   [index: number]: IContractAddrs;
 }
 
+// fuji pns start blockNumber 3334299
+
 export const ContractAddrMap: IContractAddrsMap = {
   43113: {
-    pns: "0xC8470c4Ec64998d7C5499ae1F8Ab0b1Ec1dcf49F",
-    resolver: "0x62163A78469e1737cffF6211BB8DAbAb376c4806",
-    controller: "0xD27c46bA3E6038e5043b8241Bca828861f836222",
+    pns: "0x61d0daC9821D94Af58d372F3c4038ea95E4759f0",
+    resolver: "0xc06Ff96D0c7Fa150afE054969aD2B011d690c3CE",
+    controller: "0x4d76d1E474A93B496b48c30562dB82c98F18D92F",
   },
   1287: {
     pns: "0x631D7e6927dD0b40a9fe2AadB04A1E7FE0B9a0A6",

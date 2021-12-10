@@ -515,7 +515,7 @@ const payAddrs = {
   ksm: "",
 };
 
-export async function registerPayWithOtherCurrency(chain: string, label: DomainString, duration: number): Promise<void> {
+export async function registerPayWithOtherCurrency(chain: string, label: DomainString, duration: number): Promise<any> {
   // todo : if user close before tx success, need recovering
   let price = await totalRegisterPrice(label, duration);
   let tx = await signer.sendTransaction({
@@ -537,9 +537,9 @@ export async function registerPayWithOtherCurrency(chain: string, label: DomainS
   };
 }
 
-const apiUrl = "http://localhost:3000";
+const apiUrl = "https://pns-shoacwf3rq-de.a.run.app";
 
-export async function registerWithProxy(data: any): Promise<void> {
+export async function registerWithProxy(data: any): Promise<any> {
   let signer = getSigner();
   let tokenId = getNamehash(`${data.label}.dot`);
   let ts = Number(Date.now().toString());

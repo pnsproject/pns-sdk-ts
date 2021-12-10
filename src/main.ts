@@ -135,8 +135,9 @@ async function main() {
   // let provider = getProvider()
   // console.log('tx', await provider.getTransaction(""))
 
-  console.log("gavinwood3001.dot owner", await getOwner("gavinwood3001.dot"));
-  console.log("gavinwood3001.dot getDomainDetails", await getDomainDetails("gavinwood3001.dot"));
+  // console.log("gavinwood3001.dot owner", await getOwner("gavinwood3001.dot"));
+  // console.log("gavinwood3001.dot getDomainDetails", await getDomainDetails("gavinwood3001.dot"));
+  console.log("checkRedeem", await checkRedeem(298));
 
   // let keyHashes = [sha3("text.email")]
   // let values = ["user@gmail.com"]
