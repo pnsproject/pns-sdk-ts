@@ -263,7 +263,7 @@ export async function exists(name: DomainString): Promise<HexAddress> {
 /** 获取域名的解析器合约 */
 export function getResolver(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  return pns.resolver(namehash);
+  return pns.getResolver(namehash);
 }
 
 /** 获得域名注册价格 */
