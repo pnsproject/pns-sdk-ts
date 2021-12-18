@@ -158,9 +158,13 @@ export async function logout() {
   await setup();
 }
 
-export async function setProvider(providerOpt?: Web3Provider) {
-  if (!!providerOpt) {
-    provider = providerOpt;
+export async function setSigner(_signer?: Web3Signer) {
+  signer = _signer;
+}
+
+export async function setProvider(_provider?: Web3Provider) {
+  if (!!_provider) {
+    provider = _provider;
   } else if (!!window && typeof (window as any).ethereum !== "undefined") {
     provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
   } else {
@@ -231,6 +235,14 @@ export async function getOwner(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
   if (await pns.exists(namehash)) {
     return pns.ownerOf(namehash);
+  } else {
+    return emptyAddress;
+  }
+}
+
+export async function getOwnerByTokenId(tokenId: string): Promise<HexAddress> {
+  if (await pns.exists(tokenId)) {
+    return pns.ownerOf(tokenId);
   } else {
     return emptyAddress;
   }
@@ -328,7 +340,18 @@ export async function available(label: DomainString): Promise<boolean> {
 /** 域名注册 */
 export async function register(label: DomainString, account: string, duration: number): Promise<{ wait: () => Promise<void> }> {
   const price = await totalRegisterPrice(label, duration);
-  return controller.nameRegister(label, account, duration, { value: price, gasLimit: 500000 });
+  return controller.nameRegister(label, account, duration, { value: price, gasLimit: 800000 });
+}
+
+export async function registerWithConfig(
+  label: DomainString,
+  account: string,
+  duration: number,
+  resolver: string,
+  operator: string
+): Promise<{ wait: () => Promise<void> }> {
+  const price = await totalRegisterPrice(label, duration);
+  return controller.nameRegisterWithConfig(label, account, duration, resolver, operator, [], [], { value: price, gasLimit: 800000 });
 }
 
 /** 设置子域名
@@ -363,6 +386,10 @@ export async function getOperator(name: DomainString): Promise<string> {
   name = suffixTld(name);
   let namehash = getNamehash(name);
   return await pns.getApproved(namehash);
+}
+
+export async function getApproved(tokenId: string): Promise<string> {
+  return await pns.getApproved(tokenId);
 }
 
 export function suffixTld(label: string): DomainString {
@@ -408,13 +435,22 @@ export async function getKey(name: DomainString, key: string, resv?: any): Promi
   return await resv.get(key, namehash);
 }
 
-export async function setKeys(name: DomainString, key: string[], value: string[], resv?: any): Promise<{ wait: () => Promise<void> }> {
+export async function setKeys(name: DomainString, keys: string[], values: string[], resv?: any): Promise<{ wait: () => Promise<void> }> {
   const namehash = getNamehash(name);
   if (!resv) {
     const currResolver = await getResolver(name);
     resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
   }
-  return resv.setMany(key, value, namehash);
+  return resv.setMany(keys, values, namehash);
+}
+
+export async function setKeysByHash(name: DomainString, keys: string[], values: string[], resv?: any): Promise<{ wait: () => Promise<void> }> {
+  const namehash = getNamehash(name);
+  if (!resv) {
+    const currResolver = await getResolver(name);
+    resv = currResolver !== emptyAddress ? resolver.attach(await getResolver(name)) : resolver;
+  }
+  return resv.setManyByHash(keys, values, namehash);
 }
 
 export async function getKeys(name: DomainString, key: string[], resv?: any): Promise<HexAddress> {
@@ -503,7 +539,7 @@ export async function nameRedeemAny(
 
 export async function renew(label: DomainString, duration: number): Promise<void> {
   const price = await rentPrice(label, duration);
-  return controller.renew(label, duration, { value: price, gasLimit: 500000 });
+  return controller.renew(label, duration, { value: price, gasLimit: 800000 });
 }
 
 const payAddrs = {
@@ -537,17 +573,20 @@ export async function registerPayWithOtherCurrency(chain: string, label: DomainS
   };
 }
 
-const apiUrl = "https://pns-shoacwf3rq-de.a.run.app";
+// const apiUrl = "https://pns-shoacwf3rq-de.a.run.app";
+const apiUrl = "https://backend.pns.link";
 
 export async function registerWithProxy(data: any): Promise<any> {
   let signer = getSigner();
   let tokenId = getNamehash(`${data.label}.dot`);
-  let ts = Number(Date.now().toString());
-  let encoded = encodeData(tokenId, ts);
-  let sig = await signing(encoded, signer);
+  let timestamp = Number(Date.now().toString());
+  let encoded = encodeData(tokenId, timestamp);
+  let signature = await signing(encoded, signer);
 
-  data.sig = sig;
-  data.ts = ts;
+  data.signature = signature;
+  data.timestamp = timestamp;
+
+  console.log("url", `${apiUrl}/proxy/register`);
 
   let resp = await fetch(`${apiUrl}/proxy/register`, {
     headers: {
@@ -563,12 +602,12 @@ export async function registerWithProxy(data: any): Promise<any> {
 export async function updateWithProxy(data: any): Promise<void> {
   let signer = getSigner();
   let tokenId = data.tokenId;
-  let ts = Number(Date.now().toString());
-  let encoded = encodeData(tokenId, ts);
-  let sig = await signing(encoded, signer);
+  let timestamp = Number(Date.now().toString());
+  let encoded = encodeData(tokenId, timestamp);
+  let signature = await signing(encoded, signer);
 
-  data.sig = sig;
-  data.ts = ts;
+  data.signature = signature;
+  data.timestamp = timestamp;
 
   let resp = await fetch(`${apiUrl}/proxy/update`, {
     headers: {

@@ -126,11 +126,12 @@ async function main() {
   // console.log("getBasePrices", (await getBasePrices()).toString());
   // console.log("getRentPrices", (await getRentPrices()).toString());
 
-  // let res = await registerPayWithOtherCurrency("avax", "gavinwood3001", 86400*365)
-  // console.log(res.data)
-  // await res.tx.wait()
-  // res = await registerWithProxy(res.data)
-  // console.log('res', res)
+  let res = await registerPayWithOtherCurrency("avax", "gavinwood3002", 86400 * 365);
+  console.log(res.data);
+  await res.tx.wait();
+
+  res = await registerWithProxy(res.data);
+  console.log("res", res);
 
   // let provider = getProvider()
   // console.log('tx', await provider.getTransaction(""))
@@ -143,6 +144,19 @@ async function main() {
   // let values = ["user@gmail.com"]
   // let tokenId = getNamehash("gavinwood3001.dot")
   // updateWithProxy({keyHashes, values, tokenId})
+  console.log(await ping());
+}
+
+let base = "http://localhost:8080";
+async function ping() {
+  fetch(base + "/ping");
+  let resp = await fetch(base + "/ping", {
+    headers: {
+      "content-type": "application/json",
+    },
+    method: "GET",
+  });
+  resp = await resp.json();
 }
 
 async function start() {
