@@ -676,7 +676,7 @@ let graphUrl = "https://fuji-graph.pns.link";
 export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
   const query = gql`
     query Subdomains($account: Bytes!) {
-      subdomains(where: { owner: $account, parent: "0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce" }) {
+      subdomains(where: { owner: $account, parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce") }) {
         id
         name
         parent
@@ -697,7 +697,7 @@ export async function getDomains(account: string): Promise<GraphDomainDetails[]>
 /** 列出子域名列表 */
 export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
   const query = gql`
-    query Subdomains($parent: Bytes!) {
+    query Subdomains($parent: BigInt!) {
       subdomains(where: { parent: $parent }) {
         id
         name
@@ -708,7 +708,7 @@ export async function getSubdomains(domain: string): Promise<GraphDomainDetails[
   `;
 
   const variables = {
-    parent: getNamehash(domain),
+    parent: BigInt(getNamehash(domain)),
   };
 
   let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
