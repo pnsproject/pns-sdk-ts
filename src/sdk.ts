@@ -10,6 +10,11 @@ import { Chains, IContractAddrs, IContractAddrsMap, ContractAddrMap } from "./co
 
 import { request, gql } from "graphql-request";
 
+// @ts-ignore
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 export type HexAddress = string;
 
 export type DomainString = string;
@@ -675,8 +680,8 @@ let graphUrl = "https://fuji-graph.pns.link";
 /** 列出用户的域名列表 */
 export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
   const query = gql`
-    query Subdomains($account: Bytes!) {
-      subdomains(where: { owner: $account, parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce") }) {
+    query Subdomains($account: Bytes!, $parent: BigInt!) {
+      subdomains(where: { owner: $account, parent: $parent }) {
         id
         name
         parent
@@ -684,9 +689,9 @@ export async function getDomains(account: string): Promise<GraphDomainDetails[]>
       }
     }
   `;
-
   const variables = {
     account: account,
+    parent:BigInt('0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce')
   };
 
   let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
@@ -706,7 +711,7 @@ export async function getSubdomains(domain: string): Promise<GraphDomainDetails[
       }
     }
   `;
-
+  console.log('b')
   const variables = {
     parent: BigInt(getNamehash(domain)),
   };
