@@ -49,6 +49,8 @@ import {
   getResovlerContract,
   signing,
   encodeData,
+
+  getTokenPrice,
 } from "./sdk";
 
 import { ethers, Signer, BigNumber } from "ethers";
@@ -64,7 +66,7 @@ async function main() {
   // console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
   // console.log("getSubdomains", await getSubdomains("dot"));
 
-  // console.log("dot owner", await getOwner("dot"));
+  console.log("dot owner", await getOwner("dot"));
   // console.log("dot owner", await ownerOf("dot"));
   // console.log("dot owner", await exists("dot"));
   // console.log("dot owner", await getResolver("dot"));
@@ -74,10 +76,30 @@ async function main() {
 
   // console.log("controllerRoot", await controllerRoot());
 
-  // console.log("gavinwood001.dot owner", await getOwner("gavinwood001.dot"));
+  console.log("gavinwood100.dot owner", await getOwner("gavinwood100.dot"));
 
   let account = getAccount();
   console.log("account", account);
+
+    // let tokenPrice = (await getTokenPrice());
+    let fee = (await totalRegisterPrice("gavinwood100", 86400 * 365)).toString();
+    console.log("totalRegisterPrice", fee);
+    // console.log("getTokenPrice", tokenPrice.toString());
+    // console.log("getTokenPrice of fee", tokenPrice.mul(fee).div("100000000000000000000000000").toString());
+
+    // await (await controller.nameRegister("gavinwood100", deployer, 86400 * 365, { value: fee })).wait();
+    // let tokenId = getNamehash("gavinwood100.dot");
+    // console.log("gavinwood100.dot owner:", await pns.ownerOf(tokenId));
+    // console.log("gavinwood100.dot nameExpires:", (await controller.nameExpires(getNamehash("gavinwood100.dot"))).toString());
+    // console.log("gavinwood100.dot available:", await controller.available(getNamehash("gavinwood100.dot")));
+
+    // await pns.setResolver(tokenId, resolver.address)
+    // console.log("pns setResolver:");
+    // console.log("pns resolver:", await pns.getResolver(tokenId));
+
+    // await resolver.set("ETH", deployer, tokenId)
+    // console.log("gavinwood100.dot set:");
+    // console.log("gavinwood100.dot get:", await resolver.get("ETH", tokenId));
 
   // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
   // console.log("gavinwood001.dot setResolver", await setResolver("gavinwood001.dot"));
@@ -126,25 +148,25 @@ async function main() {
   // console.log("getBasePrices", (await getBasePrices()).toString());
   // console.log("getRentPrices", (await getRentPrices()).toString());
 
-  let res = await registerPayWithOtherCurrency("avax", "gavinwood3002", 86400 * 365);
-  console.log(res.data);
-  await res.tx.wait();
+  // let res = await registerPayWithOtherCurrency("avax", "gavinwood3002", 86400 * 365);
+  // console.log(res.data);
+  // await res.tx.wait();
 
-  res = await registerWithProxy(res.data);
-  console.log("res", res);
+  // res = await registerWithProxy(res.data);
+  // console.log("res", res);
 
   // let provider = getProvider()
   // console.log('tx', await provider.getTransaction(""))
 
   // console.log("gavinwood3001.dot owner", await getOwner("gavinwood3001.dot"));
   // console.log("gavinwood3001.dot getDomainDetails", await getDomainDetails("gavinwood3001.dot"));
-  console.log("checkRedeem", await checkRedeem(298));
+  // console.log("checkRedeem", await checkRedeem(298));
 
   // let keyHashes = [sha3("text.email")]
   // let values = ["user@gmail.com"]
   // let tokenId = getNamehash("gavinwood3001.dot")
   // updateWithProxy({keyHashes, values, tokenId})
-  console.log(await ping());
+  // console.log(await ping());
 }
 
 let base = "http://localhost:8080";
