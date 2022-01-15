@@ -622,3 +622,83 @@ export async function logout() {
   account = "0x0";
   await setup();
 }
+
+export async function switchChain(chainId: number): Promise<any> {
+  let chain: any = Chains[chainId];
+  if (!chain) {
+    throw new Error("chainId no exists");
+  }
+
+  const params = {
+    chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    chainName: chain.name,
+    nativeCurrency: {
+      name: chain.nativeCurrency.name,
+      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+      decimals: chain.nativeCurrency.decimals,
+    },
+    rpcUrls: chain.rpc,
+    blockExplorerUrls: [chain.infoURL],
+  };
+
+  return await (window as any).ethereum.request({
+    method: "wallet_addEthereumChain",
+    params: [params, account],
+  });
+}
+
+import { request, gql } from "graphql-request";
+
+let graphUrl = "https://fuji-graph.pns.link";
+
+export type GraphDomainDetails = {
+  id: string;
+  name: string;
+  parent: string;
+  owner: string;
+};
+
+/** 列出用户的域名列表 */
+export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
+  const query = gql`
+    query Subdomains($account: Bytes!, $parent: BigInt!) {
+      subdomains(where: { owner: $account, parent: $parent }) {
+        id
+        name
+        parent
+        owner
+      }
+    }
+  `;
+  const variables = {
+    account: account,
+    parent:BigInt('0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce')
+  };
+
+  let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+
+  return resp.subdomains;
+}
+
+/** 列出子域名列表 */
+export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
+  const query = gql`
+    query Subdomains($parent: BigInt!) {
+      subdomains(where: { parent: $parent }) {
+        id
+        name
+        parent
+        owner
+      }
+    }
+  `;
+  console.log('b')
+  const variables = {
+    parent: BigInt(getNamehash(domain)),
+  };
+
+  let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+
+  return resp.subdomains;
+}
+
