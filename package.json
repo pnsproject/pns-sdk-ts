@@ -1,6 +1,6 @@
 {
   "name": "pns-sdk",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "keywords": [],
   "author": "jiangplus",
@@ -9,7 +9,7 @@
   "typings": "./lib/sdk.d.ts",
   "scripts": {
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "compile": "rm -rfv lib/* && tsc -d --project tsconfig.json --outDir lib/",
+    "compile": "tsc -d --project tsconfig.json --outDir lib/",
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview"

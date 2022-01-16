@@ -15,6 +15,11 @@ import {
   IResolver__factory,
 } from "./contracts";
 
+// @ts-ignore
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 export const formatEther = ethers.utils.formatEther;
 export const abiCoder = ethers.utils.defaultAbiCoder;
 
