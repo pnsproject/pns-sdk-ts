@@ -545,6 +545,41 @@ export async function transferName(name: DomainString, newOwner: HexAddress) {
   );
 }
 
+export async function directPay(
+  chain: string,
+  label: DomainString,
+  duration: number,
+  address: HexAddress,
+) {
+  // todo : if user close before tx success, need recovering
+  let price = await totalRegisterPrice(label, duration);
+  console.log('price', price)
+  console.log('pay addr', PaymentAddrs[chain])
+  let encoded = abiCoder.encode(["uint256", "string", "address", "uint256"], [10, label, address, duration]);
+  // console.log('encoded', encoded)
+  // console.log('decoded', abiCoder.decode(["uint256", "string", "address", "uint256"], encoded))
+
+  let tx = await signer.sendTransaction({
+    to: PaymentAddrs[chain] as string,
+    value: price,
+    data: encoded
+  });
+
+  console.log('tx wait', await tx.wait())
+
+  return {
+    chain: chain,
+    label: label,
+    duration: duration,
+    txhash: tx.hash,
+    value: tx.value.toString(),
+    from: tx.from,
+    to: tx.to,
+    managed: true,
+    tx: tx,
+  };
+}
+
 export async function registerPayWithOtherCurrency(
   chain: string,
   label: DomainString,

@@ -24,6 +24,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "oldManager",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newManager",
+        type: "address",
+      },
+    ],
+    name: "ManagerOwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: "string",
         name: "name",
@@ -138,7 +157,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "previousRoot",
+        name: "oldRoot",
         type: "address",
       },
       {
@@ -266,6 +285,19 @@ const _abi = [
         internalType: "int256",
         name: "",
         type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "manager",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -414,6 +446,35 @@ const _abi = [
         name: "duration",
         type: "uint256",
       },
+    ],
+    name: "nameRegisterByManager",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "duration",
+        type: "uint256",
+      },
       {
         internalType: "address",
         name: "resolver",
@@ -455,25 +516,6 @@ const _abi = [
       },
     ],
     name: "origin",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "parent",
     outputs: [
       {
         internalType: "uint256",
@@ -597,6 +639,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bool",
+        name: "open",
+        type: "bool",
+      },
+    ],
+    name: "setRegistration",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
@@ -639,6 +694,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newManger",
+        type: "address",
+      },
+    ],
+    name: "transferManagerOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

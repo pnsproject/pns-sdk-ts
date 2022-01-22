@@ -29,21 +29,24 @@ interface IControllerInterface extends ethers.utils.Interface {
     "expires(uint256)": FunctionFragment;
     "getPrices()": FunctionFragment;
     "getTokenPrice()": FunctionFragment;
+    "manager()": FunctionFragment;
     "nameExpires(uint256)": FunctionFragment;
     "nameRedeem(string,address,uint256,bytes)": FunctionFragment;
     "nameRedeemWithConfig(string,address,uint256,bytes,address,address)": FunctionFragment;
     "nameRegister(string,address,uint256)": FunctionFragment;
+    "nameRegisterByManager(string,address,uint256)": FunctionFragment;
     "nameRegisterWithConfig(string,address,uint256,address,address,uint256[],string[])": FunctionFragment;
     "origin(uint256)": FunctionFragment;
-    "parent(uint256)": FunctionFragment;
     "registerPrice(string)": FunctionFragment;
     "renew(string,uint256)": FunctionFragment;
     "renewByRoot(string,uint256)": FunctionFragment;
     "rentPrice(string,uint256)": FunctionFragment;
     "root()": FunctionFragment;
     "setPrices(uint256[],uint256[])": FunctionFragment;
+    "setRegistration(bool)": FunctionFragment;
     "setSubdomain(uint256,string,address)": FunctionFragment;
     "totalRegisterPrice(string,uint256)": FunctionFragment;
+    "transferManagerOwnership(address)": FunctionFragment;
     "transferRootOwnership(address)": FunctionFragment;
     "withdraw()": FunctionFragment;
   };
@@ -70,6 +73,7 @@ interface IControllerInterface extends ethers.utils.Interface {
     functionFragment: "getTokenPrice",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "manager", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "nameExpires",
     values: [BigNumberish]
@@ -87,6 +91,10 @@ interface IControllerInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "nameRegisterByManager",
+    values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "nameRegisterWithConfig",
     values: [
       string,
@@ -100,10 +108,6 @@ interface IControllerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "origin",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "parent",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -128,12 +132,20 @@ interface IControllerInterface extends ethers.utils.Interface {
     values: [BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "setRegistration",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setSubdomain",
     values: [BigNumberish, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "totalRegisterPrice",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferManagerOwnership",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "transferRootOwnership",
@@ -151,6 +163,7 @@ interface IControllerInterface extends ethers.utils.Interface {
     functionFragment: "getTokenPrice",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "manager", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "nameExpires",
     data: BytesLike
@@ -165,11 +178,14 @@ interface IControllerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "nameRegisterByManager",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "nameRegisterWithConfig",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "origin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "parent", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "registerPrice",
     data: BytesLike
@@ -183,11 +199,19 @@ interface IControllerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPrices", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "setRegistration",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setSubdomain",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalRegisterPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferManagerOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -198,6 +222,7 @@ interface IControllerInterface extends ethers.utils.Interface {
 
   events: {
     "BasePriceChanged(uint256[])": EventFragment;
+    "ManagerOwnershipTransferred(address,address)": EventFragment;
     "NameRegistered(string,uint256,address,uint256,uint256)": EventFragment;
     "NameRenewed(string,uint256,uint256,uint256)": EventFragment;
     "NewSubdomain(string,uint256,uint256,address)": EventFragment;
@@ -206,6 +231,9 @@ interface IControllerInterface extends ethers.utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "BasePriceChanged"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "ManagerOwnershipTransferred"
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NameRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NameRenewed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewSubdomain"): EventFragment;
@@ -215,6 +243,10 @@ interface IControllerInterface extends ethers.utils.Interface {
 
 export type BasePriceChangedEvent = TypedEvent<
   [BigNumber[]] & { prices: BigNumber[] }
+>;
+
+export type ManagerOwnershipTransferredEvent = TypedEvent<
+  [string, string] & { oldManager: string; newManager: string }
 >;
 
 export type NameRegisteredEvent = TypedEvent<
@@ -250,7 +282,7 @@ export type RentPriceChangedEvent = TypedEvent<
 >;
 
 export type RootOwnershipTransferredEvent = TypedEvent<
-  [string, string] & { previousRoot: string; newRoot: string }
+  [string, string] & { oldRoot: string; newRoot: string }
 >;
 
 export class IController extends BaseContract {
@@ -326,6 +358,8 @@ export class IController extends BaseContract {
 
     getTokenPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    manager(overrides?: CallOverrides): Promise<[string]>;
+
     nameExpires(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -356,6 +390,13 @@ export class IController extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    nameRegisterByManager(
+      name: string,
+      owner: string,
+      duration: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     nameRegisterWithConfig(
       name: string,
       owner: string,
@@ -368,11 +409,6 @@ export class IController extends BaseContract {
     ): Promise<ContractTransaction>;
 
     origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    parent(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -408,6 +444,11 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setRegistration(
+      open: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setSubdomain(
       tokenId: BigNumberish,
       name: string,
@@ -420,6 +461,11 @@ export class IController extends BaseContract {
       duration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    transferManagerOwnership(
+      newManger: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     transferRootOwnership(
       newRoot: string,
@@ -454,6 +500,8 @@ export class IController extends BaseContract {
 
   getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+  manager(overrides?: CallOverrides): Promise<string>;
+
   nameExpires(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -484,6 +532,13 @@ export class IController extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  nameRegisterByManager(
+    name: string,
+    owner: string,
+    duration: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   nameRegisterWithConfig(
     name: string,
     owner: string,
@@ -496,8 +551,6 @@ export class IController extends BaseContract {
   ): Promise<ContractTransaction>;
 
   origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-  parent(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   registerPrice(name: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -527,6 +580,11 @@ export class IController extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setRegistration(
+    open: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setSubdomain(
     tokenId: BigNumberish,
     name: string,
@@ -539,6 +597,11 @@ export class IController extends BaseContract {
     duration: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  transferManagerOwnership(
+    newManger: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   transferRootOwnership(
     newRoot: string,
@@ -576,6 +639,8 @@ export class IController extends BaseContract {
 
     getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+    manager(overrides?: CallOverrides): Promise<string>;
+
     nameExpires(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -606,6 +671,13 @@ export class IController extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    nameRegisterByManager(
+      name: string,
+      owner: string,
+      duration: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     nameRegisterWithConfig(
       name: string,
       owner: string,
@@ -618,11 +690,6 @@ export class IController extends BaseContract {
     ): Promise<BigNumber>;
 
     origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    parent(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -655,6 +722,8 @@ export class IController extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setRegistration(open: boolean, overrides?: CallOverrides): Promise<void>;
+
     setSubdomain(
       tokenId: BigNumberish,
       name: string,
@@ -667,6 +736,11 @@ export class IController extends BaseContract {
       duration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    transferManagerOwnership(
+      newManger: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     transferRootOwnership(
       newRoot: string,
@@ -684,6 +758,22 @@ export class IController extends BaseContract {
     BasePriceChanged(
       prices?: null
     ): TypedEventFilter<[BigNumber[]], { prices: BigNumber[] }>;
+
+    "ManagerOwnershipTransferred(address,address)"(
+      oldManager?: string | null,
+      newManager?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { oldManager: string; newManager: string }
+    >;
+
+    ManagerOwnershipTransferred(
+      oldManager?: string | null,
+      newManager?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { oldManager: string; newManager: string }
+    >;
 
     "NameRegistered(string,uint256,address,uint256,uint256)"(
       name?: null,
@@ -768,20 +858,14 @@ export class IController extends BaseContract {
     ): TypedEventFilter<[BigNumber[]], { prices: BigNumber[] }>;
 
     "RootOwnershipTransferred(address,address)"(
-      previousRoot?: string | null,
+      oldRoot?: string | null,
       newRoot?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousRoot: string; newRoot: string }
-    >;
+    ): TypedEventFilter<[string, string], { oldRoot: string; newRoot: string }>;
 
     RootOwnershipTransferred(
-      previousRoot?: string | null,
+      oldRoot?: string | null,
       newRoot?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousRoot: string; newRoot: string }
-    >;
+    ): TypedEventFilter<[string, string], { oldRoot: string; newRoot: string }>;
   };
 
   estimateGas: {
@@ -814,6 +898,8 @@ export class IController extends BaseContract {
 
     getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+    manager(overrides?: CallOverrides): Promise<BigNumber>;
+
     nameExpires(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -844,6 +930,13 @@ export class IController extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    nameRegisterByManager(
+      name: string,
+      owner: string,
+      duration: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     nameRegisterWithConfig(
       name: string,
       owner: string,
@@ -856,11 +949,6 @@ export class IController extends BaseContract {
     ): Promise<BigNumber>;
 
     origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    parent(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -893,6 +981,11 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setRegistration(
+      open: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setSubdomain(
       tokenId: BigNumberish,
       name: string,
@@ -904,6 +997,11 @@ export class IController extends BaseContract {
       name: string,
       duration: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    transferManagerOwnership(
+      newManger: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     transferRootOwnership(
@@ -946,6 +1044,8 @@ export class IController extends BaseContract {
 
     getTokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    manager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     nameExpires(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -976,6 +1076,13 @@ export class IController extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    nameRegisterByManager(
+      name: string,
+      owner: string,
+      duration: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     nameRegisterWithConfig(
       name: string,
       owner: string,
@@ -988,11 +1095,6 @@ export class IController extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    parent(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1028,6 +1130,11 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setRegistration(
+      open: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setSubdomain(
       tokenId: BigNumberish,
       name: string,
@@ -1039,6 +1146,11 @@ export class IController extends BaseContract {
       name: string,
       duration: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transferManagerOwnership(
+      newManger: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     transferRootOwnership(

@@ -37,9 +37,11 @@ import {
   sha3,
   getPrices,
   getTokenPrice,
+  directPay,
 } from "./sdk";
 
 import { ethers, Signer, BigNumber } from "ethers";
+import * as axios from "axios";
 
 async function main() {
   console.log("hello");
@@ -67,25 +69,25 @@ async function main() {
   let account = getAccount();
   console.log("account", account);
 
-    // let tokenPrice = (await getTokenPrice());
-    let fee = (await totalRegisterPrice("gavinwood100", 86400 * 365)).toString();
-    console.log("totalRegisterPrice", fee);
-    // console.log("getTokenPrice", tokenPrice.toString());
-    // console.log("getTokenPrice of fee", tokenPrice.mul(fee).div("100000000000000000000000000").toString());
+  // let tokenPrice = (await getTokenPrice());
+  let fee = (await totalRegisterPrice("gavinwood100", 86400 * 365)).toString();
+  console.log("totalRegisterPrice", fee);
+  // console.log("getTokenPrice", tokenPrice.toString());
+  // console.log("getTokenPrice of fee", tokenPrice.mul(fee).div("100000000000000000000000000").toString());
 
-    // await (await controller.nameRegister("gavinwood100", deployer, 86400 * 365, { value: fee })).wait();
-    // let tokenId = getNamehash("gavinwood100.dot");
-    // console.log("gavinwood100.dot owner:", await pns.ownerOf(tokenId));
-    // console.log("gavinwood100.dot nameExpires:", (await controller.nameExpires(getNamehash("gavinwood100.dot"))).toString());
-    // console.log("gavinwood100.dot available:", await controller.available(getNamehash("gavinwood100.dot")));
+  // await (await controller.nameRegister("gavinwood100", deployer, 86400 * 365, { value: fee })).wait();
+  // let tokenId = getNamehash("gavinwood100.dot");
+  // console.log("gavinwood100.dot owner:", await pns.ownerOf(tokenId));
+  // console.log("gavinwood100.dot nameExpires:", (await controller.nameExpires(getNamehash("gavinwood100.dot"))).toString());
+  // console.log("gavinwood100.dot available:", await controller.available(getNamehash("gavinwood100.dot")));
 
-    // await pns.setResolver(tokenId, resolver.address)
-    // console.log("pns setResolver:");
-    // console.log("pns resolver:", await pns.getResolver(tokenId));
+  // await pns.setResolver(tokenId, resolver.address)
+  // console.log("pns setResolver:");
+  // console.log("pns resolver:", await pns.getResolver(tokenId));
 
-    // await resolver.set("ETH", deployer, tokenId)
-    // console.log("gavinwood100.dot set:");
-    // console.log("gavinwood100.dot get:", await resolver.get("ETH", tokenId));
+  // await resolver.set("ETH", deployer, tokenId)
+  // console.log("gavinwood100.dot set:");
+  // console.log("gavinwood100.dot get:", await resolver.get("ETH", tokenId));
 
   // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
   // console.log("gavinwood001.dot setResolver", await setResolver("gavinwood001.dot"));
@@ -152,19 +154,69 @@ async function main() {
   // let values = ["user@gmail.com"]
   // let tokenId = getNamehash("gavinwood3001.dot")
   // updateWithProxy({keyHashes, values, tokenId})
-  // console.log(await ping());
+
+  console.log(await pong());
+
+  console.log(await getControllerRoot())
+
+  let res = await directPay(
+      "avax",
+      "gavinwood301",
+      86400*365,
+      account
+    )
+
+  console.log('main res', res)
+
+
+  let resp = await fetch("http://localhost:8080/proxy/direct-register", {
+    headers: {
+      "content-type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      chain: "avax",
+      label: res.label,
+      duration: res.duration,
+      from: res.from,
+      to: res.to,
+      value: res.value,
+      txhash: res.txhash,
+      managed: false,
+    }),
+  });
+  let respjson = await resp.json();
+  console.log('respjson', respjson)
+
+
+  // axios.get('http://localhost:8080/ping')
+  // .then(function (response) {
+  //   // handle success
+  //   console.log(response.data);
+  // })
+  // .catch(function (error) {
+  //   // handle error
+  //   console.log(error);
+  // })
+  // .then(function () {
+  //   // always executed
+  // });
 }
 
 let base = "http://localhost:8080";
 async function ping() {
-  fetch(base + "/ping");
   let resp = await fetch(base + "/ping", {
     headers: {
       "content-type": "application/json",
     },
     method: "GET",
   });
-  resp = await resp.json();
+  return resp.json();
+}
+
+async function pong() {
+  let resp = await axios.get('http://localhost:8080/ping')
+  return resp.data
 }
 
 async function start() {

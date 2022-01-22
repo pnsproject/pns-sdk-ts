@@ -21,6 +21,7 @@
     "vite": "^2.6.0"
   },
   "dependencies": {
+    "axios": "^0.25.0",
     "buffer": "^6.0.3",
     "ethers": "^5.4.7",
     "graphql": "^15.7.2",
