@@ -522,12 +522,36 @@ export async function getDomainDetails(
 }
 
 export async function nameRedeem(
-  label: DomainString,
   account: string,
-  duration: number,
   code: string
 ) {
-  return controller.nameRedeem(label, account, duration, code);
+  let resp = await fetch(`https://polkanode.pns.link/redeem/use`, {
+    headers: {
+      "content-type": "application/json",
+      "accept": "application/json"
+    },
+    body: JSON.stringify({ code, owner: account }),
+    method: "POST",
+  });
+  resp = await resp.json();
+  return resp as any;
+}
+
+export async function nameRedeemAny(
+  label: DomainString,
+  account: string,
+  code: string
+) {
+  let resp = await fetch(`https://polkanode.pns.link/redeem/redeem_any`, {
+    headers: {
+      "content-type": "application/json",
+      "accept": "application/json"
+    },
+    body: JSON.stringify({ code, owner: account, name: label }),
+    method: "POST",
+  });
+  resp = await resp.json();
+  return resp as any;
 }
 
 export async function renew(label: LabelString, duration: number) {
