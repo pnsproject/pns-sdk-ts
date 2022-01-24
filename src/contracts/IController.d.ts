@@ -34,7 +34,7 @@ interface IControllerInterface extends ethers.utils.Interface {
     "nameRedeem(string,address,uint256,bytes)": FunctionFragment;
     "nameRedeemWithConfig(string,address,uint256,bytes,address,address)": FunctionFragment;
     "nameRegister(string,address,uint256)": FunctionFragment;
-    "nameRegisterByManager(string,address,uint256)": FunctionFragment;
+    "nameRegisterByManager(string,address,uint256,address,address)": FunctionFragment;
     "nameRegisterWithConfig(string,address,uint256,address,address,uint256[],string[])": FunctionFragment;
     "origin(uint256)": FunctionFragment;
     "registerPrice(string)": FunctionFragment;
@@ -42,6 +42,7 @@ interface IControllerInterface extends ethers.utils.Interface {
     "renewByRoot(string,uint256)": FunctionFragment;
     "rentPrice(string,uint256)": FunctionFragment;
     "root()": FunctionFragment;
+    "setCapacity(uint256,uint256)": FunctionFragment;
     "setPrices(uint256[],uint256[])": FunctionFragment;
     "setRegistration(bool)": FunctionFragment;
     "setSubdomain(uint256,string,address)": FunctionFragment;
@@ -92,7 +93,7 @@ interface IControllerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "nameRegisterByManager",
-    values: [string, string, BigNumberish]
+    values: [string, string, BigNumberish, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "nameRegisterWithConfig",
@@ -127,6 +128,10 @@ interface IControllerInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "root", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setCapacity",
+    values: [BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "setPrices",
     values: [BigNumberish[], BigNumberish[]]
@@ -197,6 +202,10 @@ interface IControllerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "rentPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setCapacity",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setPrices", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setRegistration",
@@ -222,6 +231,7 @@ interface IControllerInterface extends ethers.utils.Interface {
 
   events: {
     "BasePriceChanged(uint256[])": EventFragment;
+    "CapacityUpdated(uint256,uint256)": EventFragment;
     "ManagerOwnershipTransferred(address,address)": EventFragment;
     "NameRegistered(string,uint256,address,uint256,uint256)": EventFragment;
     "NameRenewed(string,uint256,uint256,uint256)": EventFragment;
@@ -231,6 +241,7 @@ interface IControllerInterface extends ethers.utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "BasePriceChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CapacityUpdated"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "ManagerOwnershipTransferred"
   ): EventFragment;
@@ -243,6 +254,10 @@ interface IControllerInterface extends ethers.utils.Interface {
 
 export type BasePriceChangedEvent = TypedEvent<
   [BigNumber[]] & { prices: BigNumber[] }
+>;
+
+export type CapacityUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber] & { tokenId: BigNumber; capacity: BigNumber }
 >;
 
 export type ManagerOwnershipTransferredEvent = TypedEvent<
@@ -394,6 +409,8 @@ export class IController extends BaseContract {
       name: string,
       owner: string,
       duration: BigNumberish,
+      resolver: string,
+      operator: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -437,6 +454,12 @@ export class IController extends BaseContract {
     ): Promise<[BigNumber]>;
 
     root(overrides?: CallOverrides): Promise<[string]>;
+
+    setCapacity(
+      tokenId: BigNumberish,
+      _capacity: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     setPrices(
       basePrices: BigNumberish[],
@@ -536,6 +559,8 @@ export class IController extends BaseContract {
     name: string,
     owner: string,
     duration: BigNumberish,
+    resolver: string,
+    operator: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -573,6 +598,12 @@ export class IController extends BaseContract {
   ): Promise<BigNumber>;
 
   root(overrides?: CallOverrides): Promise<string>;
+
+  setCapacity(
+    tokenId: BigNumberish,
+    _capacity: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   setPrices(
     basePrices: BigNumberish[],
@@ -675,6 +706,8 @@ export class IController extends BaseContract {
       name: string,
       owner: string,
       duration: BigNumberish,
+      resolver: string,
+      operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -715,6 +748,12 @@ export class IController extends BaseContract {
     ): Promise<BigNumber>;
 
     root(overrides?: CallOverrides): Promise<string>;
+
+    setCapacity(
+      tokenId: BigNumberish,
+      _capacity: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setPrices(
       basePrices: BigNumberish[],
@@ -758,6 +797,22 @@ export class IController extends BaseContract {
     BasePriceChanged(
       prices?: null
     ): TypedEventFilter<[BigNumber[]], { prices: BigNumber[] }>;
+
+    "CapacityUpdated(uint256,uint256)"(
+      tokenId?: null,
+      capacity?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { tokenId: BigNumber; capacity: BigNumber }
+    >;
+
+    CapacityUpdated(
+      tokenId?: null,
+      capacity?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { tokenId: BigNumber; capacity: BigNumber }
+    >;
 
     "ManagerOwnershipTransferred(address,address)"(
       oldManager?: string | null,
@@ -934,6 +989,8 @@ export class IController extends BaseContract {
       name: string,
       owner: string,
       duration: BigNumberish,
+      resolver: string,
+      operator: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -974,6 +1031,12 @@ export class IController extends BaseContract {
     ): Promise<BigNumber>;
 
     root(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setCapacity(
+      tokenId: BigNumberish,
+      _capacity: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     setPrices(
       basePrices: BigNumberish[],
@@ -1080,6 +1143,8 @@ export class IController extends BaseContract {
       name: string,
       owner: string,
       duration: BigNumberish,
+      resolver: string,
+      operator: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1123,6 +1188,12 @@ export class IController extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setCapacity(
+      tokenId: BigNumberish,
+      _capacity: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     setPrices(
       basePrices: BigNumberish[],

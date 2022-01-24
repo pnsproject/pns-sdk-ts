@@ -305,7 +305,7 @@ export async function registerByManager(
   account: string,
   duration: number
 ) {
-  return controller.nameRegisterByManager(label, account, duration);
+  return controller.nameRegisterByManager(label, account, duration, resolverAddr, emptyAddress);
 }
 
 export async function register(

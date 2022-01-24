@@ -24,6 +24,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "capacity",
+        type: "uint256",
+      },
+    ],
+    name: "CapacityUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "oldManager",
@@ -446,6 +465,16 @@ const _abi = [
         name: "duration",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "resolver",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
     ],
     name: "nameRegisterByManager",
     outputs: [
@@ -616,6 +645,24 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_capacity",
+        type: "uint256",
+      },
+    ],
+    name: "setCapacity",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

@@ -155,8 +155,6 @@ async function main() {
   // let tokenId = getNamehash("gavinwood3001.dot")
   // updateWithProxy({keyHashes, values, tokenId})
 
-  console.log(await pong());
-
   console.log(await getControllerRoot())
 
   let res = await directPay(
@@ -187,20 +185,6 @@ async function main() {
   });
   let respjson = await resp.json();
   console.log('respjson', respjson)
-
-
-  // axios.get('http://localhost:8080/ping')
-  // .then(function (response) {
-  //   // handle success
-  //   console.log(response.data);
-  // })
-  // .catch(function (error) {
-  //   // handle error
-  //   console.log(error);
-  // })
-  // .then(function () {
-  //   // always executed
-  // });
 }
 
 let base = "http://localhost:8080";
@@ -212,11 +196,6 @@ async function ping() {
     method: "GET",
   });
   return resp.json();
-}
-
-async function pong() {
-  let resp = await axios.get('http://localhost:8080/ping')
-  return resp.data
 }
 
 async function start() {
