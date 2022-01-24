@@ -259,8 +259,16 @@ export async function getControllerRoot(): Promise<HexAddress> {
   return controller.root();
 }
 
+export async function getControllerManager(): Promise<HexAddress> {
+  return controller.manager();
+}
+
 export async function transferController(newRoot: HexAddress) {
   return controller.transferRootOwnership(newRoot);
+}
+
+export async function transferControllerManager(newRoot: HexAddress) {
+  return controller.transferManagerOwnership(newRoot);
 }
 
 export async function basePrice(name: LabelString): Promise<BigNumber> {
@@ -290,6 +298,14 @@ export async function nameExpires(label: DomainString): Promise<BigNumber> {
 export async function available(label: DomainString): Promise<boolean> {
   label = suffixTld(label);
   return controller.available(getNamehash(label));
+}
+
+export async function registerByManager(
+  label: DomainString,
+  account: string,
+  duration: number
+) {
+  return controller.nameRegisterByManager(label, account, duration);
 }
 
 export async function register(
