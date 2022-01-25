@@ -44,145 +44,49 @@ interface IPNSInterface extends ethers.utils.Interface {
     "transferRootOwnership(address)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "approve",
-    values: [string, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "approve", values: [string, BigNumberish]): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "exists",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getApproved",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getResolver",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isApprovedForAll",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isApprovedOrOwner",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mint",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintSubdomain",
-    values: [BigNumberish, string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ownerOf",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "exists", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "getApproved", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "getResolver", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "isApprovedForAll", values: [string, string]): string;
+  encodeFunctionData(functionFragment: "isApprovedOrOwner", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "mint", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "mintSubdomain", values: [BigNumberish, string, string]): string;
+  encodeFunctionData(functionFragment: "ownerOf", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "root", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "safeTransferFrom",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setApprovalForAll",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setResolver",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferFrom",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: "safeTransferFrom", values: [string, string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setApprovalForAll", values: [string, boolean]): string;
+  encodeFunctionData(functionFragment: "setResolver", values: [BigNumberish, string]): string;
+  encodeFunctionData(functionFragment: "supportsInterface", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "tokenByIndex", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "tokenOfOwnerByIndex", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
+  encodeFunctionData(functionFragment: "transferFrom", values: [string, string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "transferRootOwnership", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getResolver",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isApprovedOrOwner",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getApproved", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getResolver", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isApprovedForAll", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isApprovedOrOwner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mintSubdomain",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "mintSubdomain", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "safeTransferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setApprovalForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setResolver",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "safeTransferFrom", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setApprovalForAll", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setResolver", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "supportsInterface", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tokenByIndex", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "tokenOfOwnerByIndex", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "totalSupply", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transferRootOwnership", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -217,9 +121,7 @@ export type ApprovalForAllEvent = TypedEvent<
   }
 >;
 
-export type NewResolverEvent = TypedEvent<
-  [BigNumber, string] & { tokenId: BigNumber; resolver: string }
->;
+export type NewResolverEvent = TypedEvent<[BigNumber, string] & { tokenId: BigNumber; resolver: string }>;
 
 export type NewSubdomainEvent = TypedEvent<
   [BigNumber, BigNumber, string, string] & {
@@ -230,13 +132,9 @@ export type NewSubdomainEvent = TypedEvent<
   }
 >;
 
-export type RootOwnershipTransferredEvent = TypedEvent<
-  [string, string] & { previousRoot: string; newRoot: string }
->;
+export type RootOwnershipTransferredEvent = TypedEvent<[string, string] & { previousRoot: string; newRoot: string }>;
 
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
->;
+export type TransferEvent = TypedEvent<[string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }>;
 
 export class IPNS extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -262,9 +160,7 @@ export class IPNS extends BaseContract {
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
     listener: TypedListener<EventArgsArray, EventArgsObject>
   ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>): this;
 
   listeners(eventName?: string): Array<Listener>;
   off(eventName: string, listener: Listener): this;
@@ -282,66 +178,27 @@ export class IPNS extends BaseContract {
   interface: IPNSInterface;
 
   functions: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    approve(to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    balanceOf(
-      owner: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { balance: BigNumber }>;
+    balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber] & { balance: BigNumber }>;
 
-    burn(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    exists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string] & { operator: string }>;
+    getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string] & { operator: string }>;
 
-    getResolver(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    getResolver(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<[boolean]>;
 
-    isApprovedOrOwner(
-      addr: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    isApprovedOrOwner(addr: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
-    mint(
-      to: string,
-      newTokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    mint(to: string, newTokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    mintSubdomain(
-      tokenId: BigNumberish,
-      name: string,
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    mintSubdomain(tokenId: BigNumberish, name: string, to: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string] & { owner: string }>;
+    ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string] & { owner: string }>;
 
     root(overrides?: CallOverrides): Promise<[string]>;
 
@@ -360,98 +217,42 @@ export class IPNS extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setApprovalForAll(
-      operator: string,
-      _approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    setApprovalForAll(operator: string, _approved: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    setResolver(
-      tokenId: BigNumberish,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    setResolver(tokenId: BigNumberish, resolver: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
+    tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber] & { tokenId: BigNumber }>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    transferRootOwnership(
-      newRoot: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    transferRootOwnership(newRoot: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
   };
 
-  approve(
-    to: string,
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  approve(to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  burn(
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-  getApproved(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  getResolver(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  getResolver(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  isApprovedForAll(
-    owner: string,
-    operator: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
 
-  isApprovedOrOwner(
-    addr: string,
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  isApprovedOrOwner(addr: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-  mint(
-    to: string,
-    newTokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  mint(to: string, newTokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  mintSubdomain(
-    tokenId: BigNumberish,
-    name: string,
-    to: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  mintSubdomain(tokenId: BigNumberish, name: string, to: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -472,54 +273,24 @@ export class IPNS extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setApprovalForAll(
-    operator: string,
-    _approved: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  setApprovalForAll(operator: string, _approved: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  setResolver(
-    tokenId: BigNumberish,
-    resolver: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  setResolver(tokenId: BigNumberish, resolver: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  supportsInterface(
-    interfaceId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
 
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-  transferFrom(
-    from: string,
-    to: string,
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  transferRootOwnership(
-    newRoot: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  transferRootOwnership(newRoot: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   callStatic: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    approve(to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -527,51 +298,23 @@ export class IPNS extends BaseContract {
 
     exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    getResolver(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    getResolver(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
 
-    isApprovedOrOwner(
-      addr: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    isApprovedOrOwner(addr: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-    mint(
-      to: string,
-      newTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    mint(to: string, newTokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    mintSubdomain(
-      tokenId: BigNumberish,
-      name: string,
-      to: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    mintSubdomain(tokenId: BigNumberish, name: string, to: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     root(overrides?: CallOverrides): Promise<string>;
 
-    "safeTransferFrom(address,address,uint256)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "safeTransferFrom(address,address,uint256)"(from: string, to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "safeTransferFrom(address,address,uint256,bytes)"(
       from: string,
@@ -581,47 +324,21 @@ export class IPNS extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setApprovalForAll(
-      operator: string,
-      _approved: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setApprovalForAll(operator: string, _approved: boolean, overrides?: CallOverrides): Promise<void>;
 
-    setResolver(
-      tokenId: BigNumberish,
-      resolver: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setResolver(tokenId: BigNumberish, resolver: string, overrides?: CallOverrides): Promise<void>;
 
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    transferRootOwnership(
-      newRoot: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    transferRootOwnership(newRoot: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -629,167 +346,89 @@ export class IPNS extends BaseContract {
       owner?: string | null,
       approved?: string | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { owner: string; approved: string; tokenId: BigNumber }
-    >;
+    ): TypedEventFilter<[string, string, BigNumber], { owner: string; approved: string; tokenId: BigNumber }>;
 
     Approval(
       owner?: string | null,
       approved?: string | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { owner: string; approved: string; tokenId: BigNumber }
-    >;
+    ): TypedEventFilter<[string, string, BigNumber], { owner: string; approved: string; tokenId: BigNumber }>;
 
     "ApprovalForAll(address,address,bool)"(
       owner?: string | null,
       operator?: string | null,
       approved?: null
-    ): TypedEventFilter<
-      [string, string, boolean],
-      { owner: string; operator: string; approved: boolean }
-    >;
+    ): TypedEventFilter<[string, string, boolean], { owner: string; operator: string; approved: boolean }>;
 
     ApprovalForAll(
       owner?: string | null,
       operator?: string | null,
       approved?: null
-    ): TypedEventFilter<
-      [string, string, boolean],
-      { owner: string; operator: string; approved: boolean }
-    >;
+    ): TypedEventFilter<[string, string, boolean], { owner: string; operator: string; approved: boolean }>;
 
-    "NewResolver(uint256,address)"(
-      tokenId?: null,
-      resolver?: null
-    ): TypedEventFilter<
-      [BigNumber, string],
-      { tokenId: BigNumber; resolver: string }
-    >;
+    "NewResolver(uint256,address)"(tokenId?: null, resolver?: null): TypedEventFilter<[BigNumber, string], { tokenId: BigNumber; resolver: string }>;
 
-    NewResolver(
-      tokenId?: null,
-      resolver?: null
-    ): TypedEventFilter<
-      [BigNumber, string],
-      { tokenId: BigNumber; resolver: string }
-    >;
+    NewResolver(tokenId?: null, resolver?: null): TypedEventFilter<[BigNumber, string], { tokenId: BigNumber; resolver: string }>;
 
     "NewSubdomain(uint256,uint256,string,address)"(
       tokenId?: null,
       subtokenId?: null,
       name?: null,
       owner?: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber, string, string],
-      { tokenId: BigNumber; subtokenId: BigNumber; name: string; owner: string }
-    >;
+    ): TypedEventFilter<[BigNumber, BigNumber, string, string], { tokenId: BigNumber; subtokenId: BigNumber; name: string; owner: string }>;
 
     NewSubdomain(
       tokenId?: null,
       subtokenId?: null,
       name?: null,
       owner?: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber, string, string],
-      { tokenId: BigNumber; subtokenId: BigNumber; name: string; owner: string }
-    >;
+    ): TypedEventFilter<[BigNumber, BigNumber, string, string], { tokenId: BigNumber; subtokenId: BigNumber; name: string; owner: string }>;
 
     "RootOwnershipTransferred(address,address)"(
       previousRoot?: string | null,
       newRoot?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousRoot: string; newRoot: string }
-    >;
+    ): TypedEventFilter<[string, string], { previousRoot: string; newRoot: string }>;
 
     RootOwnershipTransferred(
       previousRoot?: string | null,
       newRoot?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousRoot: string; newRoot: string }
-    >;
+    ): TypedEventFilter<[string, string], { previousRoot: string; newRoot: string }>;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { from: string; to: string; tokenId: BigNumber }
-    >;
+    ): TypedEventFilter<[string, string, BigNumber], { from: string; to: string; tokenId: BigNumber }>;
 
     Transfer(
       from?: string | null,
       to?: string | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { from: string; to: string; tokenId: BigNumber }
-    >;
+    ): TypedEventFilter<[string, string, BigNumber], { from: string; to: string; tokenId: BigNumber }>;
   };
 
   estimateGas: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    approve(to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    burn(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    exists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getResolver(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getResolver(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    isApprovedOrOwner(
-      addr: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    isApprovedOrOwner(addr: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    mint(
-      to: string,
-      newTokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    mint(to: string, newTokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    mintSubdomain(
-      tokenId: BigNumberish,
-      name: string,
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    mintSubdomain(tokenId: BigNumberish, name: string, to: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     root(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -808,110 +447,45 @@ export class IPNS extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setApprovalForAll(
-      operator: string,
-      _approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    setApprovalForAll(operator: string, _approved: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    setResolver(
-      tokenId: BigNumberish,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    setResolver(tokenId: BigNumberish, resolver: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    transferRootOwnership(
-      newRoot: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    transferRootOwnership(newRoot: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    approve(to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    balanceOf(
-      owner: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    balanceOf(owner: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    burn(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    exists(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getResolver(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getResolver(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isApprovedOrOwner(
-      addr: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isApprovedOrOwner(addr: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    mint(
-      to: string,
-      newTokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    mint(to: string, newTokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    mintSubdomain(
-      tokenId: BigNumberish,
-      name: string,
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    mintSubdomain(tokenId: BigNumberish, name: string, to: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -930,46 +504,20 @@ export class IPNS extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setApprovalForAll(
-      operator: string,
-      _approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    setApprovalForAll(operator: string, _approved: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    setResolver(
-      tokenId: BigNumberish,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    setResolver(tokenId: BigNumberish, resolver: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    tokenByIndex(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    tokenOfOwnerByIndex(
-      owner: string,
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    transferRootOwnership(
-      newRoot: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    transferRootOwnership(newRoot: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
   };
 }

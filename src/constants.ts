@@ -41,13 +41,12 @@ export const ContractAddrMap: IContractAddrsMap = {
 };
 
 export const PaymentAddrs: any = {
-  eth: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
-  avax: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
-  movr: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
-  bsc: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  eth: "0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4",
+  avax: "0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4",
+  movr: "0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4",
+  bsc: "0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4",
   dot: "",
   ksm: "",
 };
 
 export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
-

@@ -783,10 +783,7 @@ export class IController__factory {
   static createInterface(): IControllerInterface {
     return new utils.Interface(_abi) as IControllerInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IController {
+  static connect(address: string, signerOrProvider: Signer | Provider): IController {
     return new Contract(address, _abi, signerOrProvider) as IController;
   }
 }

@@ -8,7 +8,7 @@
   "main": "./lib/sdk.js",
   "typings": "./lib/sdk.d.ts",
   "scripts": {
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "compile": "tsc -d --project tsconfig.json --outDir lib/",
     "dev": "vite",
     "build": "tsc && vite build",

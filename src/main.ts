@@ -20,6 +20,8 @@ import {
   getDomainDetails,
   mintSubdomain,
   getControllerRoot,
+  getControllerManager,
+  transferControllerManager,
   totalRegisterPrice,
   rentPrice,
   nameExpires,
@@ -38,6 +40,7 @@ import {
   getPrices,
   getTokenPrice,
   directPay,
+  payDomainfee,
 } from "./sdk";
 
 import { ethers, Signer, BigNumber } from "ethers";
@@ -155,36 +158,12 @@ async function main() {
   // let tokenId = getNamehash("gavinwood3001.dot")
   // updateWithProxy({keyHashes, values, tokenId})
 
-  console.log(await getControllerRoot())
+  console.log("getControllerRoot", await getControllerRoot());
+  console.log("getControllerManager", await getControllerManager());
 
-  let res = await directPay(
-      "avax",
-      "gavinwood301",
-      86400*365,
-      account
-    )
+  // let res = await payDomainfee("avax", "gavinwood303")
 
-  console.log('main res', res)
-
-
-  let resp = await fetch("http://localhost:8080/proxy/direct-register", {
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({
-      chain: "avax",
-      label: res.label,
-      duration: res.duration,
-      from: res.from,
-      to: res.to,
-      value: res.value,
-      txhash: res.txhash,
-      managed: false,
-    }),
-  });
-  let respjson = await resp.json();
-  console.log('respjson', respjson)
+  // let res = await directPay("avax", "gavinwood321", 86400 * 365, account);
 }
 
 let base = "http://localhost:8080";
