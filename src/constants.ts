@@ -15,6 +15,23 @@ export const Chains: any = {
     chainId: 43113,
     networkId: 1,
   },
+  1285: {
+    name: "Moonriver",
+    chain: "MOON",
+    rpc: [
+      "https://rpc.moonriver.moonbeam.network",
+      "wss://wss.moonriver.moonbeam.network"
+    ],
+    nativeCurrency: {
+      name: "Moonriver",
+      symbol: "MOVR",
+      decimals: 18,
+    },
+    infoURL: "https://moonbeam.network/networks/moonriver/",
+    shortName: "mriver",
+    chainId: 1285,
+    networkId: 1285,
+  }
 };
 
 export interface IContractAddrs {
@@ -38,6 +55,11 @@ export const ContractAddrMap: IContractAddrsMap = {
     controller: "0x04bc6B8361965A9158C6210A2927C7C7EBb165F0",
     resolver: "0x7004B76d3E1b7b84E8f2f47e3387EabFD7bc9c9D",
   },
+  1285: {
+    pns: "0x64f58DaBFbAa801F247429656cD37d16231890De",
+    controller: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73",
+    resolver: "0x0A4d5F8E8e96E4537EbA6F3FD1142Bcb53B842bD",
+  }
 };
 
 export const PaymentAddrs: any = {
