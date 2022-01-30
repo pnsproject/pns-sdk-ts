@@ -51,7 +51,7 @@ export type DomainDetails = {
 let provider: Web3Provider;
 let signer: Web3Signer;
 let account: string;
-let networkId: number;
+let chainId: number;
 
 let pns: IPNS;
 let controller: IController;
@@ -86,6 +86,7 @@ export const emptyNode = "0x0000000000000000000000000000000000000000000000000000
 export const baseLabel = sha3("dot");
 export const baseNode = getNamehash("dot");
 export const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
+export const apiUrl = "https://polkanode.pns.link"
 
 export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
@@ -122,15 +123,15 @@ export async function setProvider(_provider?: Web3Provider) {
   // if (!_provider) throw "provider is empty";
   // provider = _provider;
 
-  networkId = (await provider.getNetwork()).chainId;
-  console.log("network", networkId);
+  chainId = (await provider.getNetwork()).chainId;
+  console.log("network", chainId);
   return;
 }
 
 export async function setup(providerOpt?: Web3Provider, pnsAddress?: string, controllerAddress?: string, resolverAddress?: string) {
   await setProvider(providerOpt);
 
-  let addrMap = ContractAddrMap[networkId];
+  let addrMap = ContractAddrMap[chainId];
   console.log("addrs", addrMap);
 
   pnsAddress = pnsAddress || addrMap.pns;
@@ -431,7 +432,7 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
 }
 
 export async function nameRedeem(account: string, code: string) {
-  let resp = await fetch(`https://polkanode.pns.link/redeem/use`, {
+  let resp = await fetch(`${apiUrl}/chain_${chainId}/redeem/redeem/use`, {
     headers: {
       "content-type": "application/json",
       accept: "application/json",
@@ -444,7 +445,7 @@ export async function nameRedeem(account: string, code: string) {
 }
 
 export async function nameRedeemAny(label: DomainString, account: string, code: string) {
-  let resp = await fetch(`https://polkanode.pns.link/redeem/redeem_any`, {
+  let resp = await fetch(`${apiUrl}/chain_${chainId}/redeem/redeem_any`, {
     headers: {
       "content-type": "application/json",
       accept: "application/json",
