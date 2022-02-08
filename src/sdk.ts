@@ -5,7 +5,7 @@ import { Buffer } from "buffer/";
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
-import { RPC_URL, Chains, ContractAddrMap, PaymentAddrs } from "./constants";
+import { RPC_URL, Chains, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
 import { IPNS, IController, IResolver, IPNS__factory, IController__factory, IResolver__factory } from "./contracts";
 
 // @ts-ignore
@@ -656,8 +656,6 @@ export async function switchChain(chainId: number): Promise<any> {
 
 import { request, gql } from "graphql-request";
 
-let graphUrl = "https://fuji-graph.pns.link";
-
 export type GraphDomainDetails = {
   id: string;
   name: string;
@@ -682,7 +680,7 @@ export async function getDomains(account: string): Promise<GraphDomainDetails[]>
     parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
   };
 
-  let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+  let resp = await request(GraphUrl[chainId] + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains;
 }
@@ -703,7 +701,7 @@ export async function getSubdomains(domain: string): Promise<GraphDomainDetails[
     parent: BigInt(getNamehash(domain)),
   };
 
-  let resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+  let resp = await request(GraphUrl[chainId] + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains;
 }

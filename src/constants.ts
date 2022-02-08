@@ -71,4 +71,11 @@ export const PaymentAddrs: any = {
   ksm: "",
 };
 
+//https://movr-graph.pns.link/subgraphs/name/name-graph/graphq
+// https://fuji-graph.pns.link/subgraphs/name/name-graph/graphql
+export const GraphUrl: any = {
+    1285: "https://movr-graph.pns.link",
+    43113: "https://fuji-graph.pns.link"
+}
+
 export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
