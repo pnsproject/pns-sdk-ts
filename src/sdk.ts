@@ -34,7 +34,7 @@ export type DomainDetails = {
   labelhash: string;
   owner: string;
   nameResolver: string;
-
+  cname: string;
   content: string;
   contentType?: string;
 
@@ -417,16 +417,24 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     textRecords: textRecords,
   };
 
-  const content = await getKey(name, "contenthash");
+  let [content, btc, eth, dot, ksm, cname] = await Promise.all([
+    getKey(name, "contenthash"),
+    getKey(name, "BTC"),
+    getKey(name, "ETH"),
+    getKey(name, "DOT"),
+    getKey(name, "KSM"),
+    getKey(name, "cname"),
+  ])
   return {
     ...node,
     addrs: [
-      { key: "BTC", value: await getKey(name, "BTC") },
-      { key: "ETH", value: await getKey(name, "ETH") },
-      { key: "DOT", value: await getKey(name, "DOT") },
-      { key: "KSM", value: await getKey(name, "KSM") },
+      { key: "BTC", value: btc },
+      { key: "ETH", value: eth },
+      { key: "DOT", value: dot },
+      { key: "KSM", value: ksm },
     ],
-    content: content,
+    cname,
+    content,
     contentType: "ipfs",
   };
 }
