@@ -216,6 +216,11 @@ export function getResolver(name: DomainString): Promise<HexAddress> {
   return pns.getResolver(tokenId);
 }
 
+export function getDefaultResolverAddress(name: DomainString): HexAddress {
+  let addrMap = ContractAddrMap[chainId];
+  return addrMap.resolver;
+}
+
 export function getResolverById(tokenId: TokenId): Promise<HexAddress> {
   return pns.getResolver(tokenId);
 }
