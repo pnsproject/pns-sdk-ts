@@ -430,7 +430,10 @@ export class IResolver__factory {
   static createInterface(): IResolverInterface {
     return new utils.Interface(_abi) as IResolverInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): IResolver {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): IResolver {
     return new Contract(address, _abi, signerOrProvider) as IResolver;
   }
 }

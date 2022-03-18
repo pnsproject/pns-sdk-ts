@@ -1,7 +1,6 @@
 import "./style.css";
 
 import {
-  switchChain,
   setup,
   login,
   getProvider,
@@ -10,9 +9,7 @@ import {
   getOwner,
   ownerOfName,
   exists,
-  getResolver,
   register,
-  setResolver,
   setKey,
   getKey,
   setKeys,
@@ -20,8 +17,6 @@ import {
   getDomainDetails,
   mintSubdomain,
   getControllerRoot,
-  getControllerManager,
-  transferControllerManager,
   totalRegisterPrice,
   rentPrice,
   nameExpires,
@@ -39,8 +34,6 @@ import {
   sha3,
   getPrices,
   getTokenPrice,
-  directPay,
-  payDomainfee,
 } from "./sdk";
 
 import { ethers, Signer, BigNumber } from "ethers";
@@ -159,7 +152,7 @@ async function main() {
   // updateWithProxy({keyHashes, values, tokenId})
 
   console.log("getControllerRoot", await getControllerRoot());
-  console.log("getControllerManager", await getControllerManager());
+
 
   // let res = await payDomainfee("avax", "gavinwood303")
 

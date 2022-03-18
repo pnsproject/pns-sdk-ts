@@ -81,6 +81,12 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
@@ -97,33 +103,8 @@ const _abi = [
         name: "name",
         type: "string",
       },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
     ],
     name: "NewSubdomain",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "previousRoot",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newRoot",
-        type: "address",
-      },
-    ],
-    name: "RootOwnershipTransferred",
     type: "event",
   },
   {
@@ -242,25 +223,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "getResolver",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "owner",
         type: "address",
@@ -327,6 +289,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
@@ -335,11 +302,6 @@ const _abi = [
         internalType: "string",
         name: "name",
         type: "string",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
       },
     ],
     name: "mintSubdomain",
@@ -366,19 +328,6 @@ const _abi = [
       {
         internalType: "address",
         name: "owner",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "root",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
         type: "address",
       },
     ],
@@ -457,24 +406,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "resolver",
-        type: "address",
-      },
-    ],
-    name: "setResolver",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "bytes4",
         name: "interfaceId",
         type: "bytes4",
@@ -486,62 +417,6 @@ const _abi = [
         internalType: "bool",
         name: "",
         type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenOfOwnerByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -566,19 +441,6 @@ const _abi = [
       },
     ],
     name: "transferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newRoot",
-        type: "address",
-      },
-    ],
-    name: "transferRootOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

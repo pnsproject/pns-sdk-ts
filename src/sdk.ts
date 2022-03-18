@@ -1,20 +1,19 @@
-import { ethers, Signer, BigNumber, BigNumberish } from "ethers";
+import { ethers, Signer, BigNumber } from "ethers";
 import { keccak_256 } from "js-sha3";
-import { Buffer } from "buffer/";
 
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
 import { RPC_URL, Chains, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
-import { IPNS, IController, IResolver, IPNS__factory, IController__factory, IResolver__factory } from "./contracts";
+import { IPNS, IController, IResolver, IOwnable, IPNS__factory, IController__factory, IResolver__factory, IOwnable__factory } from "./contracts";
+
+export const formatEther = ethers.utils.formatEther;
+export const abiCoder = ethers.utils.defaultAbiCoder;
 
 // @ts-ignore
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
-
-export const formatEther = ethers.utils.formatEther;
-export const abiCoder = ethers.utils.defaultAbiCoder;
 
 export type HexAddress = string;
 
@@ -24,7 +23,7 @@ export type DomainString = string;
 
 export type LabelString = string;
 
-declare abstract class Web3Provider extends AbstractWeb3Provider {
+export declare abstract class Web3Provider extends AbstractWeb3Provider {
   abstract getSigner(): Promise<Web3Signer>;
 }
 
@@ -33,11 +32,10 @@ export type DomainDetails = {
   label: string;
   labelhash: string;
   owner: string;
-  nameResolver: string;
-  cname: string;
+
   content: string;
   contentType?: string;
-
+  cname: string
   addrs: {
     key: string;
     value: string;
@@ -51,7 +49,7 @@ export type DomainDetails = {
 let provider: Web3Provider;
 let signer: Web3Signer;
 let account: string;
-let chainId: number;
+let networkId: number;
 
 let pns: IPNS;
 let controller: IController;
@@ -86,11 +84,12 @@ export const emptyNode = "0x0000000000000000000000000000000000000000000000000000
 export const baseLabel = sha3("dot");
 export const baseNode = getNamehash("dot");
 export const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
-export const apiUrl = "https://polkanode.pns.link"
 
 export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
-const tld = "dot";
+export function getPnsAddr(): string {
+  return pnsAddr;
+}
 
 export function getProvider(): Web3Provider {
   return provider;
@@ -123,34 +122,31 @@ export async function setProvider(_provider?: Web3Provider) {
   // if (!_provider) throw "provider is empty";
   // provider = _provider;
 
-  chainId = (await provider.getNetwork()).chainId;
-  console.log("network", chainId);
+  networkId = (await provider.getNetwork()).chainId;
+  console.log("network", networkId);
   return;
 }
 
-export async function setup(providerOpt?: Web3Provider, pnsAddress?: string, controllerAddress?: string, resolverAddress?: string) {
+export async function setup(providerOpt?: Web3Provider, pnsAddress?: string, controllerAddress?: string) {
   await setProvider(providerOpt);
 
-  let addrMap = ContractAddrMap[chainId];
+  let addrMap = ContractAddrMap[networkId];
   console.log("addrs", addrMap);
 
   pnsAddress = pnsAddress || addrMap.pns;
   controllerAddress = controllerAddress || addrMap.controller;
-  resolverAddress = resolverAddress || addrMap.resolver;
 
   if (signer) {
     pns = IPNS__factory.connect(pnsAddress, signer);
     controller = IController__factory.connect(controllerAddress, signer);
-    resolver = IResolver__factory.connect(resolverAddress, signer);
+    resolver = IResolver__factory.connect(pnsAddress, signer);
   } else {
     pns = IPNS__factory.connect(pnsAddress, provider);
     controller = IController__factory.connect(controllerAddress, provider);
-    resolver = IResolver__factory.connect(resolverAddress, provider);
+    resolver = IResolver__factory.connect(pnsAddress, provider);
   }
 
   pnsAddr = pnsAddress;
-  resolverAddr = resolverAddress;
-  console.log({ pnsAddress, controllerAddress, resolverAddress });
 
   return {
     provider,
@@ -211,42 +207,26 @@ export async function exists(name: DomainString): Promise<boolean> {
   return pns.exists(tokenId);
 }
 
-export function getResolver(name: DomainString): Promise<HexAddress> {
-  let tokenId = getNamehash(name);
-  return pns.getResolver(tokenId);
-}
-
-export function getDefaultResolverAddress(): HexAddress {
-  let addrMap = ContractAddrMap[chainId];
-  return addrMap.resolver;
-}
-
-export function getResolverById(tokenId: TokenId): Promise<HexAddress> {
-  return pns.getResolver(tokenId);
-}
-
 export async function totalRegisterPrice(name: LabelString, duration: number): Promise<BigNumber> {
   return controller.totalRegisterPrice(name, duration);
 }
 
-export async function getControllerRoot(): Promise<HexAddress> {
-  return controller.root();
+export async function renewPrice(name: LabelString, duration: number): Promise<BigNumber> {
+  return controller.totalRegisterPrice(name, duration);
 }
 
-export async function getControllerManager(): Promise<HexAddress> {
-  return controller.manager();
+export async function getControllerRoot(): Promise<HexAddress> {
+  let ownable = IOwnable__factory.connect(controller.address, provider);
+  return ownable.root();
 }
 
 export async function transferController(newRoot: HexAddress) {
-  return controller.transferRootOwnership(newRoot);
-}
-
-export async function transferControllerManager(newRoot: HexAddress) {
-  return controller.transferManagerOwnership(newRoot);
+  let ownable = IOwnable__factory.connect(controller.address, signer);
+  return ownable.transferRootOwnership(newRoot);
 }
 
 export async function basePrice(name: LabelString): Promise<BigNumber> {
-  return controller.registerPrice(name);
+  return controller.basePrice(name);
 }
 
 export async function rentPrice(name: LabelString, duration: number): Promise<BigNumber> {
@@ -271,30 +251,19 @@ export async function available(label: DomainString): Promise<boolean> {
   return controller.available(getNamehash(label));
 }
 
-export async function registerByManager(label: DomainString, account: string, duration: number) {
-  return controller.nameRegisterByManager(label, account, duration, resolverAddr, emptyAddress);
-}
-
 export async function register(label: DomainString, account: string, duration: number) {
   const price = await totalRegisterPrice(label, duration);
   return controller.nameRegister(label, account, duration, { value: price });
 }
 
-export async function registerWithConfig(label: DomainString, account: string, duration: number, resolver: string, operator: string) {
+export async function registerWithConfig(label: DomainString, account: string, duration: number, keys: string[], values: string[]) {
   const price = await totalRegisterPrice(label, duration);
-  return controller.nameRegisterWithConfig(label, account, duration, resolver, operator, [], [], { value: price });
+  return controller.nameRegisterWithConfig(label, account, duration, [], [], { value: price });
 }
 
-export function mintSubdomain(name: DomainString, label: LabelString, newOwner: HexAddress) {
+export function mintSubdomain(newOwner: HexAddress, name: DomainString, label: LabelString) {
   let tokenId = getNamehash(name);
-  return controller.setSubdomain(tokenId, label, newOwner);
-}
-
-export async function setResolver(name: DomainString, resolver?: HexAddress) {
-  name = suffixTld(name);
-  let tokenId = getNamehash(name);
-  resolver = resolver || resolverAddr;
-  return pns.setResolver(tokenId, resolver);
+  return controller.mintSubdomain(newOwner, tokenId, label);
 }
 
 export async function approve(name: DomainString, approved: HexAddress) {
@@ -317,15 +286,6 @@ export function removeTld(label: DomainString): DomainString {
   return label.replace(".dot", "");
 }
 
-async function fetchResolver(tokenId: TokenId, resv?: IResolver): Promise<IResolver> {
-  if (!resv) {
-    const currResolver = await getResolverById(tokenId);
-    return currResolver !== emptyAddress ? resolver.attach(currResolver) : resolver;
-  } else {
-    return resv;
-  }
-}
-
 export async function setName(name: DomainString, resv?: IResolver) {
   const tokenId = getNamehash(name);
   return resolver.setName(tokenId);
@@ -345,38 +305,32 @@ export async function getNftName(nftAddr: HexAddress, nftTokenId: string) {
 
 export async function setKey(name: DomainString, key: string, value: string, resv?: IResolver) {
   const tokenId = getNamehash(name);
-  resv = await fetchResolver(tokenId, resv);
-  return resv.set(key, value, tokenId);
+  return resolver.set(key, value, tokenId);
 }
 
 export async function getKey(name: DomainString, key: string, resv?: IResolver): Promise<string> {
   const tokenId = getNamehash(name);
-  resv = await fetchResolver(tokenId, resv);
-  return resv.get(key, tokenId);
+  return resolver.get(key, tokenId);
 }
 
 export async function setKeys(name: DomainString, keys: string[], values: string[], resv?: IResolver) {
   const tokenId = getNamehash(name);
-  resv = await fetchResolver(tokenId, resv);
-  return resv.setMany(keys, values, tokenId);
+  return resolver.setMany(keys, values, tokenId);
 }
 
 export async function setKeysByHash(name: DomainString, keys: string[], values: string[], resv?: IResolver) {
   const tokenId = getNamehash(name);
-  resv = await fetchResolver(tokenId, resv);
-  return resv.setManyByHash(keys, values, tokenId);
+  return resolver.setManyByHash(keys, values, tokenId);
 }
 
 export async function getKeys(name: DomainString, key: string[], resv?: IResolver): Promise<string[]> {
   const tokenId = getNamehash(name);
-  resv = await fetchResolver(tokenId, resv);
-  return await resv.getMany(key, tokenId);
+  return resolver.getMany(key, tokenId);
 }
 
 export async function getKeysByHash(name: DomainString, key: string[], resv?: IResolver) {
   const tokenId: TokenId = getNamehash(name);
-  resv = await fetchResolver(tokenId, resv);
-  return resv.getManyByHash(key as any, tokenId);
+  return resolver.getManyByHash(key as any, tokenId);
 }
 // return await resv.getMany(key, tokenId);
 
@@ -406,7 +360,6 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   const nameArray = name.split(".");
   const label = nameArray[0];
   const labelhash = getLabelhash(label);
-  const nameResolver = await getResolver(name);
   const owner = await getOwner(name);
 
   const promises = TEXT_RECORD_KEYS.map((key) => getKey(name, "text." + key));
@@ -418,7 +371,6 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     label,
     labelhash,
     owner,
-    nameResolver,
     textRecords: textRecords,
   };
 
@@ -430,147 +382,34 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     getKey(name, "KSM"),
     getKey(name, "cname"),
   ])
+
   return {
     ...node,
     addrs: [
-      { key: "BTC", value: btc },
-      { key: "ETH", value: eth },
-      { key: "DOT", value: dot },
-      { key: "KSM", value: ksm },
+      { key: "BTC", value: await getKey(name, "BTC") },
+      { key: "ETH", value: await getKey(name, "ETH") },
+      { key: "DOT", value: await getKey(name, "DOT") },
+      { key: "KSM", value: await getKey(name, "KSM") },
     ],
     cname,
-    content,
+    content: content,
     contentType: "ipfs",
   };
 }
 
-export async function nameRedeem(account: string, code: string) {
-  let resp = await fetch(`${apiUrl}/chain_${chainId}/redeem/redeem/use`, {
-    headers: {
-      "content-type": "application/json",
-      accept: "application/json",
-    },
-    body: JSON.stringify({ code, owner: account }),
-    method: "POST",
-  });
-  resp = await resp.json();
-  return resp as any;
-}
-
-export async function nameRedeemAny(label: DomainString, account: string, code: string) {
-  let resp = await fetch(`${apiUrl}/chain_${chainId}/redeem/redeem_any`, {
-    headers: {
-      "content-type": "application/json",
-      accept: "application/json",
-    },
-    body: JSON.stringify({ code, owner: account, name: label }),
-    method: "POST",
-  });
-  resp = await resp.json();
-  return resp as any;
+export async function nameRedeem(label: DomainString, account: string, duration: number, code: string) {
+  return controller.nameRedeem(label, account, duration, code);
 }
 
 export async function renew(label: LabelString, duration: number) {
-  const price = await rentPrice(label, duration);
+  const price = await renewPrice(label, duration);
   return controller.renew(label, duration, { value: price });
 }
 
 export async function transferName(name: DomainString, newOwner: HexAddress) {
   let namehash = getNamehash(name);
   let oldOwner = await getOwner(name);
-  return pns["safeTransferFrom(address,address,uint256)"](oldOwner, newOwner, namehash);
-}
-
-export async function payDomainfee(chain: string, label: DomainString) {
-  let tokenPrice = await getTokenPrice();
-  let amount = 5;
-  let fee = BigNumber.from(amount).mul("100000000000000000000000000").div(tokenPrice);
-
-  // console.log("getTokenPrice", tokenPrice.toString());
-  // console.log("fee", fee.toString());
-  // console.log("fee price", fee.toString());
-  // console.log("price of fee", tokenPrice.mul(fee).div("100000000000000000000000000").toString());
-
-  let receiver = PaymentAddrs[chain] as string;
-  let encoded = abiCoder.encode(["uint256", "string"], [11, label]);
-
-  let tx = await signer.sendTransaction({
-    to: receiver,
-    value: priceBuffer(fee),
-    data: encoded,
-  });
-
-  console.log("tx wait", await tx.wait());
-
-  let resp = await fetch("http://localhost:8080/crowdloan/pay-domainfee", {
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({
-      chain: "avax",
-      label: label,
-      txhash: tx.hash,
-      amount: amount,
-    }),
-  });
-  let respjson = await resp.json();
-  console.log("respjson", respjson);
-}
-
-function priceBuffer(price: BigNumber): BigNumber {
-  return price.mul(105).div(100);
-}
-
-export async function directPay(chain: string, label: DomainString, duration: number, address: HexAddress) {
-  // todo : if user close before tx success, need recovering
-  let fee = await totalRegisterPrice(label, duration);
-  console.log("fee", fee);
-  console.log("pay addr", PaymentAddrs[chain]);
-  let encoded = abiCoder.encode(["uint256", "string", "address", "uint256"], [10, label, address, duration]);
-  // console.log('encoded', encoded)
-  // console.log('decoded', abiCoder.decode(["uint256", "string", "address", "uint256"], encoded))
-
-  let receiver = PaymentAddrs[chain] as string;
-
-  let tx = await signer.sendTransaction({
-    to: receiver,
-    value: priceBuffer(fee),
-    data: encoded,
-  });
-
-  console.log("tx wait", await tx.wait());
-
-  let resp = await fetch("http://localhost:8080/proxy/direct-register", {
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({
-      chain: "avax",
-      label: label,
-      duration: duration,
-      from: address,
-      to: receiver,
-      value: tx.value.toString(),
-      txhash: tx.hash,
-      managed: false,
-    }),
-  });
-  let respjson = await resp.json();
-  console.log("respjson", respjson);
-
-  return {
-    chain: chain,
-    label: label,
-    duration: duration,
-    txhash: tx.hash,
-    value: tx.value.toString(),
-    from: tx.from,
-    to: tx.to,
-    managed: true,
-    tx: tx,
-  };
+  return pns.transferFrom(oldOwner, newOwner, namehash);
 }
 
 export async function registerPayWithOtherCurrency(chain: string, label: DomainString, duration: number): Promise<any> {
@@ -623,6 +462,7 @@ export async function generateRedeemCode(nameTokenId: string, address: string, d
   return signer.signMessage(hashedMsg);
 }
 
+
 export async function login() {
   if (!provider) {
     console.log("provider has not setting");
@@ -635,36 +475,6 @@ export async function login() {
   } catch (e) {
     console.log("provider has no signer");
   }
-}
-
-export async function logout() {
-  signer = null;
-  account = "0x0";
-  await setup();
-}
-
-export async function switchChain(chainId: number): Promise<any> {
-  let chain: any = Chains[chainId];
-  if (!chain) {
-    throw new Error("chainId no exists");
-  }
-
-  const params = {
-    chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
-    chainName: chain.name,
-    nativeCurrency: {
-      name: chain.nativeCurrency.name,
-      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-      decimals: chain.nativeCurrency.decimals,
-    },
-    rpcUrls: chain.rpc,
-    blockExplorerUrls: [chain.infoURL],
-  };
-
-  return await (window as any).ethereum.request({
-    method: "wallet_addEthereumChain",
-    params: [params, account],
-  });
 }
 
 import { request, gql } from "graphql-request";
@@ -693,7 +503,7 @@ export async function getDomains(account: string): Promise<GraphDomainDetails[]>
     parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
   };
 
-  let resp = await request(GraphUrl[chainId] + "/subgraphs/name/name-graph", query, variables);
+  let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains;
 }
@@ -714,7 +524,14 @@ export async function getSubdomains(domain: string): Promise<GraphDomainDetails[
     parent: BigInt(getNamehash(domain)),
   };
 
-  let resp = await request(GraphUrl[chainId] + "/subgraphs/name/name-graph", query, variables);
+  let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains;
+}
+
+export function logout() {}
+
+export async function burn(domain: string) {
+  let id = getNamehash(domain);
+  return await controller.burn(id)
 }

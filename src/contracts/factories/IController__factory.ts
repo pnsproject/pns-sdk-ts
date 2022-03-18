@@ -43,41 +43,16 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: "address",
-        name: "oldManager",
+        name: "to",
         type: "address",
       },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newManager",
-        type: "address",
-      },
-    ],
-    name: "ManagerOwnershipTransferred",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: false,
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        indexed: true,
         internalType: "uint256",
         name: "node",
         type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "owner",
-        type: "address",
       },
       {
         indexed: false,
@@ -90,6 +65,12 @@ const _abi = [
         internalType: "uint256",
         name: "expires",
         type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
       },
     ],
     name: "NameRegistered",
@@ -100,12 +81,6 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        indexed: false,
         internalType: "uint256",
         name: "node",
         type: "uint256",
@@ -122,6 +97,12 @@ const _abi = [
         name: "expires",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
     ],
     name: "NameRenewed",
     type: "event",
@@ -131,27 +112,27 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "string",
-        name: "name",
-        type: "string",
+        internalType: "address",
+        name: "to",
+        type: "address",
       },
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "node",
-        type: "uint256",
-      },
-      {
-        indexed: true,
+        indexed: false,
         internalType: "uint256",
         name: "parent",
         type: "uint256",
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "owner",
-        type: "address",
+        indexed: false,
+        internalType: "uint256",
+        name: "node",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
       },
     ],
     name: "NewSubdomain",
@@ -171,25 +152,6 @@ const _abi = [
     type: "event",
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "oldRoot",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newRoot",
-        type: "address",
-      },
-    ],
-    name: "RootOwnershipTransferred",
-    type: "event",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -203,6 +165,25 @@ const _abi = [
         internalType: "bool",
         name: "",
         type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+    ],
+    name: "basePrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -310,16 +291,26 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "manager",
-    outputs: [
+    inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "to",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
     ],
-    stateMutability: "view",
+    name: "mintSubdomain",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -392,50 +383,6 @@ const _abi = [
         name: "duration",
         type: "uint256",
       },
-      {
-        internalType: "bytes",
-        name: "code",
-        type: "bytes",
-      },
-      {
-        internalType: "address",
-        name: "resolver",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "operator",
-        type: "address",
-      },
-    ],
-    name: "nameRedeemWithConfig",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "duration",
-        type: "uint256",
-      },
     ],
     name: "nameRegister",
     outputs: [
@@ -465,16 +412,6 @@ const _abi = [
         name: "duration",
         type: "uint256",
       },
-      {
-        internalType: "address",
-        name: "resolver",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "operator",
-        type: "address",
-      },
     ],
     name: "nameRegisterByManager",
     outputs: [
@@ -503,16 +440,6 @@ const _abi = [
         internalType: "uint256",
         name: "duration",
         type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "resolver",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "operator",
-        type: "address",
       },
       {
         internalType: "uint256[]",
@@ -562,25 +489,6 @@ const _abi = [
         name: "name",
         type: "string",
       },
-    ],
-    name: "registerPrice",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
       {
         internalType: "uint256",
         name: "duration",
@@ -605,9 +513,33 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "renewByRoot",
+    name: "renewByManager",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "duration",
+        type: "uint256",
+      },
+    ],
+    name: "renewPrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -629,19 +561,6 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "root",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
       },
     ],
     stateMutability: "view",
@@ -699,29 +618,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-    ],
-    name: "setSubdomain",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "string",
         name: "name",
         type: "string",
@@ -744,32 +640,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newManger",
-        type: "address",
-      },
-    ],
-    name: "transferManagerOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newRoot",
-        type: "address",
-      },
-    ],
-    name: "transferRootOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "withdraw",
     outputs: [],
@@ -783,7 +653,10 @@ export class IController__factory {
   static createInterface(): IControllerInterface {
     return new utils.Interface(_abi) as IControllerInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): IController {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): IController {
     return new Contract(address, _abi, signerOrProvider) as IController;
   }
 }
