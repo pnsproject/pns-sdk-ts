@@ -401,6 +401,14 @@ export async function nameRedeem(label: DomainString, account: string, duration:
   return controller.nameRedeem(label, account, duration, code);
 }
 
+export async function registerManager(label: DomainString, account: string, duration: number) {
+  return controller.nameRegisterByManager(label, account, duration);
+}
+
+export async function renewByManager(label: LabelString, duration: number) {
+  return controller.renewByManager(label, duration);
+}
+
 export async function renew(label: LabelString, duration: number) {
   const price = await renewPrice(label, duration);
   return controller.renew(label, duration, { value: price });
