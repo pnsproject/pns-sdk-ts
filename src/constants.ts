@@ -57,3 +57,5 @@ export const GraphUrl: any = {
   1285: "https://movr-graph.pns.link",
   43113: "https://fuji-graph.pns.link"
 }
+
+export const PnsApi = "https://api-rpc.pns.link"
