@@ -31,10 +31,10 @@ export const ContractAddrMap: IContractAddrsMap = {
     pns: "0x063BC6B51b890087C5b6cb3D5b21927160e7a892",
     controller: "0x90a08A9f43be11273D503fFf23D5596DFd65ADF3",
   },
-  31337: {
-    pns: "0x3d4FC217B07Be922B584a5995D76b511736AcAF3",
-    controller: "0x04bc6B8361965A9158C6210A2927C7C7EBb165F0",
-  },
+  1285: {
+    pns: "0x64f58DaBFbAa801F247429656cD37d16231890De",
+    controller: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73"
+  }
 };
 
 export const PaymentAddrs: any = {
