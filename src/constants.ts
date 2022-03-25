@@ -34,6 +34,10 @@ export const ContractAddrMap: IContractAddrsMap = {
   1285: {
     pns: "0x64f58DaBFbAa801F247429656cD37d16231890De",
     controller: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73"
+  },
+  1284: {
+    pns: "0x17Cf83bBCE053c264626cD46FE312368f0433127",
+    controller: "0x01Eee6B2DC48810488B781F1Cdf0b4b2D73f2C1B"
   }
 };
 
@@ -46,7 +50,8 @@ export const PaymentAddrs: any = {
   ksm: "",
 };
 
-export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
+// export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
+export const RPC_URL = "https://rpc.api.moonbeam.network";
 
 // export const PriceOracleAddr = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"; // ETH / USD on mainnet
 // export const PriceOracleAddr = "0x5498BB86BC934c8D34FDA08E81D444153d0D06aD"; // AVAX / USD on fuji
@@ -55,6 +60,7 @@ export const PriceOracleAddr = "0xa242Cb23053b23198B5eC9a10Ff83742A30bb0D3"; // 
 
 export const GraphUrl: any = {
   1285: "https://movr-graph.pns.link",
+  1284: "https://glmr-graph.pns.link",
   43113: "https://fuji-graph.pns.link"
 }
 
