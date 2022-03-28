@@ -31,10 +31,14 @@ export const ContractAddrMap: IContractAddrsMap = {
     pns: "0x063BC6B51b890087C5b6cb3D5b21927160e7a892",
     controller: "0x90a08A9f43be11273D503fFf23D5596DFd65ADF3",
   },
-  31337: {
-    pns: "0x3d4FC217B07Be922B584a5995D76b511736AcAF3",
-    controller: "0x04bc6B8361965A9158C6210A2927C7C7EBb165F0",
+  1285: {
+    pns: "0x64f58DaBFbAa801F247429656cD37d16231890De",
+    controller: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73"
   },
+  1284: {
+    pns: "0x631D7e6927dD0b40a9fe2AadB04A1E7FE0B9a0A6",
+    controller: "0xD4995f4E828B16236E62111d38cB8388eaA5F64f"
+  }
 };
 
 export const PaymentAddrs: any = {
@@ -46,7 +50,8 @@ export const PaymentAddrs: any = {
   ksm: "",
 };
 
-export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
+// export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
+export const RPC_URL = "https://rpc.api.moonbeam.network";
 
 // export const PriceOracleAddr = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"; // ETH / USD on mainnet
 // export const PriceOracleAddr = "0x5498BB86BC934c8D34FDA08E81D444153d0D06aD"; // AVAX / USD on fuji
@@ -55,5 +60,8 @@ export const PriceOracleAddr = "0xa242Cb23053b23198B5eC9a10Ff83742A30bb0D3"; // 
 
 export const GraphUrl: any = {
   1285: "https://movr-graph.pns.link",
+  1284: "https://glmr-graph.pns.link",
   43113: "https://fuji-graph.pns.link"
 }
+
+export const PnsApi = "https://api-rpc.pns.link"

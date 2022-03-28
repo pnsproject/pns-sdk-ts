@@ -4,7 +4,7 @@ import { keccak_256 } from "js-sha3";
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
-import { RPC_URL, Chains, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
+import { RPC_URL, PnsApi, Chains, ContractAddrMap, PaymentAddrs, GraphUrl} from './constants'
 import { IPNS, IController, IResolver, IOwnable, IPNS__factory, IController__factory, IResolver__factory, IOwnable__factory } from "./contracts";
 
 export const formatEther = ethers.utils.formatEther;
@@ -397,8 +397,21 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   };
 }
 
-export async function nameRedeem(label: DomainString, account: string, duration: number, code: string) {
-  return controller.nameRedeem(label, account, duration, code);
+export async function nameRedeem(label: DomainString, account: string, duration: number, shortcode: string) {
+  const res = await fetch(`${PnsApi}/redeem/name-redeem-code`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({label, shortcode, address: account})
+  })
+  const resJons = await res.json()
+
+  if (resJons.result === 'error') {
+    throw new Error('Redeem code is unavailable')
+  } else {
+    return controller.nameRedeem(label, account, duration, resJons.code);
+  }
 }
 
 export async function registerByManager(label: DomainString, account: string, duration: number) {
