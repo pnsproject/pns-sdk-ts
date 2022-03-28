@@ -85,19 +85,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "key",
-        type: "string",
-      },
-    ],
-    name: "addKey",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "string[]",
         name: "keys",
         type: "string[]",
@@ -147,11 +134,6 @@ const _abi = [
     ],
     name: "getByHash",
     outputs: [
-      {
-        internalType: "string",
-        name: "key",
-        type: "string",
-      },
       {
         internalType: "string",
         name: "value",
@@ -238,11 +220,6 @@ const _abi = [
     ],
     name: "getManyByHash",
     outputs: [
-      {
-        internalType: "string[]",
-        name: "keys",
-        type: "string[]",
-      },
       {
         internalType: "string[]",
         name: "values",

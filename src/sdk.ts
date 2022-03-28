@@ -243,7 +243,7 @@ export async function getTokenPrice() {
 
 export async function nameExpires(label: DomainString): Promise<BigNumber> {
   label = suffixTld(label);
-  return controller.nameExpires(getNamehash(label));
+  return (await controller.nameRecord(getNamehash(label))).expire;
 }
 
 export async function available(label: DomainString): Promise<boolean> {
@@ -401,7 +401,7 @@ export async function nameRedeem(label: DomainString, account: string, duration:
   return controller.nameRedeem(label, account, duration, code);
 }
 
-export async function registerManager(label: DomainString, account: string, duration: number) {
+export async function registerByManager(label: DomainString, account: string, duration: number) {
   return controller.nameRegisterByManager(label, account, duration);
 }
 

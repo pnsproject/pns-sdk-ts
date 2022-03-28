@@ -21,7 +21,6 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IResolverInterface extends ethers.utils.Interface {
   functions: {
-    "addKey(string)": FunctionFragment;
     "addKeys(string[])": FunctionFragment;
     "get(string,uint256)": FunctionFragment;
     "getByHash(uint256,uint256)": FunctionFragment;
@@ -39,7 +38,6 @@ interface IResolverInterface extends ethers.utils.Interface {
     "setNftName(address,uint256,uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "addKey", values: [string]): string;
   encodeFunctionData(functionFragment: "addKeys", values: [string[]]): string;
   encodeFunctionData(
     functionFragment: "get",
@@ -95,7 +93,6 @@ interface IResolverInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, BigNumberish]
   ): string;
 
-  decodeFunctionResult(functionFragment: "addKey", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addKeys", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "get", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getByHash", data: BytesLike): Result;
@@ -195,11 +192,6 @@ export class IResolver extends BaseContract {
   interface: IResolverInterface;
 
   functions: {
-    addKey(
-      key: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     addKeys(
       keys: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -215,7 +207,7 @@ export class IResolver extends BaseContract {
       keyHash: BigNumberish,
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string, string] & { key: string; value: string }>;
+    ): Promise<[string] & { value: string }>;
 
     getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
@@ -234,7 +226,7 @@ export class IResolver extends BaseContract {
       keyHashes: BigNumberish[],
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string[], string[]] & { keys: string[]; values: string[] }>;
+    ): Promise<[string[]] & { values: string[] }>;
 
     getName(addr: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -285,11 +277,6 @@ export class IResolver extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  addKey(
-    key: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   addKeys(
     keys: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -305,7 +292,7 @@ export class IResolver extends BaseContract {
     keyHash: BigNumberish,
     tokenId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<[string, string] & { key: string; value: string }>;
+  ): Promise<string>;
 
   getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -321,7 +308,7 @@ export class IResolver extends BaseContract {
     keyHashes: BigNumberish[],
     tokenId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<[string[], string[]] & { keys: string[]; values: string[] }>;
+  ): Promise<string[]>;
 
   getName(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -372,8 +359,6 @@ export class IResolver extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addKey(key: string, overrides?: CallOverrides): Promise<void>;
-
     addKeys(keys: string[], overrides?: CallOverrides): Promise<void>;
 
     get(
@@ -386,7 +371,7 @@ export class IResolver extends BaseContract {
       keyHash: BigNumberish,
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string, string] & { key: string; value: string }>;
+    ): Promise<string>;
 
     getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -405,7 +390,7 @@ export class IResolver extends BaseContract {
       keyHashes: BigNumberish[],
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[string[], string[]] & { keys: string[]; values: string[] }>;
+    ): Promise<string[]>;
 
     getName(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -516,11 +501,6 @@ export class IResolver extends BaseContract {
   };
 
   estimateGas: {
-    addKey(
-      key: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     addKeys(
       keys: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -610,11 +590,6 @@ export class IResolver extends BaseContract {
   };
 
   populateTransaction: {
-    addKey(
-      key: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     addKeys(
       keys: string[],
       overrides?: Overrides & { from?: string | Promise<string> }

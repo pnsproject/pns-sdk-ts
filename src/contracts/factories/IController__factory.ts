@@ -12,19 +12,6 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "uint256[]",
-        name: "prices",
-        type: "uint256[]",
-      },
-    ],
-    name: "BasePriceChanged",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
@@ -37,6 +24,32 @@ const _abi = [
       },
     ],
     name: "CapacityUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "flags",
+        type: "uint256",
+      },
+    ],
+    name: "ConfigUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "data",
+        type: "uint256[]",
+      },
+    ],
+    name: "MetadataUpdated",
     type: "event",
   },
   {
@@ -144,11 +157,17 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256[]",
-        name: "prices",
+        name: "basePrices",
+        type: "uint256[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "rentPrices",
         type: "uint256[]",
       },
     ],
-    name: "RentPriceChanged",
+    name: "PriceChanged",
     type: "event",
   },
   {
@@ -200,63 +219,6 @@ const _abi = [
     name: "burn",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "capacity",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "children",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "expires",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -321,12 +283,34 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "nameExpires",
+    name: "nameRecord",
     outputs: [
       {
-        internalType: "uint256",
+        components: [
+          {
+            internalType: "uint256",
+            name: "origin",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "expire",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "capacity",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "children",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IController.Record",
         name: "",
-        type: "uint256",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -363,7 +347,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -421,7 +405,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -461,25 +445,6 @@ const _abi = [
       },
     ],
     stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "origin",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -581,6 +546,24 @@ const _abi = [
     ],
     name: "setCapacity",
     outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_capacity",
+        type: "uint256",
+      },
+    ],
+    name: "setCapacityByManager",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -598,19 +581,6 @@ const _abi = [
       },
     ],
     name: "setPrices",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bool",
-        name: "open",
-        type: "bool",
-      },
-    ],
-    name: "setRegistration",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
