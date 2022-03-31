@@ -25,14 +25,17 @@ interface IControllerInterface extends ethers.utils.Interface {
     "available(uint256)": FunctionFragment;
     "basePrice(string)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
+    "capacity(uint256)": FunctionFragment;
+    "children(uint256)": FunctionFragment;
+    "expire(uint256)": FunctionFragment;
     "getPrices()": FunctionFragment;
     "getTokenPrice()": FunctionFragment;
     "mintSubdomain(address,uint256,string)": FunctionFragment;
-    "nameRecord(uint256)": FunctionFragment;
     "nameRedeem(string,address,uint256,bytes)": FunctionFragment;
     "nameRegister(string,address,uint256)": FunctionFragment;
     "nameRegisterByManager(string,address,uint256)": FunctionFragment;
     "nameRegisterWithConfig(string,address,uint256,uint256[],string[])": FunctionFragment;
+    "origin(uint256)": FunctionFragment;
     "renew(string,uint256)": FunctionFragment;
     "renewByManager(string,uint256)": FunctionFragment;
     "renewPrice(string,uint256)": FunctionFragment;
@@ -50,6 +53,18 @@ interface IControllerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "basePrice", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "capacity",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "children",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "expire",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "getPrices", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getTokenPrice",
@@ -58,10 +73,6 @@ interface IControllerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "mintSubdomain",
     values: [string, BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nameRecord",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "nameRedeem",
@@ -78,6 +89,10 @@ interface IControllerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "nameRegisterWithConfig",
     values: [string, string, BigNumberish, BigNumberish[], string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "origin",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "renew",
@@ -116,6 +131,9 @@ interface IControllerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "available", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "basePrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "capacity", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "children", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "expire", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPrices", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getTokenPrice",
@@ -125,7 +143,6 @@ interface IControllerInterface extends ethers.utils.Interface {
     functionFragment: "mintSubdomain",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "nameRecord", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nameRedeem", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "nameRegister",
@@ -139,6 +156,7 @@ interface IControllerInterface extends ethers.utils.Interface {
     functionFragment: "nameRegisterWithConfig",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "origin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "renew", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renewByManager",
@@ -281,6 +299,21 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    capacity(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    children(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    expire(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getPrices(overrides?: CallOverrides): Promise<[BigNumber[], BigNumber[]]>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -291,20 +324,6 @@ export class IController extends BaseContract {
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    nameRecord(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        [BigNumber, BigNumber, BigNumber, BigNumber] & {
-          origin: BigNumber;
-          expire: BigNumber;
-          capacity: BigNumber;
-          children: BigNumber;
-        }
-      ]
-    >;
 
     nameRedeem(
       name: string,
@@ -336,6 +355,11 @@ export class IController extends BaseContract {
       values: string[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    origin(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     renew(
       name: string,
@@ -399,6 +423,18 @@ export class IController extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  capacity(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  children(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  expire(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
   getPrices(overrides?: CallOverrides): Promise<[BigNumber[], BigNumber[]]>;
 
   getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
@@ -409,18 +445,6 @@ export class IController extends BaseContract {
     name: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  nameRecord(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber] & {
-      origin: BigNumber;
-      expire: BigNumber;
-      capacity: BigNumber;
-      children: BigNumber;
-    }
-  >;
 
   nameRedeem(
     name: string,
@@ -452,6 +476,8 @@ export class IController extends BaseContract {
     values: string[],
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   renew(
     name: string,
@@ -515,6 +541,21 @@ export class IController extends BaseContract {
 
     burn(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
+    capacity(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    children(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    expire(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getPrices(overrides?: CallOverrides): Promise<[BigNumber[], BigNumber[]]>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
@@ -525,18 +566,6 @@ export class IController extends BaseContract {
       name: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    nameRecord(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        origin: BigNumber;
-        expire: BigNumber;
-        capacity: BigNumber;
-        children: BigNumber;
-      }
-    >;
 
     nameRedeem(
       name: string,
@@ -566,6 +595,11 @@ export class IController extends BaseContract {
       duration: BigNumberish,
       keyHashes: BigNumberish[],
       values: string[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    origin(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -757,6 +791,21 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    capacity(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    children(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    expire(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getPrices(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
@@ -766,11 +815,6 @@ export class IController extends BaseContract {
       tokenId: BigNumberish,
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    nameRecord(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     nameRedeem(
@@ -802,6 +846,11 @@ export class IController extends BaseContract {
       keyHashes: BigNumberish[],
       values: string[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    origin(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     renew(
@@ -873,6 +922,21 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    capacity(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    children(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    expire(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getPrices(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -882,11 +946,6 @@ export class IController extends BaseContract {
       tokenId: BigNumberish,
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    nameRecord(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     nameRedeem(
@@ -918,6 +977,11 @@ export class IController extends BaseContract {
       keyHashes: BigNumberish[],
       values: string[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    origin(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     renew(

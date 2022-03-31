@@ -222,6 +222,63 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "capacity",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "children",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "expire",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getPrices",
     outputs: [
@@ -273,47 +330,6 @@ const _abi = [
     name: "mintSubdomain",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "nameRecord",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "origin",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "expire",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "capacity",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "children",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct IController.Record",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -445,6 +461,25 @@ const _abi = [
       },
     ],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "origin",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

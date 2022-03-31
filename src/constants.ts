@@ -36,8 +36,8 @@ export const ContractAddrMap: IContractAddrsMap = {
     controller: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73"
   },
   1284: {
-    pns: "0x631D7e6927dD0b40a9fe2AadB04A1E7FE0B9a0A6",
-    controller: "0xD4995f4E828B16236E62111d38cB8388eaA5F64f"
+    pns: "0x34Ef2EAeA4E7b8F6e8D629b2AdaEe8d1Fb641655",
+    controller: "0x8ba579D0BB25b2CC96cC971F07De1E26211D3669"
   }
 };
 
@@ -56,7 +56,7 @@ export const RPC_URL = "https://rpc.api.moonbeam.network";
 // export const PriceOracleAddr = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"; // ETH / USD on mainnet
 // export const PriceOracleAddr = "0x5498BB86BC934c8D34FDA08E81D444153d0D06aD"; // AVAX / USD on fuji
 // export const PriceOracleAddr = "0x3f8BFbDc1e79777511c00Ad8591cef888C2113C1"; // MOVR / USD on MOVR
-export const PriceOracleAddr = "0xa242Cb23053b23198B5eC9a10Ff83742A30bb0D3"; // ETH / USD on hardhat
+export const PriceOracleAddr = "0xab5Bd6580da3BE648638608897643b1D33b21c42"; // ETH / USD on hardhat
 
 export const GraphUrl: any = {
   1285: "https://movr-graph.pns.link",
