@@ -15,6 +15,22 @@ export const Chains: any = {
     chainId: 43113,
     networkId: 1,
   },
+  1284: {
+    name: "Moonbeam",
+    chain: "MOON",
+    network: "mainnet",
+    rpc: ["https://rpc.api.moonbeam.network"],
+    faucets: [],
+    nativeCurrency: {
+      name: "Glimmer",
+      symbol: "GLMR",
+      decimals: 18,
+    },
+    infoURL: "https://moonbeam.network/networks/moonbeam/",
+    shortName: "mbeam",
+    chainId: 1284,
+    networkId: 1284,
+  },
 };
 
 export interface IContractAddrs {
