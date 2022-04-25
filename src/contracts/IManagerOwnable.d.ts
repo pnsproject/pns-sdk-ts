@@ -29,22 +29,13 @@ interface IManagerOwnableInterface extends ethers.utils.Interface {
 
   encodeFunctionData(functionFragment: "isManager", values: [string]): string;
   encodeFunctionData(functionFragment: "root", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "setManager",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: "setManager", values: [string, boolean]): string;
+  encodeFunctionData(functionFragment: "transferRootOwnership", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "transferRootOwnership", data: BytesLike): Result;
 
   events: {};
 }
@@ -73,9 +64,7 @@ export class IManagerOwnable extends BaseContract {
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
     listener: TypedListener<EventArgsArray, EventArgsObject>
   ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>): this;
 
   listeners(eventName?: string): Array<Listener>;
   off(eventName: string, listener: Listener): this;
@@ -97,48 +86,27 @@ export class IManagerOwnable extends BaseContract {
 
     root(overrides?: CallOverrides): Promise<[string]>;
 
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    setManager(manager: string, role: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
   };
 
   isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
 
   root(overrides?: CallOverrides): Promise<string>;
 
-  setManager(
-    manager: string,
-    role: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  setManager(manager: string, role: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  transferRootOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   callStatic: {
     isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
 
     root(overrides?: CallOverrides): Promise<string>;
 
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setManager(manager: string, role: boolean, overrides?: CallOverrides): Promise<void>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    transferRootOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
@@ -148,35 +116,18 @@ export class IManagerOwnable extends BaseContract {
 
     root(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    setManager(manager: string, role: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    isManager(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isManager(addr: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    setManager(manager: string, role: boolean, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
   };
 }

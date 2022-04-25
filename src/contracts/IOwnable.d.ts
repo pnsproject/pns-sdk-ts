@@ -26,16 +26,10 @@ interface IOwnableInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(functionFragment: "root", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: "transferRootOwnership", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "transferRootOwnership", data: BytesLike): Result;
 
   events: {};
 }
@@ -64,9 +58,7 @@ export class IOwnable extends BaseContract {
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
     listener: TypedListener<EventArgsArray, EventArgsObject>
   ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>): this;
 
   listeners(eventName?: string): Array<Listener>;
   off(eventName: string, listener: Listener): this;
@@ -86,26 +78,17 @@ export class IOwnable extends BaseContract {
   functions: {
     root(overrides?: CallOverrides): Promise<[string]>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
   };
 
   root(overrides?: CallOverrides): Promise<string>;
 
-  transferRootOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   callStatic: {
     root(overrides?: CallOverrides): Promise<string>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    transferRootOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
@@ -113,18 +96,12 @@ export class IOwnable extends BaseContract {
   estimateGas: {
     root(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
   };
 
   populateTransaction: {
     root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    transferRootOwnership(newOwner: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
   };
 }

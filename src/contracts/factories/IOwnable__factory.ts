@@ -40,10 +40,7 @@ export class IOwnable__factory {
   static createInterface(): IOwnableInterface {
     return new utils.Interface(_abi) as IOwnableInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IOwnable {
+  static connect(address: string, signerOrProvider: Signer | Provider): IOwnable {
     return new Contract(address, _abi, signerOrProvider) as IOwnable;
   }
 }

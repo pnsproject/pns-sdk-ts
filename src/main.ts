@@ -10,9 +10,7 @@ import {
   ownerOfName,
   exists,
   register,
-  setKey,
   getKey,
-  setKeys,
   getKeys,
   getDomainDetails,
   mintSubdomain,
@@ -152,7 +150,6 @@ async function main() {
   // updateWithProxy({keyHashes, values, tokenId})
 
   console.log("getControllerRoot", await getControllerRoot());
-
 
   // let res = await payDomainfee("avax", "gavinwood303")
 

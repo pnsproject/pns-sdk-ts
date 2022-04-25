@@ -4,10 +4,7 @@
 
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type {
-  IManagerOwnable,
-  IManagerOwnableInterface,
-} from "../IManagerOwnable";
+import type { IManagerOwnable, IManagerOwnableInterface } from "../IManagerOwnable";
 
 const _abi = [
   {
@@ -80,10 +77,7 @@ export class IManagerOwnable__factory {
   static createInterface(): IManagerOwnableInterface {
     return new utils.Interface(_abi) as IManagerOwnableInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IManagerOwnable {
+  static connect(address: string, signerOrProvider: Signer | Provider): IManagerOwnable {
     return new Contract(address, _abi, signerOrProvider) as IManagerOwnable;
   }
 }

@@ -31,9 +31,9 @@ interface IControllerInterface extends ethers.utils.Interface {
     "getPrices()": FunctionFragment;
     "getTokenPrice()": FunctionFragment;
     "mintSubdomain(address,uint256,string)": FunctionFragment;
-    "nameRedeem(string,address,uint256,bytes)": FunctionFragment;
+    "nameRedeem(string,address,uint256,uint256,bytes)": FunctionFragment;
     "nameRegister(string,address,uint256)": FunctionFragment;
-    "nameRegisterByManager(string,address,uint256)": FunctionFragment;
+    "nameRegisterByManager(string,address,uint256,uint256[],string[])": FunctionFragment;
     "nameRegisterWithConfig(string,address,uint256,uint256[],string[])": FunctionFragment;
     "origin(uint256)": FunctionFragment;
     "renew(string,uint256)": FunctionFragment;
@@ -44,89 +44,30 @@ interface IControllerInterface extends ethers.utils.Interface {
     "setCapacityByManager(uint256,uint256)": FunctionFragment;
     "setPrices(uint256[],uint256[])": FunctionFragment;
     "totalRegisterPrice(string,uint256)": FunctionFragment;
-    "withdraw()": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "available",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "available", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "basePrice", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "capacity",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "children",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "expire",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "capacity", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "children", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "expire", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "getPrices", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getTokenPrice",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintSubdomain",
-    values: [string, BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nameRedeem",
-    values: [string, string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nameRegister",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nameRegisterByManager",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nameRegisterWithConfig",
-    values: [string, string, BigNumberish, BigNumberish[], string[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "origin",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renew",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renewByManager",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renewPrice",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "rentPrice",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setCapacity",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setCapacityByManager",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPrices",
-    values: [BigNumberish[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalRegisterPrice",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getTokenPrice", values?: undefined): string;
+  encodeFunctionData(functionFragment: "mintSubdomain", values: [string, BigNumberish, string]): string;
+  encodeFunctionData(functionFragment: "nameRedeem", values: [string, string, BigNumberish, BigNumberish, BytesLike]): string;
+  encodeFunctionData(functionFragment: "nameRegister", values: [string, string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "nameRegisterByManager", values: [string, string, BigNumberish, BigNumberish[], string[]]): string;
+  encodeFunctionData(functionFragment: "nameRegisterWithConfig", values: [string, string, BigNumberish, BigNumberish[], string[]]): string;
+  encodeFunctionData(functionFragment: "origin", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "renew", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "renewByManager", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "renewPrice", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "rentPrice", values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setCapacity", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setCapacityByManager", values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setPrices", values: [BigNumberish[], BigNumberish[]]): string;
+  encodeFunctionData(functionFragment: "totalRegisterPrice", values: [string, BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "available", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "basePrice", data: BytesLike): Result;
@@ -135,49 +76,21 @@ interface IControllerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "children", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "expire", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPrices", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getTokenPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintSubdomain",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getTokenPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mintSubdomain", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nameRedeem", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "nameRegister",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "nameRegisterByManager",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "nameRegisterWithConfig",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "nameRegister", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nameRegisterByManager", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nameRegisterWithConfig", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "origin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "renew", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renewByManager",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "renewByManager", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "renewPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "rentPrice", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setCapacity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setCapacityByManager",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "setCapacity", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setCapacityByManager", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPrices", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "totalRegisterPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "totalRegisterPrice", data: BytesLike): Result;
 
   events: {
     "CapacityUpdated(uint256,uint256)": EventFragment;
@@ -185,7 +98,6 @@ interface IControllerInterface extends ethers.utils.Interface {
     "MetadataUpdated(uint256[])": EventFragment;
     "NameRegistered(address,uint256,uint256,uint256,string)": EventFragment;
     "NameRenewed(uint256,uint256,uint256,string)": EventFragment;
-    "NewSubdomain(address,uint256,uint256,string)": EventFragment;
     "PriceChanged(uint256[],uint256[])": EventFragment;
   };
 
@@ -194,19 +106,14 @@ interface IControllerInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "MetadataUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NameRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NameRenewed"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NewSubdomain"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PriceChanged"): EventFragment;
 }
 
-export type CapacityUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber] & { tokenId: BigNumber; capacity: BigNumber }
->;
+export type CapacityUpdatedEvent = TypedEvent<[BigNumber, BigNumber] & { tokenId: BigNumber; capacity: BigNumber }>;
 
 export type ConfigUpdatedEvent = TypedEvent<[BigNumber] & { flags: BigNumber }>;
 
-export type MetadataUpdatedEvent = TypedEvent<
-  [BigNumber[]] & { data: BigNumber[] }
->;
+export type MetadataUpdatedEvent = TypedEvent<[BigNumber[]] & { data: BigNumber[] }>;
 
 export type NameRegisteredEvent = TypedEvent<
   [string, BigNumber, BigNumber, BigNumber, string] & {
@@ -223,15 +130,6 @@ export type NameRenewedEvent = TypedEvent<
     node: BigNumber;
     cost: BigNumber;
     expires: BigNumber;
-    name: string;
-  }
->;
-
-export type NewSubdomainEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string] & {
-    to: string;
-    parent: BigNumber;
-    node: BigNumber;
     name: string;
   }
 >;
@@ -267,9 +165,7 @@ export class IController extends BaseContract {
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
     listener: TypedListener<EventArgsArray, EventArgsObject>
   ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>): this;
 
   listeners(eventName?: string): Array<Listener>;
   off(eventName: string, listener: Listener): this;
@@ -287,48 +183,29 @@ export class IController extends BaseContract {
   interface: IControllerInterface;
 
   functions: {
-    available(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    available(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
     basePrice(name: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    burn(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    capacity(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    capacity(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    children(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    children(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    expire(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    expire(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getPrices(overrides?: CallOverrides): Promise<[BigNumber[], BigNumber[]]>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    mintSubdomain(
-      to: string,
-      tokenId: BigNumberish,
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    mintSubdomain(to: string, tokenId: BigNumberish, name: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
     nameRedeem(
       name: string,
       owner: string,
       duration: BigNumberish,
+      deadline: BigNumberish,
       code: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -344,6 +221,8 @@ export class IController extends BaseContract {
       name: string,
       owner: string,
       duration: BigNumberish,
+      keyHashes: BigNumberish[],
+      values: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -356,34 +235,15 @@ export class IController extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    renew(name: string, duration: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    renewByManager(
-      name: string,
-      duration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    renewByManager(name: string, duration: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-    renewPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    renewPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    rentPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    rentPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setCapacity(
       tokenId: BigNumberish,
@@ -403,35 +263,18 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    totalRegisterPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    totalRegisterPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   available(tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   basePrice(name: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  burn(
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  capacity(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  capacity(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  children(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  children(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   expire(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -439,17 +282,13 @@ export class IController extends BaseContract {
 
   getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  mintSubdomain(
-    to: string,
-    tokenId: BigNumberish,
-    name: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  mintSubdomain(to: string, tokenId: BigNumberish, name: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   nameRedeem(
     name: string,
     owner: string,
     duration: BigNumberish,
+    deadline: BigNumberish,
     code: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -465,6 +304,8 @@ export class IController extends BaseContract {
     name: string,
     owner: string,
     duration: BigNumberish,
+    keyHashes: BigNumberish[],
+    values: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -479,35 +320,15 @@ export class IController extends BaseContract {
 
   origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  renew(
-    name: string,
-    duration: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  renew(name: string, duration: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  renewByManager(
-    name: string,
-    duration: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  renewByManager(name: string, duration: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  renewPrice(
-    name: string,
-    duration: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  renewPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  rentPrice(
-    name: string,
-    duration: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  rentPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  setCapacity(
-    tokenId: BigNumberish,
-    _capacity: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  setCapacity(tokenId: BigNumberish, _capacity: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   setCapacityByManager(
     tokenId: BigNumberish,
@@ -515,77 +336,39 @@ export class IController extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setPrices(
-    basePrices: BigNumberish[],
-    rentPrices: BigNumberish[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  setPrices(basePrices: BigNumberish[], rentPrices: BigNumberish[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
-  totalRegisterPrice(
-    name: string,
-    duration: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  withdraw(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  totalRegisterPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    available(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    available(tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     basePrice(name: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     burn(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    capacity(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    capacity(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    children(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    children(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    expire(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    expire(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getPrices(overrides?: CallOverrides): Promise<[BigNumber[], BigNumber[]]>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mintSubdomain(
-      to: string,
-      tokenId: BigNumberish,
-      name: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    mintSubdomain(to: string, tokenId: BigNumberish, name: string, overrides?: CallOverrides): Promise<void>;
 
-    nameRedeem(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      code: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    nameRedeem(name: string, owner: string, duration: BigNumberish, deadline: BigNumberish, code: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-    nameRegister(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    nameRegister(name: string, owner: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     nameRegisterByManager(
       name: string,
       owner: string,
       duration: BigNumberish,
+      keyHashes: BigNumberish[],
+      values: string[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -598,94 +381,37 @@ export class IController extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    renew(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    renewByManager(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    renewByManager(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    renewPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    renewPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    rentPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    rentPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    setCapacity(
-      tokenId: BigNumberish,
-      _capacity: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setCapacity(tokenId: BigNumberish, _capacity: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    setCapacityByManager(
-      tokenId: BigNumberish,
-      _capacity: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setCapacityByManager(tokenId: BigNumberish, _capacity: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    setPrices(
-      basePrices: BigNumberish[],
-      rentPrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setPrices(basePrices: BigNumberish[], rentPrices: BigNumberish[], overrides?: CallOverrides): Promise<void>;
 
-    totalRegisterPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdraw(overrides?: CallOverrides): Promise<void>;
+    totalRegisterPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
-    "CapacityUpdated(uint256,uint256)"(
-      tokenId?: null,
-      capacity?: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber],
-      { tokenId: BigNumber; capacity: BigNumber }
-    >;
+    "CapacityUpdated(uint256,uint256)"(tokenId?: null, capacity?: null): TypedEventFilter<[BigNumber, BigNumber], { tokenId: BigNumber; capacity: BigNumber }>;
 
-    CapacityUpdated(
-      tokenId?: null,
-      capacity?: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber],
-      { tokenId: BigNumber; capacity: BigNumber }
-    >;
+    CapacityUpdated(tokenId?: null, capacity?: null): TypedEventFilter<[BigNumber, BigNumber], { tokenId: BigNumber; capacity: BigNumber }>;
 
-    "ConfigUpdated(uint256)"(
-      flags?: null
-    ): TypedEventFilter<[BigNumber], { flags: BigNumber }>;
+    "ConfigUpdated(uint256)"(flags?: null): TypedEventFilter<[BigNumber], { flags: BigNumber }>;
 
-    ConfigUpdated(
-      flags?: null
-    ): TypedEventFilter<[BigNumber], { flags: BigNumber }>;
+    ConfigUpdated(flags?: null): TypedEventFilter<[BigNumber], { flags: BigNumber }>;
 
-    "MetadataUpdated(uint256[])"(
-      data?: null
-    ): TypedEventFilter<[BigNumber[]], { data: BigNumber[] }>;
+    "MetadataUpdated(uint256[])"(data?: null): TypedEventFilter<[BigNumber[]], { data: BigNumber[] }>;
 
-    MetadataUpdated(
-      data?: null
-    ): TypedEventFilter<[BigNumber[]], { data: BigNumber[] }>;
+    MetadataUpdated(data?: null): TypedEventFilter<[BigNumber[]], { data: BigNumber[] }>;
 
     "NameRegistered(address,uint256,uint256,uint256,string)"(
       to?: null,
@@ -726,116 +452,59 @@ export class IController extends BaseContract {
       cost?: null,
       expires?: null,
       name?: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber, BigNumber, string],
-      { node: BigNumber; cost: BigNumber; expires: BigNumber; name: string }
-    >;
+    ): TypedEventFilter<[BigNumber, BigNumber, BigNumber, string], { node: BigNumber; cost: BigNumber; expires: BigNumber; name: string }>;
 
     NameRenewed(
       node?: null,
       cost?: null,
       expires?: null,
       name?: null
-    ): TypedEventFilter<
-      [BigNumber, BigNumber, BigNumber, string],
-      { node: BigNumber; cost: BigNumber; expires: BigNumber; name: string }
-    >;
-
-    "NewSubdomain(address,uint256,uint256,string)"(
-      to?: null,
-      parent?: null,
-      node?: null,
-      name?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string],
-      { to: string; parent: BigNumber; node: BigNumber; name: string }
-    >;
-
-    NewSubdomain(
-      to?: null,
-      parent?: null,
-      node?: null,
-      name?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string],
-      { to: string; parent: BigNumber; node: BigNumber; name: string }
-    >;
+    ): TypedEventFilter<[BigNumber, BigNumber, BigNumber, string], { node: BigNumber; cost: BigNumber; expires: BigNumber; name: string }>;
 
     "PriceChanged(uint256[],uint256[])"(
       basePrices?: null,
       rentPrices?: null
-    ): TypedEventFilter<
-      [BigNumber[], BigNumber[]],
-      { basePrices: BigNumber[]; rentPrices: BigNumber[] }
-    >;
+    ): TypedEventFilter<[BigNumber[], BigNumber[]], { basePrices: BigNumber[]; rentPrices: BigNumber[] }>;
 
-    PriceChanged(
-      basePrices?: null,
-      rentPrices?: null
-    ): TypedEventFilter<
-      [BigNumber[], BigNumber[]],
-      { basePrices: BigNumber[]; rentPrices: BigNumber[] }
-    >;
+    PriceChanged(basePrices?: null, rentPrices?: null): TypedEventFilter<[BigNumber[], BigNumber[]], { basePrices: BigNumber[]; rentPrices: BigNumber[] }>;
   };
 
   estimateGas: {
-    available(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    available(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     basePrice(name: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    burn(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    capacity(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    capacity(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    children(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    children(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    expire(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    expire(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getPrices(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mintSubdomain(
-      to: string,
-      tokenId: BigNumberish,
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    mintSubdomain(to: string, tokenId: BigNumberish, name: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
     nameRedeem(
       name: string,
       owner: string,
       duration: BigNumberish,
+      deadline: BigNumberish,
       code: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    nameRegister(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    nameRegister(name: string, owner: string, duration: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
     nameRegisterByManager(
       name: string,
       owner: string,
       duration: BigNumberish,
+      keyHashes: BigNumberish[],
+      values: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -848,110 +517,49 @@ export class IController extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    renew(name: string, duration: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    renewByManager(
-      name: string,
-      duration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    renewByManager(name: string, duration: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    renewPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    renewPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    rentPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    rentPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    setCapacity(
-      tokenId: BigNumberish,
-      _capacity: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    setCapacity(tokenId: BigNumberish, _capacity: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    setCapacityByManager(
-      tokenId: BigNumberish,
-      _capacity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    setCapacityByManager(tokenId: BigNumberish, _capacity: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    setPrices(
-      basePrices: BigNumberish[],
-      rentPrices: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    setPrices(basePrices: BigNumberish[], rentPrices: BigNumberish[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    totalRegisterPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    totalRegisterPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    available(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    available(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    basePrice(
-      name: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    basePrice(name: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    burn(
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    burn(tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    capacity(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    capacity(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    children(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    children(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    expire(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    expire(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getPrices(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    mintSubdomain(
-      to: string,
-      tokenId: BigNumberish,
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    mintSubdomain(to: string, tokenId: BigNumberish, name: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
     nameRedeem(
       name: string,
       owner: string,
       duration: BigNumberish,
+      deadline: BigNumberish,
       code: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -967,6 +575,8 @@ export class IController extends BaseContract {
       name: string,
       owner: string,
       duration: BigNumberish,
+      keyHashes: BigNumberish[],
+      values: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -979,34 +589,15 @@ export class IController extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    origin(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    origin(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    renew(name: string, duration: BigNumberish, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    renewByManager(
-      name: string,
-      duration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    renewByManager(name: string, duration: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
-    renewPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    renewPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    rentPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    rentPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setCapacity(
       tokenId: BigNumberish,
@@ -1026,14 +617,6 @@ export class IController extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    totalRegisterPrice(
-      name: string,
-      duration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    totalRegisterPrice(name: string, duration: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

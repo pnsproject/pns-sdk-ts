@@ -12,12 +12,6 @@ const _abi = [
     inputs: [
       {
         indexed: true,
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
         internalType: "string",
         name: "keyIndex",
         type: "string",
@@ -56,21 +50,9 @@ const _abi = [
       },
       {
         indexed: true,
-        internalType: "string",
-        name: "keyIndex",
-        type: "string",
-      },
-      {
-        indexed: true,
-        internalType: "string",
-        name: "valueIndex",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "key",
-        type: "string",
+        internalType: "uint256",
+        name: "keyHash",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -80,6 +62,50 @@ const _abi = [
       },
     ],
     name: "Set",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "addr",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "SetName",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "nftAddr",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "nftTokenId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "SetNftName",
     type: "event",
   },
   {
@@ -157,25 +183,6 @@ const _abi = [
         internalType: "string",
         name: "",
         type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "hashes",
-        type: "uint256[]",
-      },
-    ],
-    name: "getKeys",
-    outputs: [
-      {
-        internalType: "string[]",
-        name: "values",
-        type: "string[]",
       },
     ],
     stateMutability: "view",
@@ -275,29 +282,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "key",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "value",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "set",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "keyHash",
         type: "uint256",
@@ -314,29 +298,6 @@ const _abi = [
       },
     ],
     name: "setByHash",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string[]",
-        name: "keys",
-        type: "string[]",
-      },
-      {
-        internalType: "string[]",
-        name: "values",
-        type: "string[]",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "setMany",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -366,6 +327,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "addr",
+        type: "address",
+      },
       {
         internalType: "uint256",
         name: "tokenId",
@@ -407,10 +373,7 @@ export class IResolver__factory {
   static createInterface(): IResolverInterface {
     return new utils.Interface(_abi) as IResolverInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IResolver {
+  static connect(address: string, signerOrProvider: Signer | Provider): IResolver {
     return new Contract(address, _abi, signerOrProvider) as IResolver;
   }
 }

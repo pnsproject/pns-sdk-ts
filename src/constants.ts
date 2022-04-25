@@ -44,17 +44,13 @@ export interface IContractAddrsMap {
 
 export const ContractAddrMap: IContractAddrsMap = {
   43113: {
-    pns: "0x063BC6B51b890087C5b6cb3D5b21927160e7a892",
-    controller: "0x90a08A9f43be11273D503fFf23D5596DFd65ADF3",
-  },
-  1285: {
-    pns: "0x64f58DaBFbAa801F247429656cD37d16231890De",
-    controller: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73"
+    pns: "0xd2d9801F1443231515e644ab8417603e9f06CcD9",
+    controller: "0x4417848F13f605Ae3CEE9C4bA371eB283DD2C559",
   },
   1284: {
-    pns: "0x34Ef2EAeA4E7b8F6e8D629b2AdaEe8d1Fb641655",
-    controller: "0x8ba579D0BB25b2CC96cC971F07De1E26211D3669"
-  }
+    pns: "0x7d5F0398549C9fDEa03BbDde388361827cb376D5",
+    controller: "0x268C915680Da0b74D2EE520866716a7a295fEdf6",
+  },
 };
 
 export const PaymentAddrs: any = {
@@ -72,12 +68,12 @@ export const RPC_URL = "https://rpc.api.moonbeam.network";
 // export const PriceOracleAddr = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"; // ETH / USD on mainnet
 // export const PriceOracleAddr = "0x5498BB86BC934c8D34FDA08E81D444153d0D06aD"; // AVAX / USD on fuji
 // export const PriceOracleAddr = "0x3f8BFbDc1e79777511c00Ad8591cef888C2113C1"; // MOVR / USD on MOVR
-export const PriceOracleAddr = "0xab5Bd6580da3BE648638608897643b1D33b21c42"; // ETH / USD on hardhat
+export const PriceOracleAddr = "0xdb4890df1f92Cf3915f4d8230655185902a61061"; // GLMR / USD on GLMR
 
 export const GraphUrl: any = {
   1285: "https://movr-graph.pns.link",
   1284: "https://glmr-graph.pns.link",
-  43113: "https://fuji-graph.pns.link"
-}
+  43113: "https://fuji-graph.pns.link",
+};
 
-export const PnsApi = "https://api-rpc.pns.link"
+export const PnsApi = "https://api-rpc.pns.link";

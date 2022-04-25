@@ -4,16 +4,11 @@ import { keccak_256 } from "js-sha3";
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
-import { RPC_URL, PnsApi, Chains, ContractAddrMap, PaymentAddrs, GraphUrl} from './constants'
+import { RPC_URL, PnsApi, Chains, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
 import { IPNS, IController, IResolver, IOwnable, IPNS__factory, IController__factory, IResolver__factory, IOwnable__factory } from "./contracts";
 
 export const formatEther = ethers.utils.formatEther;
 export const abiCoder = ethers.utils.defaultAbiCoder;
-
-// @ts-ignore
-BigInt.prototype.toJSON = function () {
-  return this.toString();
-};
 
 export type HexAddress = string;
 
@@ -23,7 +18,7 @@ export type DomainString = string;
 
 export type LabelString = string;
 
-export declare abstract class Web3Provider extends AbstractWeb3Provider {
+declare abstract class Web3Provider extends AbstractWeb3Provider {
   abstract getSigner(): Promise<Web3Signer>;
 }
 
@@ -35,7 +30,7 @@ export type DomainDetails = {
 
   content: string;
   contentType?: string;
-  cname: string
+
   addrs: {
     key: string;
     value: string;
@@ -87,9 +82,7 @@ export const nonode = "0x0000000000000000000000000000000000000000000000000000000
 
 export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
-export function getPnsAddr(): string {
-  return pnsAddr;
-}
+const tld = "dot";
 
 export function getProvider(): Web3Provider {
   return provider;
@@ -286,9 +279,9 @@ export function removeTld(label: DomainString): DomainString {
   return label.replace(".dot", "");
 }
 
-export async function setName(name: DomainString, resv?: IResolver) {
+export async function setName(addr: HexAddress, name: DomainString, resv?: IResolver) {
   const tokenId = getNamehash(name);
-  return resolver.setName(tokenId);
+  return resolver.setName(addr, tokenId);
 }
 
 export async function getName(addr: HexAddress, resv?: IResolver): Promise<BigNumber> {
@@ -303,19 +296,9 @@ export async function getNftName(nftAddr: HexAddress, nftTokenId: string) {
   return resolver.getNftName(nftAddr, nftTokenId);
 }
 
-export async function setKey(name: DomainString, key: string, value: string, resv?: IResolver) {
-  const tokenId = getNamehash(name);
-  return resolver.set(key, value, tokenId);
-}
-
 export async function getKey(name: DomainString, key: string, resv?: IResolver): Promise<string> {
   const tokenId = getNamehash(name);
   return resolver.get(key, tokenId);
-}
-
-export async function setKeys(name: DomainString, keys: string[], values: string[], resv?: IResolver) {
-  const tokenId = getNamehash(name);
-  return resolver.setMany(keys, values, tokenId);
 }
 
 export async function setKeysByHash(name: DomainString, keys: string[], values: string[], resv?: IResolver) {
@@ -374,15 +357,7 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     textRecords: textRecords,
   };
 
-  let [content, btc, eth, dot, ksm, cname] = await Promise.all([
-    getKey(name, "contenthash"),
-    getKey(name, "BTC"),
-    getKey(name, "ETH"),
-    getKey(name, "DOT"),
-    getKey(name, "KSM"),
-    getKey(name, "cname"),
-  ])
-
+  const content = await getKey(name, "contenthash");
   return {
     ...node,
     addrs: [
@@ -391,40 +366,26 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
       { key: "DOT", value: await getKey(name, "DOT") },
       { key: "KSM", value: await getKey(name, "KSM") },
     ],
-    cname,
     content: content,
     contentType: "ipfs",
   };
 }
 
-export async function nameRedeem(label: DomainString, account: string, duration: number, shortcode: string) {
-  const res = await fetch(`${PnsApi}/redeem/name-redeem-code`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({label, shortcode, address: account})
-  })
-  const resJons = await res.json()
-
-  if (resJons.result === 'error') {
-    throw new Error('Redeem code is unavailable')
-  } else {
-    return controller.nameRedeem(label, account, duration, resJons.code);
-  }
+export async function nameRedeem(label: DomainString, account: string, duration: number, deadline: number, code: string) {
+  return controller.nameRedeem(label, account, duration, deadline, code);
 }
 
 export async function registerByManager(label: DomainString, account: string, duration: number) {
-  return controller.nameRegisterByManager(label, account, duration);
-}
-
-export async function renewByManager(label: LabelString, duration: number) {
-  return controller.renewByManager(label, duration);
+  return controller.nameRegisterByManager(label, account, duration, [], []);
 }
 
 export async function renew(label: LabelString, duration: number) {
   const price = await renewPrice(label, duration);
   return controller.renew(label, duration, { value: price });
+}
+
+export async function renewByManager(label: LabelString, duration: number) {
+  return controller.renewByManager(label, duration);
 }
 
 export async function transferName(name: DomainString, newOwner: HexAddress) {
@@ -462,14 +423,15 @@ export function abiDataEncode(data: any, datatype: string): Buffer {
   return Buffer.from(encoded, "hex");
 }
 
-export function encodeMsg(nameTokenId: string, address: string, duration: number): Uint8Array {
+export function encodeMsg(nameTokenId: string, address: string, duration: number, deadline: number): Uint8Array {
   let nameTokenIdBuffer = abiDataEncode(nameTokenId, "uint");
   let addressBuffer = abiDataEncode(address, "uint160").slice(12);
   let durationBuffer = abiDataEncode(duration, "uint");
+  let deadlineBuffer = abiDataEncode(deadline, "uint");
   // console.log('data', Buffer.concat([nameTokenIdBuffer, addressBuffer, durationBuffer]).toString('hex'))
   // address type has strange padding, which doesn't work
   // console.log(ethers.utils.defaultAbiCoder.encode(['uint256', 'address', 'uint256'], [nameTokenId, address, duration]))
-  return Buffer.concat([nameTokenIdBuffer, addressBuffer, durationBuffer]);
+  return Buffer.concat([nameTokenIdBuffer, addressBuffer, durationBuffer, deadlineBuffer]);
 }
 
 export function hashMsg(data: Uint8Array): Uint8Array {
@@ -477,12 +439,11 @@ export function hashMsg(data: Uint8Array): Uint8Array {
   return ethers.utils.arrayify(hashed);
 }
 
-export async function generateRedeemCode(nameTokenId: string, address: string, duration: number, signer: any): Promise<string> {
-  let msg = encodeMsg(nameTokenId, address, duration);
+export async function generateRedeemCode(nameTokenId: string, address: string, duration: number, deadline: number, signer: any): Promise<string> {
+  let msg = encodeMsg(nameTokenId, address, duration, deadline);
   let hashedMsg = hashMsg(msg);
   return signer.signMessage(hashedMsg);
 }
-
 
 export async function login() {
   if (!provider) {
@@ -554,5 +515,5 @@ export function logout() {}
 
 export async function burn(domain: string) {
   let id = getNamehash(domain);
-  return await controller.burn(id)
+  return await controller.burn(id);
 }
