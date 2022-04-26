@@ -39,6 +39,7 @@ export type DomainDetails = {
     key: string;
     value: string;
   }[];
+  cname: string
 };
 
 let provider: Web3Provider;
@@ -83,6 +84,10 @@ export const nonode = "0x0000000000000000000000000000000000000000000000000000000
 export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
 const tld = "dot";
+
+export function getPnsAddr(): string {
+  return pnsAddr;
+}
 
 export function getProvider(): Web3Provider {
   return provider;
@@ -357,15 +362,17 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     textRecords: textRecords,
   };
 
-  const content = await getKey(name, "contenthash");
+  let [content, btc, eth, dot, ksm, cname] = await getKeys(name, ['contenthash', "BTC", "ETH", "DOT", "KSM", "cname"])
+
   return {
     ...node,
     addrs: [
-      { key: "BTC", value: await getKey(name, "BTC") },
-      { key: "ETH", value: await getKey(name, "ETH") },
-      { key: "DOT", value: await getKey(name, "DOT") },
-      { key: "KSM", value: await getKey(name, "KSM") },
+      { key: "BTC", value: btc },
+      { key: "ETH", value: eth },
+      { key: "DOT", value: dot },
+      { key: "KSM", value: ksm },
     ],
+    cname,
     content: content,
     contentType: "ipfs",
   };
@@ -460,6 +467,11 @@ export async function login() {
 }
 
 import { request, gql } from "graphql-request";
+
+// @ts-ignore
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
 
 export type GraphDomainDetails = {
   id: string;
