@@ -254,9 +254,9 @@ export async function register(label: DomainString, account: string, duration: n
   return controller.nameRegister(label, account, duration, { value: price });
 }
 
-export async function registerWithConfig(label: DomainString, account: string, duration: number, keys: string[], values: string[]) {
+export async function registerWithConfig(label: DomainString, account: string, duration: number, keysHash: string[], values: string[]) {
   const price = await totalRegisterPrice(label, duration);
-  return controller.nameRegisterWithConfig(label, account, duration, [], [], { value: price });
+  return controller.nameRegisterWithConfig(label, account, duration, keysHash, values, { value: price });
 }
 
 export function mintSubdomain(newOwner: HexAddress, name: DomainString, label: LabelString) {
