@@ -1,6 +1,6 @@
 {
   "name": "pns-sdk",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "",
   "keywords": [],
   "author": "jiangplus",
@@ -27,6 +27,7 @@
     "graphql": "^15.7.2",
     "graphql-request": "^3.6.1",
     "js-sha3": "^0.8.0",
+    "pns-sdk": "^0.7.6",
     "ws": ">=7.4.6"
   }
 }

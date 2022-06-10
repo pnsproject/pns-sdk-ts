@@ -699,6 +699,19 @@ picocolors@^1.0.0:
   resolved "https://registry.npmmirror.com/picocolors/download/picocolors-1.0.0.tgz"
   integrity sha1-y1vcdP8/UYkiNur3nWi8RFZKuBw=
 
+pns-sdk@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/pns-sdk/-/pns-sdk-0.7.6.tgz#981ac5589590680156b92a059231f5084d0ccb04"
+  integrity sha512-fLHRF+rRWFp8B4k8a67hjeR5a3Koby0YqIR0HagI3INi8yIAB6zx8DseZcEA8MFxGkFha6eZ3FExWGwWpsM0FQ==
+  dependencies:
+    axios "^0.25.0"
+    buffer "^6.0.3"
+    ethers "^5.4.7"
+    graphql "^15.7.2"
+    graphql-request "^3.6.1"
+    js-sha3 "^0.8.0"
+    ws ">=7.4.6"
+
 postcss@^8.3.8:
   version "8.3.11"
   resolved "https://registry.npmmirror.com/postcss/download/postcss-8.3.11.tgz"

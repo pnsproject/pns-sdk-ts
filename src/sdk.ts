@@ -210,7 +210,7 @@ export async function totalRegisterPrice(name: LabelString, duration: number): P
 }
 
 export async function renewPrice(name: LabelString, duration: number): Promise<BigNumber> {
-  return controller.totalRegisterPrice(name, duration);
+  return controller.renewPrice(name, duration);
 }
 
 export async function getControllerRoot(): Promise<HexAddress> {
@@ -480,80 +480,140 @@ export type GraphDomainDetails = {
   owner: string;
 };
 
+export function toChecksumAddress(address: string): string {
+  address = address.toLowerCase().replace('0x', '')
+  const hash =  keccak_256(address)
+  let ret = '0x'
+  for (let i = 0; i < address.length; i++) {
+    if (parseInt(hash[i], 16) > 7) {
+      ret += address[i].toUpperCase()
+    } else {
+      ret += address[i]
+    }
+  }
+
+ return ret
+}
+
 /** 列出用户的父级域名列表 */
 export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
+  const checksumAddress = toChecksumAddress(account)
   const query = gql`
-    query Subdomains($account: Bytes!, $parent: BigInt!) {
-      subdomains(where: { owner: $account, parent: $parent }) {
-        id
-        name
-        parent
-        owner
+  query MyQuery($account: String!, $parent: String!) {
+      subdomains(
+        filter: {
+          owner: {
+            equalTo: $account
+          }
+          parent:{
+            equalTo: $parent
+          }
+        }
+      )
+      {
+        nodes {
+          id
+          name
+          owner
+          parent
+        }
       }
-    }
+ }
   `;
   const variables = {
-    account: account,
+    account: checksumAddress,
     parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
   };
 
   let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
 
-  return resp.subdomains;
+  return resp.subdomains.nodes;
 }
 
 /** 列出所有域名列表,包括父、子域名 */
 export async function getAllDomains(account: string): Promise<GraphDomainDetails[]> {
+  const checksumAddress = toChecksumAddress(account)
   const query = gql`
-    query Subdomains($account: Bytes!) {
-      subdomains(where: { owner: $account }) {
-        id
-        name
-        parent
-        owner
+   query MyQuery($account: String!) {
+      subdomains(
+        filter: {
+          owner: {
+            equalTo: $account
+          }
+        }
+      )
+      {
+        nodes {
+          id
+          name
+          owner
+          parent
+        }
       }
-    }
+   }
   `;
   const variables = {
-    account: account
+    account: checksumAddress
   };
 
   let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
 
-  return resp.subdomains;
+  return resp.subdomains.nodes;
 }
 
-/** 列出用户的域名列表 */
+/** 列出用户的所有子域名列表 */
 export async function getAllSubdomains(owner: string): Promise<GraphDomainDetails[]> {
+  const checksumAddress = toChecksumAddress(account)
   const query = gql`
-    query MyQuery($owner: Bytes!, $parent: BigInt!) {
-      subdomains(where: {owner: $owner, parent_not: $parent}) {
-        id
-        name
-        owner
-        parent
+    query MyQuery($account: String!, $parent: String!) {
+      subdomains(
+        filter: {
+          owner: {
+            equalTo: $account
+          }
+          parent:{
+            notEqualTo: $parent
+          }
+        }
+      )
+      {
+        nodes {
+          id
+          name
+          owner
+          parent
+        }
       }
     }
   `;
   const variables = {
-    owner,
+    account: checksumAddress,
     parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
   };
 
   let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
 
-  return resp.subdomains;
+  return resp.subdomains.nodes;
 }
 
-/** 列出子域名列表 */
+/** 列出父级域名下的子域名列表 */
 export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
   const query = gql`
-    query Subdomains($parent: BigInt!) {
-      subdomains(where: { parent: $parent }) {
-        id
-        name
-        parent
-        owner
+    query MyQuery($parent: String!) {
+      subdomains(
+        filter: {
+          parent:{
+            equalTo: $parent
+          }
+        }
+      )
+      {
+        nodes {
+          id
+          name
+          owner
+          parent
+        }
       }
     }
   `;
@@ -563,7 +623,7 @@ export async function getSubdomains(domain: string): Promise<GraphDomainDetails[
 
   let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
 
-  return resp.subdomains;
+  return resp.subdomains.nodes;
 }
 
 export function logout() {}

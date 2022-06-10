@@ -24,7 +24,9 @@ import {
   transferName,
   generateRedeemCode,
   getDomains,
+  getAllDomains,
   getSubdomains,
+  getAllSubdomains,
   getNamehash,
   setProvider,
   setName,
@@ -48,7 +50,7 @@ async function main() {
   // console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
   // console.log("getSubdomains", await getSubdomains("dot"));
 
-  console.log("dot owner", await getOwner("dot"));
+  // console.log("dot owner", await getOwner("dot"));
   // console.log("dot owner", await ownerOf("dot"));
   // console.log("dot owner", await exists("dot"));
   // console.log("dot owner", await getResolver("dot"));
@@ -58,7 +60,7 @@ async function main() {
 
   // console.log("controllerRoot", await controllerRoot());
 
-  console.log("gavinwood100.dot owner", await getOwner("gavinwood100.dot"));
+  // console.log("gavinwood100.dot owner", await getOwner("gavinwood100.dot"));
 
   let account = getAccount();
   console.log("account", account);
@@ -121,9 +123,10 @@ async function main() {
   // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
   // console.log(getNamehash("gavinwood298.dot"));
   // console.log("account getName", (await getName(account)).toHexString());
-  // console.log(await getDomains(account));
-  // console.log(await getSubdomains("gavinwood298.dot"));
-  // console.log("getSubdomains", await getSubdomains(getNamehash("gavinwood298.dot")));
+  console.log('getDomains', await getDomains(account));
+  console.log('getAllDomains', await getAllDomains(account));
+  console.log("getAllSubdomains", await getAllSubdomains(account));
+  console.log("getSubdomains", await getSubdomains('zoufangda01.dot'));
   // console.log("getCurrencyRate", (await getCurrencyRate()).toString());
   // console.log("getUsdBasePrices", (await getUsdBasePrices()).toString());
   // console.log("getUsdRentPrices", (await getUsdRentPrices()).toString());

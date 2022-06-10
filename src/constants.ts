@@ -72,7 +72,7 @@ export const PriceOracleAddr = "0xdb4890df1f92Cf3915f4d8230655185902a61061"; // 
 
 export const GraphUrl: any = {
   1285: "https://movr-graph.pns.link",
-  1284: "https://glmr-graph.pns.link",
+  1284: "https://api.subquery.network/sq/pnsproject/pnsql",
   43113: "https://fuji-graph.pns.link",
 };
 
