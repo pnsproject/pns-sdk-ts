@@ -46,6 +46,7 @@ let provider: Web3Provider;
 let signer: Web3Signer;
 let account: string;
 let networkId: number;
+let customGql: string;
 
 let pns: IPNS;
 let controller: IController;
@@ -125,7 +126,11 @@ export async function setProvider(_provider?: Web3Provider) {
   return;
 }
 
-export async function setup(providerOpt?: Web3Provider, pnsAddress?: string, controllerAddress?: string) {
+export async function setup(
+  providerOpt?: Web3Provider,
+  pnsAddress?: string,
+  controllerAddress?: string,
+  GraphUrl?: string) {
   await setProvider(providerOpt);
 
   let addrMap = ContractAddrMap[networkId];
@@ -133,6 +138,10 @@ export async function setup(providerOpt?: Web3Provider, pnsAddress?: string, con
 
   pnsAddress = pnsAddress || addrMap.pns;
   controllerAddress = controllerAddress || addrMap.controller;
+
+  if (GraphUrl) {
+    customGql = GraphUrl
+  }
 
   if (signer) {
     pns = IPNS__factory.connect(pnsAddress, signer);
@@ -525,7 +534,8 @@ export async function getDomains(account: string): Promise<GraphDomainDetails[]>
     parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
   };
 
-  let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
+  const graphUrl = customGql || GraphUrl[networkId]
+  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains.nodes;
 }
@@ -556,7 +566,8 @@ export async function getAllDomains(account: string): Promise<GraphDomainDetails
     account: checksumAddress
   };
 
-  let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
+  const graphUrl = customGql || GraphUrl[networkId]
+  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains.nodes;
 }
@@ -591,7 +602,8 @@ export async function getAllSubdomains(owner: string): Promise<GraphDomainDetail
     parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
   };
 
-  let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
+  const graphUrl = customGql || GraphUrl[networkId]
+  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains.nodes;
 }
@@ -621,7 +633,8 @@ export async function getSubdomains(domain: string): Promise<GraphDomainDetails[
     parent: BigInt(getNamehash(domain)),
   };
 
-  let resp = await request(GraphUrl[networkId] + "/subgraphs/name/name-graph", query, variables);
+  const graphUrl = customGql || GraphUrl[networkId]
+  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
 
   return resp.subdomains.nodes;
 }

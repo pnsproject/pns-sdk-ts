@@ -31,6 +31,22 @@ export const Chains: any = {
     chainId: 1284,
     networkId: 1284,
   },
+  1287: {
+    name: "Moonbase Alpha",
+    chain: "MOON",
+    network: "testnet",
+    rpc: ["https://rpc.api.moonbase.moonbeam.network"],
+    faucets: ['https://apps.moonbeam.network/moonbase-alpha/faucet/'],
+    nativeCurrency: {
+      name: "DEV",
+      symbol: "DEV",
+      decimals: 18,
+    },
+    infoURL: "https://moonbase.moonscan.io/",
+    shortName: "Moonbase",
+    chainId: 1287,
+    networkId: 1287,
+  },
 };
 
 export interface IContractAddrs {
@@ -50,6 +66,10 @@ export const ContractAddrMap: IContractAddrsMap = {
   1284: {
     pns: "0x7d5F0398549C9fDEa03BbDde388361827cb376D5",
     controller: "0x268C915680Da0b74D2EE520866716a7a295fEdf6",
+  },
+  1287: {
+    pns: "0xf24e64621c9df0b4b0f0bc03c74af93955f69825",
+    controller: "0x31d6c3d957bf11c3b858cedcd325feb02b6e2801",
   },
 };
 
@@ -71,9 +91,9 @@ export const RPC_URL = "https://rpc.api.moonbeam.network";
 export const PriceOracleAddr = "0xdb4890df1f92Cf3915f4d8230655185902a61061"; // GLMR / USD on GLMR
 
 export const GraphUrl: any = {
-  1285: "https://movr-graph.pns.link",
   1284: "https://api.subquery.network/sq/pnsproject/pnsql",
-  43113: "https://fuji-graph.pns.link",
+  1287: "https://api.subquery.network/sq/pnsproject/pnstest",
+  43113: "https://fuji-graph.pns.link"
 };
 
 export const PnsApi = "https://api-rpc.pns.link";
