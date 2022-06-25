@@ -1,7 +1,7 @@
 import { ethers, Signer, BigNumber } from "ethers";
 import { keccak_256 } from "js-sha3";
 
-import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
+import { Block, BlockTag, Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
 import { RPC_URL, PnsApi, Chains, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
@@ -83,6 +83,7 @@ export const baseNode = getNamehash("dot");
 export const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
 
 export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
+export const ADDRESS_RECORD_KEYS = ['contenthash', "BTC", "ETH", "DOT", "KSM", "cname"]
 
 const tld = "dot";
 
@@ -115,7 +116,7 @@ export async function setProvider(_provider?: Web3Provider) {
     provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
   } else {
     console.log("cannot find a global `ethereum` object");
-    provider = new ethers.providers.JsonRpcProvider(RPC_URL) as any;
+    provider = new ethers.providers.StaticJsonRpcProvider(RPC_URL) as any;
     account = "0x0";
   }
   // if (!_provider) throw "provider is empty";
@@ -332,10 +333,15 @@ export async function getKeysByHash(name: DomainString, key: string[], resv?: IR
 // return await resv.getMany(key, tokenId);
 
 function buildKeyValueObjects(keys: any, values: any) {
-  return values.map((record: any, i: any) => ({
-    key: keys[i],
-    value: record,
-  }));
+  let res: any[] = []
+  const times = keys.length === values.length ? keys.length : Math.min(keys.length, values.length)
+  for (let i = 0 ;i < times; i++) {
+    res.push({
+      key: keys[i],
+      value: values[i]
+    })
+  }
+  return res
 }
 
 export function getLabelhash(rawlabel: string): HexAddress {
@@ -357,32 +363,30 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   const nameArray = name.split(".");
   const label = nameArray[0];
   const labelhash = getLabelhash(label);
-  const owner = await getOwner(name);
 
-  const promises = TEXT_RECORD_KEYS.map((key) => getKey(name, "text." + key));
-  const records = await Promise.all(promises);
-  let textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
+  const totalKeys = [...TEXT_RECORD_KEYS.map((key) => 'text.' + key), ...ADDRESS_RECORD_KEYS ]
+  const [owner, records] = await Promise.all([
+    getOwner(name),
+    getKeys(name, totalKeys)
+  ])
 
-  const node = {
+  const textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
+  const addrs = [
+    { key: "BTC", value: records[TEXT_RECORD_KEYS.length + 1] },
+    { key: "ETH", value: records[TEXT_RECORD_KEYS.length + 2] },
+    { key: "DOT", value: records[TEXT_RECORD_KEYS.length + 3] },
+    { key: "KSM", value: records[TEXT_RECORD_KEYS.length + 4] },
+  ]
+
+  return {
     name,
     label,
     labelhash,
     owner,
     textRecords: textRecords,
-  };
-
-  let [content, btc, eth, dot, ksm, cname] = await getKeys(name, ['contenthash', "BTC", "ETH", "DOT", "KSM", "cname"])
-
-  return {
-    ...node,
-    addrs: [
-      { key: "BTC", value: btc },
-      { key: "ETH", value: eth },
-      { key: "DOT", value: dot },
-      { key: "KSM", value: ksm },
-    ],
-    cname,
-    content: content,
+    addrs,
+    cname: records[TEXT_RECORD_KEYS.length + 5],
+    content: records[TEXT_RECORD_KEYS.length],
     contentType: "ipfs",
   };
 }
@@ -476,6 +480,7 @@ export async function login() {
 }
 
 import { request, gql } from "graphql-request";
+import { Network } from "@ethersproject/networks";
 
 // @ts-ignore
 BigInt.prototype.toJSON = function () {

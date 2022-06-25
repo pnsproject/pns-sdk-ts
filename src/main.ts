@@ -123,10 +123,13 @@ async function main() {
   // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
   // console.log(getNamehash("gavinwood298.dot"));
   // console.log("account getName", (await getName(account)).toHexString());
-  console.log('getDomains', await getDomains(account));
-  console.log('getAllDomains', await getAllDomains(account));
-  console.log("getAllSubdomains", await getAllSubdomains(account));
-  console.log("getSubdomains", await getSubdomains('zoufangda01.dot'));
+  //console.log('getDomains', await getDomains(account));
+  // console.log('getAllDomains', await getAllDomains(account));
+  // console.log("getAllSubdomains", await getAllSubdomains(account));
+  // console.log("getSubdomains", await getSubdomains('zoufangda01.dot'));
+  // console.log("getKeys", await getKeys('zoufangda01.dot', ['text.com.github', 'text.email', 'text.url', 'text.avatar']));
+  console.log("getKey", await getKey('zoufangda01.dot', 'text.com.github'));
+  console.log("getDomainDetails", await getDomainDetails('zoufangda01.dot'));
   // console.log("getCurrencyRate", (await getCurrencyRate()).toString());
   // console.log("getUsdBasePrices", (await getUsdBasePrices()).toString());
   // console.log("getUsdRentPrices", (await getUsdRentPrices()).toString());
