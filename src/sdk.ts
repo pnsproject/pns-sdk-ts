@@ -1,4 +1,4 @@
-import { ethers, Signer, BigNumber } from "ethers";
+import { ethers, Signer, BigNumber, BigNumberish } from "ethers";
 import { keccak_256 } from "js-sha3";
 
 import { Block, BlockTag, Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
@@ -264,9 +264,9 @@ export async function register(label: DomainString, account: string, duration: n
   return controller.nameRegister(label, account, duration, { value: price });
 }
 
-export async function registerWithConfig(label: DomainString, account: string, duration: number, keysHash: string[], values: string[]) {
-  const price = await totalRegisterPrice(label, duration);
-  return controller.nameRegisterWithConfig(label, account, duration, keysHash, values, { value: price });
+export async function registerWithConfig(name: DomainString, to: string, duration: number, data: number, keysHash: string[], values: string[]) {
+  const price = await totalRegisterPrice(name, duration);
+  return controller.nameRegisterWithConfig(name, to, duration, data, keysHash, values, { value: price });
 }
 
 export function mintSubdomain(newOwner: HexAddress, name: DomainString, label: LabelString) {
@@ -395,8 +395,8 @@ export async function nameRedeem(label: DomainString, account: string, duration:
   return controller.nameRedeem(label, account, duration, deadline, code);
 }
 
-export async function registerByManager(label: DomainString, account: string, duration: number) {
-  return controller.nameRegisterByManager(label, account, duration, [], []);
+export async function registerByManager(name: DomainString, to: string, duration: number, data:number, keyHashes: string[], values: string[]) {
+  return controller.nameRegisterByManager(name, to, duration, data, keyHashes || [], values || []);
 }
 
 export async function renew(label: LabelString, duration: number) {

@@ -34,6 +34,7 @@ import {
   sha3,
   getPrices,
   getTokenPrice,
+  registerWithConfig
 } from "./sdk";
 
 import { ethers, Signer, BigNumber } from "ethers";
@@ -68,6 +69,7 @@ async function main() {
   // let tokenPrice = (await getTokenPrice());
   let fee = (await totalRegisterPrice("gavinwood100", 86400 * 365)).toString();
   console.log("totalRegisterPrice", fee);
+  console.log('registerWithConfig',  await registerWithConfig('zfdzzzzzzzzzzzzzzzz', '0x0b23e3588c906c3f723c58ef4d6baee7840a977c', 31536000, 0, [],[]))
   // console.log("getTokenPrice", tokenPrice.toString());
   // console.log("getTokenPrice of fee", tokenPrice.mul(fee).div("100000000000000000000000000").toString());
 
