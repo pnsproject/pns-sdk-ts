@@ -19,14 +19,21 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IManagerOwnableInterface extends ethers.utils.Interface {
+interface ManagerOwnableUpgradeableInterface extends ethers.utils.Interface {
   functions: {
+    "_root()": FunctionFragment;
+    "initialize()": FunctionFragment;
     "isManager(address)": FunctionFragment;
     "root()": FunctionFragment;
     "setManager(address,bool)": FunctionFragment;
     "transferRootOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "_root", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "isManager", values: [string]): string;
   encodeFunctionData(functionFragment: "root", values?: undefined): string;
   encodeFunctionData(
@@ -38,6 +45,8 @@ interface IManagerOwnableInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(functionFragment: "_root", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
@@ -46,10 +55,24 @@ interface IManagerOwnableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "ManagerChanged(address,bool)": EventFragment;
+    "RootOwnershipTransferred(address,address)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "ManagerChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RootOwnershipTransferred"): EventFragment;
 }
 
-export class IManagerOwnable extends BaseContract {
+export type ManagerChangedEvent = TypedEvent<
+  [string, boolean] & { manager: string; role: boolean }
+>;
+
+export type RootOwnershipTransferredEvent = TypedEvent<
+  [string, string] & { oldRoot: string; newRoot: string }
+>;
+
+export class ManagerOwnableUpgradeable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -90,9 +113,15 @@ export class IManagerOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IManagerOwnableInterface;
+  interface: ManagerOwnableUpgradeableInterface;
 
   functions: {
+    _root(overrides?: CallOverrides): Promise<[string]>;
+
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isManager(addr: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     root(overrides?: CallOverrides): Promise<[string]>;
@@ -108,6 +137,12 @@ export class IManagerOwnable extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  _root(overrides?: CallOverrides): Promise<string>;
+
+  initialize(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -125,6 +160,10 @@ export class IManagerOwnable extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    _root(overrides?: CallOverrides): Promise<string>;
+
+    initialize(overrides?: CallOverrides): Promise<void>;
+
     isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
 
     root(overrides?: CallOverrides): Promise<string>;
@@ -141,9 +180,35 @@ export class IManagerOwnable extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "ManagerChanged(address,bool)"(
+      manager?: string | null,
+      role?: boolean | null
+    ): TypedEventFilter<[string, boolean], { manager: string; role: boolean }>;
+
+    ManagerChanged(
+      manager?: string | null,
+      role?: boolean | null
+    ): TypedEventFilter<[string, boolean], { manager: string; role: boolean }>;
+
+    "RootOwnershipTransferred(address,address)"(
+      oldRoot?: string | null,
+      newRoot?: string | null
+    ): TypedEventFilter<[string, string], { oldRoot: string; newRoot: string }>;
+
+    RootOwnershipTransferred(
+      oldRoot?: string | null,
+      newRoot?: string | null
+    ): TypedEventFilter<[string, string], { oldRoot: string; newRoot: string }>;
+  };
 
   estimateGas: {
+    _root(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isManager(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     root(overrides?: CallOverrides): Promise<BigNumber>;
@@ -161,6 +226,12 @@ export class IManagerOwnable extends BaseContract {
   };
 
   populateTransaction: {
+    _root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     isManager(
       addr: string,
       overrides?: CallOverrides

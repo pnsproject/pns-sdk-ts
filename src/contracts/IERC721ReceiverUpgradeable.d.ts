@@ -19,37 +19,25 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IManagerOwnableInterface extends ethers.utils.Interface {
+interface IERC721ReceiverUpgradeableInterface extends ethers.utils.Interface {
   functions: {
-    "isManager(address)": FunctionFragment;
-    "root()": FunctionFragment;
-    "setManager(address,bool)": FunctionFragment;
-    "transferRootOwnership(address)": FunctionFragment;
+    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "isManager", values: [string]): string;
-  encodeFunctionData(functionFragment: "root", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "setManager",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
+    functionFragment: "onERC721Received",
+    values: [string, string, BigNumberish, BytesLike]
   ): string;
 
-  decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
+    functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
 
   events: {};
 }
 
-export class IManagerOwnable extends BaseContract {
+export class IERC721ReceiverUpgradeable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -90,92 +78,54 @@ export class IManagerOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IManagerOwnableInterface;
+  interface: IERC721ReceiverUpgradeableInterface;
 
   functions: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    root(overrides?: CallOverrides): Promise<[string]>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
-
-  root(overrides?: CallOverrides): Promise<string>;
-
-  setManager(
-    manager: string,
-    role: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferRootOwnership(
-    newOwner: string,
+  onERC721Received(
+    operator: string,
+    from: string,
+    tokenId: BigNumberish,
+    data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
-
-    root(overrides?: CallOverrides): Promise<string>;
-
-    setManager(
-      manager: string,
-      role: boolean,
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    root(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferRootOwnership(
-      newOwner: string,
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    isManager(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

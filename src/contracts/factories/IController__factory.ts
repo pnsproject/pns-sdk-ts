@@ -6,453 +6,469 @@ import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
 import type { IController, IControllerInterface } from "../IController";
 
-const _abi = [{
-  "inputs": [{
-    "internalType": "contract IPNS",
-    "name": "pns",
-    "type": "address"
-  }, { "internalType": "uint256", "name": "_baseNode", "type": "uint256" }, {
-    "internalType": "uint256[]",
-    "name": "_basePrices",
-    "type": "uint256[]"
-  }, { "internalType": "uint256[]", "name": "_rentPrices", "type": "uint256[]" }, {
-    "internalType": "address",
-    "name": "_priceFeed",
-    "type": "address"
-  }], "stateMutability": "nonpayable", "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": false, "internalType": "uint256", "name": "tokenId", "type": "uint256" }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "capacity",
-    "type": "uint256"
-  }],
-  "name": "CapacityUpdated",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": false, "internalType": "uint256", "name": "flags", "type": "uint256" }],
-  "name": "ConfigUpdated",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": true, "internalType": "address", "name": "manager", "type": "address" }, {
-    "indexed": true,
-    "internalType": "bool",
-    "name": "role",
-    "type": "bool"
-  }],
-  "name": "ManagerChanged",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": false, "internalType": "uint256[]", "name": "data", "type": "uint256[]" }],
-  "name": "MetadataUpdated",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": false, "internalType": "address", "name": "to", "type": "address" }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "node",
-    "type": "uint256"
-  }, { "indexed": false, "internalType": "uint256", "name": "cost", "type": "uint256" }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "expires",
-    "type": "uint256"
-  }, { "indexed": false, "internalType": "string", "name": "name", "type": "string" }],
-  "name": "NameRegistered",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": false, "internalType": "uint256", "name": "node", "type": "uint256" }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "cost",
-    "type": "uint256"
-  }, { "indexed": false, "internalType": "uint256", "name": "expires", "type": "uint256" }, {
-    "indexed": false,
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }],
-  "name": "NameRenewed",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "uint256[]",
-    "name": "basePrices",
-    "type": "uint256[]"
-  }, { "indexed": false, "internalType": "uint256[]", "name": "rentPrices", "type": "uint256[]" }],
-  "name": "PriceChanged",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{ "indexed": true, "internalType": "address", "name": "oldRoot", "type": "address" }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newRoot",
-    "type": "address"
-  }],
-  "name": "RootOwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "BASE_NODE",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "DEFAULT_DOMAIN_CAPACITY",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "FLAGS",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "GRACE_PERIOD",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "MIN_REGISTRATION_DURATION",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "MIN_REGISTRATION_LENGTH",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "_pns",
-  "outputs": [{ "internalType": "contract IPNS", "name": "", "type": "address" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "available",
-  "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }],
-  "name": "basePrice",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "burn",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "capacity",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "capacityPrice",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "children",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "expire",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "delta", "type": "uint256" }],
-  "name": "getCapacityPrice",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getPrices",
-  "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getTokenPrice",
-  "outputs": [{ "internalType": "int256", "name": "", "type": "int256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "address", "name": "addr", "type": "address" }],
-  "name": "isManager",
-  "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, {
-    "internalType": "uint256",
-    "name": "tokenId",
-    "type": "uint256"
-  }, { "internalType": "string", "name": "name", "type": "string" }],
-  "name": "mintSubdomain",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "bytes[]", "name": "data", "type": "bytes[]" }],
-  "name": "multicall",
-  "outputs": [{ "internalType": "bytes[]", "name": "results", "type": "bytes[]" }],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "nameExpired",
-  "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "address",
-    "name": "to",
-    "type": "address"
-  }, { "internalType": "uint256", "name": "duration", "type": "uint256" }, {
-    "internalType": "uint256",
-    "name": "deadline",
-    "type": "uint256"
-  }, { "internalType": "bytes", "name": "code", "type": "bytes" }],
-  "name": "nameRedeem",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "address",
-    "name": "to",
-    "type": "address"
-  }, { "internalType": "uint256", "name": "duration", "type": "uint256" }],
-  "name": "nameRegister",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "payable",
-  "type": "function"
-}, {
-  "inputs": [
-    { "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "address",
-    "name": "to",
-    "type": "address"
-  }, { "internalType": "uint256", "name": "duration", "type": "uint256" },
-    {
-    "internalType": "uint256",
-    "name": "data",
-    "type": "uint256"
+const _abi = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "capacity",
+        type: "uint256",
+      },
+    ],
+    name: "CapacityUpdated",
+    type: "event",
   },
-    { "internalType": "uint256[]", "name": "keyHashes", "type": "uint256[]" },
-    {
-    "internalType": "string[]",
-    "name": "values",
-    "type": "string[]"
-  }],
-  "name": "nameRegisterByManager",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [
-    { "internalType": "string", "name": "name", "type": "string" },
-    {"internalType": "address",
-    "name": "to",
-    "type": "address"},
-    {"internalType": "uint256", "name": "duration", "type": "uint256" },
-    { "internalType": "uint256",
-    "name": "data",
-    "type": "uint256"},
-    { "internalType": "uint256[]", "name": "keyHashes", "type": "uint256[]" },
-    {"internalType": "string[]",
-    "name": "values",
-    "type": "string[]"}
-  ],
-  "name": "nameRegisterWithConfig",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "payable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }],
-  "name": "origin",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "priceFeed",
-  "outputs": [{ "internalType": "contract AggregatorV3Interface", "name": "", "type": "address" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "bytes32", "name": "datahash", "type": "bytes32" }, {
-    "internalType": "bytes",
-    "name": "code",
-    "type": "bytes"
-  }],
-  "name": "recoverKey",
-  "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-  "stateMutability": "pure",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "uint256",
-    "name": "duration",
-    "type": "uint256"
-  }], "name": "renew", "outputs": [], "stateMutability": "payable", "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "uint256",
-    "name": "duration",
-    "type": "uint256"
-  }], "name": "renewByManager", "outputs": [], "stateMutability": "nonpayable", "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "uint256",
-    "name": "duration",
-    "type": "uint256"
-  }],
-  "name": "renewPrice",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "uint256",
-    "name": "duration",
-    "type": "uint256"
-  }],
-  "name": "rentPrice",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "root",
-  "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }, {
-    "internalType": "uint256",
-    "name": "_capacity",
-    "type": "uint256"
-  }], "name": "setCapacity", "outputs": [], "stateMutability": "payable", "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }, {
-    "internalType": "uint256",
-    "name": "_capacity",
-    "type": "uint256"
-  }], "name": "setCapacityByManager", "outputs": [], "stateMutability": "nonpayable", "type": "function"
-}, {
-  "inputs": [{ "internalType": "uint256", "name": "_flags", "type": "uint256" }, {
-    "internalType": "uint256",
-    "name": "_min_length",
-    "type": "uint256"
-  }, { "internalType": "uint256", "name": "_min_duration", "type": "uint256" }, {
-    "internalType": "uint256",
-    "name": "_grace_period",
-    "type": "uint256"
-  }, { "internalType": "uint256", "name": "_default_capacity", "type": "uint256" }, {
-    "internalType": "uint256",
-    "name": "_capacity_price",
-    "type": "uint256"
-  }, { "internalType": "address", "name": "_price_feed", "type": "address" }],
-  "name": "setContractConfig",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }, {
-    "internalType": "bool",
-    "name": "role",
-    "type": "bool"
-  }], "name": "setManager", "outputs": [], "stateMutability": "nonpayable", "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256[]",
-    "name": "tokenIds",
-    "type": "uint256[]"
-  }, {
-    "components": [{ "internalType": "uint256", "name": "origin", "type": "uint256" }, {
-      "internalType": "uint64",
-      "name": "expire",
-      "type": "uint64"
-    }, { "internalType": "uint64", "name": "capacity", "type": "uint64" }, {
-      "internalType": "uint64",
-      "name": "children",
-      "type": "uint64"
-    }], "internalType": "struct Controller.Record[]", "name": "data", "type": "tuple[]"
-  }], "name": "setMetadataBatch", "outputs": [], "stateMutability": "nonpayable", "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256[]",
-    "name": "_basePrices",
-    "type": "uint256[]"
-  }, { "internalType": "uint256[]", "name": "_rentPrices", "type": "uint256[]" }],
-  "name": "setPrices",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }],
-  "name": "supportsInterface",
-  "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, {
-    "internalType": "uint256",
-    "name": "duration",
-    "type": "uint256"
-  }],
-  "name": "totalRegisterPrice",
-  "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
-  "name": "transferRootOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "flags",
+        type: "uint256",
+      },
+    ],
+    name: "ConfigUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "node",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "cost",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "expires",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+    ],
+    name: "NameRegistered",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "node",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "cost",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "expires",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+    ],
+    name: "NameRenewed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "basePrices",
+        type: "uint256[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "rentPrices",
+        type: "uint256[]",
+      },
+    ],
+    name: "PriceChanged",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+    ],
+    name: "basePrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getPrices",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTokenPrice",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "code",
+        type: "bytes",
+      },
+    ],
+    name: "nameRedeem",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+    ],
+    name: "nameRegister",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+      {
+        internalType: "uint256",
+        name: "data",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "keyHashes",
+        type: "uint256[]",
+      },
+      {
+        internalType: "string[]",
+        name: "values",
+        type: "string[]",
+      },
+    ],
+    name: "nameRegisterByManager",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+      {
+        internalType: "uint256",
+        name: "data",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "keyHashes",
+        type: "uint256[]",
+      },
+      {
+        internalType: "string[]",
+        name: "values",
+        type: "string[]",
+      },
+    ],
+    name: "nameRegisterWithConfig",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+    ],
+    name: "renew",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+    ],
+    name: "renewByManager",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+    ],
+    name: "renewPrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+    ],
+    name: "rentPrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "basePrices",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "rentPrices",
+        type: "uint256[]",
+      },
+    ],
+    name: "setPrices",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "duration",
+        type: "uint64",
+      },
+    ],
+    name: "totalRegisterPrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+];
 
 export class IController__factory {
   static readonly abi = _abi;
-
   static createInterface(): IControllerInterface {
     return new utils.Interface(_abi) as IControllerInterface;
   }
-
-  static connect(address: string, signerOrProvider: Signer | Provider): IController {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): IController {
     return new Contract(address, _abi, signerOrProvider) as IController;
   }
 }

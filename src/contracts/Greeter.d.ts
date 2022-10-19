@@ -19,37 +19,25 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IManagerOwnableInterface extends ethers.utils.Interface {
+interface GreeterInterface extends ethers.utils.Interface {
   functions: {
-    "isManager(address)": FunctionFragment;
-    "root()": FunctionFragment;
-    "setManager(address,bool)": FunctionFragment;
-    "transferRootOwnership(address)": FunctionFragment;
+    "greet()": FunctionFragment;
+    "setGreeting(string)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "isManager", values: [string]): string;
-  encodeFunctionData(functionFragment: "root", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "setManager",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: "greet", values?: undefined): string;
+  encodeFunctionData(functionFragment: "setGreeting", values: [string]): string;
 
-  decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "greet", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
+    functionFragment: "setGreeting",
     data: BytesLike
   ): Result;
 
   events: {};
 }
 
-export class IManagerOwnable extends BaseContract {
+export class Greeter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -90,92 +78,46 @@ export class IManagerOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IManagerOwnableInterface;
+  interface: GreeterInterface;
 
   functions: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<[boolean]>;
+    greet(overrides?: CallOverrides): Promise<[string]>;
 
-    root(overrides?: CallOverrides): Promise<[string]>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
+    setGreeting(
+      _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
+  greet(overrides?: CallOverrides): Promise<string>;
 
-  root(overrides?: CallOverrides): Promise<string>;
-
-  setManager(
-    manager: string,
-    role: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferRootOwnership(
-    newOwner: string,
+  setGreeting(
+    _greeting: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
+    greet(overrides?: CallOverrides): Promise<string>;
 
-    root(overrides?: CallOverrides): Promise<string>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setGreeting(_greeting: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
+    greet(overrides?: CallOverrides): Promise<BigNumber>;
 
-    root(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferRootOwnership(
-      newOwner: string,
+    setGreeting(
+      _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    isManager(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    greet(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
+    setGreeting(
+      _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

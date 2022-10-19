@@ -2,7 +2,6 @@ import "./style.css";
 
 import {
   setup,
-  login,
   getProvider,
   getSigner,
   getAccount,
@@ -38,14 +37,14 @@ import {
 } from "./sdk";
 
 import { ethers, Signer, BigNumber } from "ethers";
-import * as axios from "axios";
 
 async function main() {
   console.log("hello");
   // switchChain(43113)
   // switchChain(1287)
-  await setProvider();
-  await login();
+  await (window as any).ethereum.request({ method: 'eth_requestAccounts' })
+  const provider = new ethers.providers.Web3Provider((window as any).ethereum) as any
+  await setup(provider);
 
   // console.log(sha3("dot"));
   // console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));

@@ -4,26 +4,36 @@
 
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type {
-  IManagerOwnable,
-  IManagerOwnableInterface,
-} from "../IManagerOwnable";
+import type { Ownable, OwnableInterface } from "../Ownable";
 
 const _abi = [
   {
+    anonymous: false,
     inputs: [
       {
+        indexed: true,
         internalType: "address",
-        name: "addr",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
         type: "address",
       },
     ],
-    name: "isManager",
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "owner",
     outputs: [
       {
-        internalType: "bool",
+        internalType: "address",
         name: "",
-        type: "bool",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -31,31 +41,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "root",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "manager",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "role",
-        type: "bool",
-      },
-    ],
-    name: "setManager",
+    name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -68,22 +54,22 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "transferRootOwnership",
+    name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
 ];
 
-export class IManagerOwnable__factory {
+export class Ownable__factory {
   static readonly abi = _abi;
-  static createInterface(): IManagerOwnableInterface {
-    return new utils.Interface(_abi) as IManagerOwnableInterface;
+  static createInterface(): OwnableInterface {
+    return new utils.Interface(_abi) as OwnableInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IManagerOwnable {
-    return new Contract(address, _abi, signerOrProvider) as IManagerOwnable;
+  ): Ownable {
+    return new Contract(address, _abi, signerOrProvider) as Ownable;
   }
 }

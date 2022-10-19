@@ -69,6 +69,31 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "keyHash",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "SetLink",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: "address",
         name: "addr",
         type: "address",
@@ -283,6 +308,54 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "source",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "target",
+        type: "uint256",
+      },
+    ],
+    name: "getlink",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "source",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "targets",
+        type: "uint256[]",
+      },
+    ],
+    name: "getlinks",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "values",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "keyHash",
         type: "uint256",
       },
@@ -366,6 +439,52 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "source",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "target",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "setlink",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "source",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "targets",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "values",
+        type: "uint256[]",
+      },
+    ],
+    name: "setlinks",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
 
 export class IResolver__factory {
@@ -373,7 +492,10 @@ export class IResolver__factory {
   static createInterface(): IResolverInterface {
     return new utils.Interface(_abi) as IResolverInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): IResolver {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): IResolver {
     return new Contract(address, _abi, signerOrProvider) as IResolver;
   }
 }

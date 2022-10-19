@@ -11,7 +11,6 @@ import {
   PopulatedTransaction,
   BaseContract,
   ContractTransaction,
-  Overrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -19,28 +18,26 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IOwnableInterface extends ethers.utils.Interface {
+interface ERC2771ContextUpgradeableNoGapInterface
+  extends ethers.utils.Interface {
   functions: {
-    "root()": FunctionFragment;
-    "transferRootOwnership(address)": FunctionFragment;
+    "isTrustedForwarder(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "root", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "transferRootOwnership",
+    functionFragment: "isTrustedForwarder",
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
+    functionFragment: "isTrustedForwarder",
     data: BytesLike
   ): Result;
 
   events: {};
 }
 
-export class IOwnable extends BaseContract {
+export class ERC2771ContextUpgradeableNoGap extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -81,50 +78,40 @@ export class IOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IOwnableInterface;
+  interface: ERC2771ContextUpgradeableNoGapInterface;
 
   functions: {
-    root(overrides?: CallOverrides): Promise<[string]>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
   };
 
-  root(overrides?: CallOverrides): Promise<string>;
-
-  transferRootOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  isTrustedForwarder(
+    forwarder: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   callStatic: {
-    root(overrides?: CallOverrides): Promise<string>;
-
-    transferRootOwnership(
-      newOwner: string,
+    isTrustedForwarder(
+      forwarder: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
   };
 
   filters: {};
 
   estimateGas: {
-    root(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

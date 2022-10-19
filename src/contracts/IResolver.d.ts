@@ -29,42 +29,103 @@ interface IResolverInterface extends ethers.utils.Interface {
     "getManyByHash(uint256[],uint256)": FunctionFragment;
     "getName(address)": FunctionFragment;
     "getNftName(address,uint256)": FunctionFragment;
+    "getlink(uint256,uint256)": FunctionFragment;
+    "getlinks(uint256,uint256[])": FunctionFragment;
     "setByHash(uint256,string,uint256)": FunctionFragment;
     "setManyByHash(uint256[],string[],uint256)": FunctionFragment;
     "setName(address,uint256)": FunctionFragment;
     "setNftName(address,uint256,uint256)": FunctionFragment;
+    "setlink(uint256,uint256,uint256)": FunctionFragment;
+    "setlinks(uint256,uint256[],uint256[])": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "addKeys", values: [string[]]): string;
-  encodeFunctionData(functionFragment: "get", values: [string, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getByHash", values: [BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getKey", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getMany", values: [string[], BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getManyByHash", values: [BigNumberish[], BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "get",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getByHash",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getKey",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMany",
+    values: [string[], BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getManyByHash",
+    values: [BigNumberish[], BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "getName", values: [string]): string;
-  encodeFunctionData(functionFragment: "getNftName", values: [string, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setByHash", values: [BigNumberish, string, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setManyByHash", values: [BigNumberish[], string[], BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setName", values: [string, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setNftName", values: [string, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getNftName",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getlink",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getlinks",
+    values: [BigNumberish, BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setByHash",
+    values: [BigNumberish, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setManyByHash",
+    values: [BigNumberish[], string[], BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setName",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setNftName",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setlink",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setlinks",
+    values: [BigNumberish, BigNumberish[], BigNumberish[]]
+  ): string;
 
   decodeFunctionResult(functionFragment: "addKeys", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "get", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getByHash", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getKey", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getMany", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getManyByHash", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getManyByHash",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getName", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNftName", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getlink", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getlinks", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setByHash", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setManyByHash", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setManyByHash",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setName", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setNftName", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setlink", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setlinks", data: BytesLike): Result;
 
   events: {
     "NewKey(string,string)": EventFragment;
     "ResetRecords(uint256)": EventFragment;
     "Set(uint256,uint256,string)": EventFragment;
+    "SetLink(uint256,uint256,uint256)": EventFragment;
     "SetName(address,uint256)": EventFragment;
     "SetNftName(address,uint256,uint256)": EventFragment;
   };
@@ -72,13 +133,18 @@ interface IResolverInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "NewKey"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ResetRecords"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Set"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetLink"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetName"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetNftName"): EventFragment;
 }
 
-export type NewKeyEvent = TypedEvent<[string, string] & { keyIndex: string; key: string }>;
+export type NewKeyEvent = TypedEvent<
+  [string, string] & { keyIndex: string; key: string }
+>;
 
-export type ResetRecordsEvent = TypedEvent<[BigNumber] & { tokenId: BigNumber }>;
+export type ResetRecordsEvent = TypedEvent<
+  [BigNumber] & { tokenId: BigNumber }
+>;
 
 export type SetEvent = TypedEvent<
   [BigNumber, BigNumber, string] & {
@@ -88,7 +154,17 @@ export type SetEvent = TypedEvent<
   }
 >;
 
-export type SetNameEvent = TypedEvent<[string, BigNumber] & { addr: string; tokenId: BigNumber }>;
+export type SetLinkEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber] & {
+    tokenId: BigNumber;
+    keyHash: BigNumber;
+    value: BigNumber;
+  }
+>;
+
+export type SetNameEvent = TypedEvent<
+  [string, BigNumber] & { addr: string; tokenId: BigNumber }
+>;
 
 export type SetNftNameEvent = TypedEvent<
   [string, BigNumber, BigNumber] & {
@@ -122,7 +198,9 @@ export class IResolver extends BaseContract {
     eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
     listener: TypedListener<EventArgsArray, EventArgsObject>
   ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
 
   listeners(eventName?: string): Array<Listener>;
   off(eventName: string, listener: Listener): this;
@@ -140,21 +218,56 @@ export class IResolver extends BaseContract {
   interface: IResolverInterface;
 
   functions: {
-    addKeys(keys: string[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
+    addKeys(
+      keys: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
-    get(key: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+    get(
+      key: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
-    getByHash(keyHash: BigNumberish, tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string] & { value: string }>;
+    getByHash(
+      keyHash: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string] & { value: string }>;
 
     getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
-    getMany(keys: string[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string[]]>;
+    getMany(
+      keys: string[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
 
-    getManyByHash(keyHashes: BigNumberish[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string[]] & { values: string[] }>;
+    getManyByHash(
+      keyHashes: BigNumberish[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { values: string[] }>;
 
     getName(addr: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getNftName(nftAddr: string, nftTokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+    getNftName(
+      nftAddr: string,
+      nftTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]] & { values: BigNumber[] }>;
 
     setByHash(
       keyHash: BigNumberish,
@@ -170,7 +283,11 @@ export class IResolver extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setName(addr: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
+    setName(
+      addr: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     setNftName(
       nft: string,
@@ -178,23 +295,72 @@ export class IResolver extends BaseContract {
       nameTokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    setlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      value: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      values: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
-  addKeys(keys: string[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
+  addKeys(
+    keys: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
-  get(key: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  get(
+    key: string,
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  getByHash(keyHash: BigNumberish, tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  getByHash(
+    keyHash: BigNumberish,
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  getMany(keys: string[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
+  getMany(
+    keys: string[],
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
-  getManyByHash(keyHashes: BigNumberish[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
+  getManyByHash(
+    keyHashes: BigNumberish[],
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
   getName(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  getNftName(nftAddr: string, nftTokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+  getNftName(
+    nftAddr: string,
+    nftTokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getlink(
+    source: BigNumberish,
+    target: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getlinks(
+    source: BigNumberish,
+    targets: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   setByHash(
     keyHash: BigNumberish,
@@ -210,7 +376,11 @@ export class IResolver extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setName(addr: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
+  setName(
+    addr: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   setNftName(
     nft: string,
@@ -219,91 +389,262 @@ export class IResolver extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setlink(
+    source: BigNumberish,
+    target: BigNumberish,
+    value: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setlinks(
+    source: BigNumberish,
+    targets: BigNumberish[],
+    values: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     addKeys(keys: string[], overrides?: CallOverrides): Promise<void>;
 
-    get(key: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    get(
+      key: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    getByHash(keyHash: BigNumberish, tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    getByHash(
+      keyHash: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    getMany(keys: string[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
+    getMany(
+      keys: string[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
-    getManyByHash(keyHashes: BigNumberish[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
+    getManyByHash(
+      keyHashes: BigNumberish[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
     getName(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getNftName(nftAddr: string, nftTokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getNftName(
+      nftAddr: string,
+      nftTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    setByHash(keyHash: BigNumberish, value: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    getlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    setManyByHash(keyHashes: BigNumberish[], values: string[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    getlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
-    setName(addr: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    setByHash(
+      keyHash: BigNumberish,
+      value: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    setNftName(nft: string, nftTokenId: BigNumberish, nameTokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    setManyByHash(
+      keyHashes: BigNumberish[],
+      values: string[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setName(
+      addr: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setNftName(
+      nft: string,
+      nftTokenId: BigNumberish,
+      nameTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      value: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      values: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
-    "NewKey(string,string)"(keyIndex?: string | null, key?: null): TypedEventFilter<[string, string], { keyIndex: string; key: string }>;
+    "NewKey(string,string)"(
+      keyIndex?: string | null,
+      key?: null
+    ): TypedEventFilter<[string, string], { keyIndex: string; key: string }>;
 
-    NewKey(keyIndex?: string | null, key?: null): TypedEventFilter<[string, string], { keyIndex: string; key: string }>;
+    NewKey(
+      keyIndex?: string | null,
+      key?: null
+    ): TypedEventFilter<[string, string], { keyIndex: string; key: string }>;
 
-    "ResetRecords(uint256)"(tokenId?: BigNumberish | null): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+    "ResetRecords(uint256)"(
+      tokenId?: BigNumberish | null
+    ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
 
-    ResetRecords(tokenId?: BigNumberish | null): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+    ResetRecords(
+      tokenId?: BigNumberish | null
+    ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
 
     "Set(uint256,uint256,string)"(
       tokenId?: BigNumberish | null,
       keyHash?: BigNumberish | null,
       value?: null
-    ): TypedEventFilter<[BigNumber, BigNumber, string], { tokenId: BigNumber; keyHash: BigNumber; value: string }>;
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { tokenId: BigNumber; keyHash: BigNumber; value: string }
+    >;
 
     Set(
       tokenId?: BigNumberish | null,
       keyHash?: BigNumberish | null,
       value?: null
-    ): TypedEventFilter<[BigNumber, BigNumber, string], { tokenId: BigNumber; keyHash: BigNumber; value: string }>;
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      { tokenId: BigNumber; keyHash: BigNumber; value: string }
+    >;
+
+    "SetLink(uint256,uint256,uint256)"(
+      tokenId?: BigNumberish | null,
+      keyHash?: BigNumberish | null,
+      value?: BigNumberish | null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { tokenId: BigNumber; keyHash: BigNumber; value: BigNumber }
+    >;
+
+    SetLink(
+      tokenId?: BigNumberish | null,
+      keyHash?: BigNumberish | null,
+      value?: BigNumberish | null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { tokenId: BigNumber; keyHash: BigNumber; value: BigNumber }
+    >;
 
     "SetName(address,uint256)"(
       addr?: string | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<[string, BigNumber], { addr: string; tokenId: BigNumber }>;
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { addr: string; tokenId: BigNumber }
+    >;
 
-    SetName(addr?: string | null, tokenId?: BigNumberish | null): TypedEventFilter<[string, BigNumber], { addr: string; tokenId: BigNumber }>;
+    SetName(
+      addr?: string | null,
+      tokenId?: BigNumberish | null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { addr: string; tokenId: BigNumber }
+    >;
 
     "SetNftName(address,uint256,uint256)"(
       nftAddr?: string | null,
       nftTokenId?: BigNumberish | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<[string, BigNumber, BigNumber], { nftAddr: string; nftTokenId: BigNumber; tokenId: BigNumber }>;
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { nftAddr: string; nftTokenId: BigNumber; tokenId: BigNumber }
+    >;
 
     SetNftName(
       nftAddr?: string | null,
       nftTokenId?: BigNumberish | null,
       tokenId?: BigNumberish | null
-    ): TypedEventFilter<[string, BigNumber, BigNumber], { nftAddr: string; nftTokenId: BigNumber; tokenId: BigNumber }>;
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber],
+      { nftAddr: string; nftTokenId: BigNumber; tokenId: BigNumber }
+    >;
   };
 
   estimateGas: {
-    addKeys(keys: string[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
+    addKeys(
+      keys: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
-    get(key: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    get(
+      key: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getByHash(keyHash: BigNumberish, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getByHash(
+      keyHash: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getKey(
+      keyHash: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getMany(keys: string[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getMany(
+      keys: string[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getManyByHash(keyHashes: BigNumberish[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getManyByHash(
+      keyHashes: BigNumberish[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getName(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getNftName(nftAddr: string, nftTokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getNftName(
+      nftAddr: string,
+      nftTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    setByHash(keyHash: BigNumberish, value: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
+    getlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    setByHash(
+      keyHash: BigNumberish,
+      value: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     setManyByHash(
       keyHashes: BigNumberish[],
@@ -312,7 +653,11 @@ export class IResolver extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setName(addr: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
+    setName(
+      addr: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     setNftName(
       nft: string,
@@ -320,24 +665,79 @@ export class IResolver extends BaseContract {
       nameTokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    setlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      value: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      values: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    addKeys(keys: string[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
+    addKeys(
+      keys: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
-    get(key: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    get(
+      key: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getByHash(keyHash: BigNumberish, tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getByHash(
+      keyHash: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getKey(keyHash: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getKey(
+      keyHash: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getMany(keys: string[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getMany(
+      keys: string[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getManyByHash(keyHashes: BigNumberish[], tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getManyByHash(
+      keyHashes: BigNumberish[],
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getName(addr: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getName(
+      addr: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getNftName(nftAddr: string, nftTokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getNftName(
+      nftAddr: string,
+      nftTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     setByHash(
       keyHash: BigNumberish,
@@ -353,12 +753,30 @@ export class IResolver extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setName(addr: string, tokenId: BigNumberish, overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
+    setName(
+      addr: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     setNftName(
       nft: string,
       nftTokenId: BigNumberish,
       nameTokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setlink(
+      source: BigNumberish,
+      target: BigNumberish,
+      value: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setlinks(
+      source: BigNumberish,
+      targets: BigNumberish[],
+      values: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -19,37 +19,22 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IManagerOwnableInterface extends ethers.utils.Interface {
+interface IMulticallableInterface extends ethers.utils.Interface {
   functions: {
-    "isManager(address)": FunctionFragment;
-    "root()": FunctionFragment;
-    "setManager(address,bool)": FunctionFragment;
-    "transferRootOwnership(address)": FunctionFragment;
+    "multicall(bytes[])": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "isManager", values: [string]): string;
-  encodeFunctionData(functionFragment: "root", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "setManager",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
+    functionFragment: "multicall",
+    values: [BytesLike[]]
   ): string;
 
-  decodeFunctionResult(functionFragment: "isManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
 
   events: {};
 }
 
-export class IManagerOwnable extends BaseContract {
+export class IMulticallable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -90,92 +75,36 @@ export class IManagerOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IManagerOwnableInterface;
+  interface: IMulticallableInterface;
 
   functions: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    root(overrides?: CallOverrides): Promise<[string]>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
+    multicall(
+      data: BytesLike[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
-
-  root(overrides?: CallOverrides): Promise<string>;
-
-  setManager(
-    manager: string,
-    role: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferRootOwnership(
-    newOwner: string,
+  multicall(
+    data: BytesLike[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<boolean>;
-
-    root(overrides?: CallOverrides): Promise<string>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    multicall(data: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
   };
 
   filters: {};
 
   estimateGas: {
-    isManager(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    root(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferRootOwnership(
-      newOwner: string,
+    multicall(
+      data: BytesLike[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    isManager(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setManager(
-      manager: string,
-      role: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
+    multicall(
+      data: BytesLike[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

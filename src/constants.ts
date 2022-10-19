@@ -65,11 +65,11 @@ export const ContractAddrMap: IContractAddrsMap = {
   },
   1284: {
     pns: "0x7d5F0398549C9fDEa03BbDde388361827cb376D5",
-    controller: "0x2dF0fC48837e69D26eFA50fD3baE86977903B697",
+    controller: "0x8113e4070297b22D943241054a9dbDC395Bc6eaa",
   },
   1287: {
     pns: "0xf24e64621c9df0b4b0f0bc03c74af93955f69825",
-    controller: "0x31d6c3d957bf11c3b858cedcd325feb02b6e2801",
+    controller: "0xaf5B6573ADBE5126FB2fc5e60FB7964b1c225dF9",
   },
 };
 
@@ -91,7 +91,7 @@ export const RPC_URL = "https://rpc.api.moonbeam.network";
 export const PriceOracleAddr = "0xdb4890df1f92Cf3915f4d8230655185902a61061"; // GLMR / USD on GLMR
 
 export const GraphUrl: any = {
-  1284: "https://api.subquery.network/sq/pnsproject/pnsql",
+  1284: "https://moonbeamgraph.test-pns-link.com/subgraphs/name/graphprotocol/pns",
   1287: "https://api.subquery.network/sq/pnsproject/pnstest",
   43113: "https://fuji-graph.pns.link"
 };

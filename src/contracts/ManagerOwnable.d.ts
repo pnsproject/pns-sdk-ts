@@ -19,7 +19,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IManagerOwnableInterface extends ethers.utils.Interface {
+interface ManagerOwnableInterface extends ethers.utils.Interface {
   functions: {
     "isManager(address)": FunctionFragment;
     "root()": FunctionFragment;
@@ -46,10 +46,24 @@ interface IManagerOwnableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "ManagerChanged(address,bool)": EventFragment;
+    "RootOwnershipTransferred(address,address)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "ManagerChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RootOwnershipTransferred"): EventFragment;
 }
 
-export class IManagerOwnable extends BaseContract {
+export type ManagerChangedEvent = TypedEvent<
+  [string, boolean] & { manager: string; role: boolean }
+>;
+
+export type RootOwnershipTransferredEvent = TypedEvent<
+  [string, string] & { oldRoot: string; newRoot: string }
+>;
+
+export class ManagerOwnable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -90,7 +104,7 @@ export class IManagerOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IManagerOwnableInterface;
+  interface: ManagerOwnableInterface;
 
   functions: {
     isManager(addr: string, overrides?: CallOverrides): Promise<[boolean]>;
@@ -141,7 +155,27 @@ export class IManagerOwnable extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "ManagerChanged(address,bool)"(
+      manager?: string | null,
+      role?: boolean | null
+    ): TypedEventFilter<[string, boolean], { manager: string; role: boolean }>;
+
+    ManagerChanged(
+      manager?: string | null,
+      role?: boolean | null
+    ): TypedEventFilter<[string, boolean], { manager: string; role: boolean }>;
+
+    "RootOwnershipTransferred(address,address)"(
+      oldRoot?: string | null,
+      newRoot?: string | null
+    ): TypedEventFilter<[string, string], { oldRoot: string; newRoot: string }>;
+
+    RootOwnershipTransferred(
+      oldRoot?: string | null,
+      newRoot?: string | null
+    ): TypedEventFilter<[string, string], { oldRoot: string; newRoot: string }>;
+  };
 
   estimateGas: {
     isManager(addr: string, overrides?: CallOverrides): Promise<BigNumber>;

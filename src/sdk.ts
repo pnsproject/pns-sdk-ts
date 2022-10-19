@@ -1,11 +1,11 @@
-import { ethers, Signer, BigNumber, BigNumberish } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import { keccak_256 } from "js-sha3";
 
-import { Block, BlockTag, Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
+import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
-import { RPC_URL, PnsApi, Chains, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
-import { IPNS, IController, IResolver, IOwnable, IPNS__factory, IController__factory, IResolver__factory, IOwnable__factory } from "./contracts";
+import { RPC_URL, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
+import { IPNS, IController, IResolver, Controller, IPNS__factory, Controller__factory, IResolver__factory, IOwnable__factory } from "./contracts";
 
 export const formatEther = ethers.utils.formatEther;
 export const abiCoder = ethers.utils.defaultAbiCoder;
@@ -43,13 +43,13 @@ export type DomainDetails = {
 };
 
 let provider: Web3Provider;
-let signer: Web3Signer;
+let signer: Web3Signer | null;
 let account: string;
 let networkId: number;
 let customGql: string;
 
 let pns: IPNS;
-let controller: IController;
+let controller: Controller;
 let resolver: IResolver;
 
 let pnsAddr: string;
@@ -95,7 +95,7 @@ export function getProvider(): Web3Provider {
   return provider;
 }
 
-export function getSigner(): Web3Signer {
+export function getSigner(): Web3Signer | null {
   return signer;
 }
 
@@ -132,7 +132,28 @@ export async function setup(
   pnsAddress?: string,
   controllerAddress?: string,
   GraphUrl?: string) {
-  await setProvider(providerOpt);
+
+  if (providerOpt) {
+    provider = providerOpt;
+  } else {
+    provider = new ethers.providers.StaticJsonRpcProvider(RPC_URL) as any;
+  }
+
+  try {
+    signer = await provider.getSigner();
+    console.log('signer', signer)
+    const user = await signer.getAddress();
+    console.log('user', user)
+    account = user
+  } catch (e) {
+    signer = null
+  }
+
+  networkId = (await provider.getNetwork()).chainId;
+  console.log("network", networkId);
+
+
+
 
   let addrMap = ContractAddrMap[networkId];
   console.log("addrs", addrMap);
@@ -146,12 +167,13 @@ export async function setup(
 
   if (signer) {
     pns = IPNS__factory.connect(pnsAddress, signer);
-    controller = IController__factory.connect(controllerAddress, signer);
+    controller = Controller__factory.connect(controllerAddress, signer);
     resolver = IResolver__factory.connect(pnsAddress, signer);
   } else {
     pns = IPNS__factory.connect(pnsAddress, provider);
-    controller = IController__factory.connect(controllerAddress, provider);
+    controller = Controller__factory.connect(controllerAddress, provider);
     resolver = IResolver__factory.connect(pnsAddress, provider);
+    account = '0x0'
   }
 
   pnsAddr = pnsAddress;
@@ -164,7 +186,7 @@ export async function setup(
   };
 }
 
-export async function setupWithContract(providerOpt: Web3Provider, pnsContract: IPNS, registrarContract: IController, resolverContract: IResolver) {
+export async function setupWithContract(providerOpt: Web3Provider, pnsContract: IPNS, registrarContract: Controller, resolverContract: IResolver) {
   await setProvider(providerOpt);
 
   pns = pnsContract;
@@ -229,7 +251,7 @@ export async function getControllerRoot(): Promise<HexAddress> {
 }
 
 export async function transferController(newRoot: HexAddress) {
-  let ownable = IOwnable__factory.connect(controller.address, signer);
+  let ownable = IOwnable__factory.connect(controller.address, signer as Web3Signer);
   return ownable.transferRootOwnership(newRoot);
 }
 
@@ -251,12 +273,12 @@ export async function getTokenPrice() {
 
 export async function nameExpires(label: DomainString): Promise<BigNumber> {
   label = suffixTld(label);
-  return controller.expire(getNamehash(label));
+  return pns.expire(getNamehash(label));
 }
 
 export async function available(label: DomainString): Promise<boolean> {
   label = suffixTld(label);
-  return controller.available(getNamehash(label));
+  return pns.available(getNamehash(label));
 }
 
 export async function register(label: DomainString, account: string, duration: number) {
@@ -271,7 +293,7 @@ export async function registerWithConfig(name: DomainString, to: string, duratio
 
 export function mintSubdomain(newOwner: HexAddress, name: DomainString, label: LabelString) {
   let tokenId = getNamehash(name);
-  return controller.mintSubdomain(newOwner, tokenId, label);
+  return pns.mintSubdomain(newOwner, tokenId, label);
 }
 
 export async function approve(name: DomainString, approved: HexAddress) {
@@ -417,7 +439,7 @@ export async function transferName(name: DomainString, newOwner: HexAddress) {
 export async function registerPayWithOtherCurrency(chain: string, label: DomainString, duration: number): Promise<any> {
   // todo : if user close before tx success, need recovering
   let price = await totalRegisterPrice(label, duration);
-  let tx = await signer.sendTransaction({
+  let tx = await (signer as Web3Signer).sendTransaction({
     to: PaymentAddrs[chain] as string,
     value: price,
   });
@@ -465,22 +487,7 @@ export async function generateRedeemCode(nameTokenId: string, address: string, d
   return signer.signMessage(hashedMsg);
 }
 
-export async function login() {
-  if (!provider) {
-    console.log("provider has not setting");
-  }
-  try {
-    await (window as any).ethereum.request({ method: "eth_requestAccounts" });
-    signer = await provider.getSigner();
-    account = await signer.getAddress();
-    await setup();
-  } catch (e) {
-    console.log("provider has no signer");
-  }
-}
-
 import { request, gql } from "graphql-request";
-import { Network } from "@ethersproject/networks";
 
 // @ts-ignore
 BigInt.prototype.toJSON = function () {
@@ -513,140 +520,204 @@ export function toChecksumAddress(address: string): string {
 export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
   const checksumAddress = toChecksumAddress(account)
   const query = gql`
-  query MyQuery($account: String!, $parent: String!) {
-      subdomains(
-        filter: {
-          owner: {
-            equalTo: $account
-          }
-          parent:{
-            equalTo: $parent
-          }
+  query MyQuery($account: String, $parent: String) {
+  domains (where: {owner: $account parent: $parent}) {
+    id
+    name
+    owner {
+      id
+    }
+    parent {
+      id
+    }
+    registrations {
+          expiryDate
         }
-      )
-      {
-        nodes {
-          id
-          name
-          owner
-          parent
-        }
-      }
+  }
  }
   `;
   const variables = {
-    account: checksumAddress,
-    parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
+    account: checksumAddress.toLowerCase(),
+    parent: '0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f',
   };
 
   const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+  const resp = await request(graphUrl, query, variables);
 
-  return resp.subdomains.nodes;
+  const all = resp.domains.map(((item:any) => {
+    return {
+      id: item.id,
+      name: item.name,
+      owner: item.owner.id,
+      parent: item.parent.id,
+      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
+    }
+  }));
+
+  return all.filter((item: any) => {
+    return item.owner !== '0x0000000000000000000000000000000000000000'
+  })
 }
 
 /** 列出所有域名列表,包括父、子域名 */
 export async function getAllDomains(account: string): Promise<GraphDomainDetails[]> {
   const checksumAddress = toChecksumAddress(account)
   const query = gql`
-   query MyQuery($account: String!) {
-      subdomains(
-        filter: {
-          owner: {
-            equalTo: $account
-          }
-        }
-      )
-      {
-        nodes {
+   query MyQuery($account: String) {
+      domains (where: {owner: $account}) {
+        id
+        name
+        owner {
           id
-          name
-          owner
-          parent
+        }
+        parent {
+          id
+        }
+        registrations {
+          expiryDate
         }
       }
-   }
-  `;
+  }
+`;
   const variables = {
     account: checksumAddress
   };
 
   const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+  const resp = await request(graphUrl, query, variables);
 
-  return resp.subdomains.nodes;
+  const all = resp.domains.map(((item:any) => {
+    return {
+      id: item.id,
+      name: item.name,
+      owner: item.owner.id,
+      parent: item.parent.id,
+      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
+    }
+  }));
+
+  return all.filter((item: any) => {
+    return item.owner !== '0x0000000000000000000000000000000000000000'
+  })
 }
 
 /** 列出用户的所有子域名列表 */
 export async function getAllSubdomains(owner: string): Promise<GraphDomainDetails[]> {
   const checksumAddress = toChecksumAddress(account)
   const query = gql`
-    query MyQuery($account: String!, $parent: String!) {
-      subdomains(
-        filter: {
-          owner: {
-            equalTo: $account
-          }
-          parent:{
-            notEqualTo: $parent
-          }
-        }
-      )
-      {
-        nodes {
+    query MyQuery($account: String $parent: String) {
+      domains (where: {owner: $account parent_not: $parent}) {
+        id
+        name
+        owner {
           id
-          name
-          owner
-          parent
+        }
+        parent {
+          id
+        }
+        registrations {
+          expiryDate
         }
       }
-    }
+  }
   `;
   const variables = {
-    account: checksumAddress,
-    parent: BigInt("0x3fce7d1364a893e213bc4212792b517ffc88f5b13b86c8ef9c8d390c3a1370ce"),
+    account: checksumAddress.toLowerCase(),
+    parent: '0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f',
   };
 
   const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+  const resp = await request(graphUrl, query, variables);
 
-  return resp.subdomains.nodes;
+  const all = resp.domains.map(((item:any) => {
+    return {
+      id: item.id,
+      name: item.name,
+      owner: item.owner.id,
+      parent: item.parent.id,
+      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
+    }
+  }));
+
+  return all.filter((item: any) => {
+    return item.owner !== '0x0000000000000000000000000000000000000000'
+  })
 }
 
 /** 列出父级域名下的子域名列表 */
 export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
   const query = gql`
-    query MyQuery($parent: String!) {
-      subdomains(
-        filter: {
-          parent:{
-            equalTo: $parent
-          }
-        }
-      )
-      {
-        nodes {
+    query MyQuery($parent: String) {
+      domains (where: {parent_: {name: $parent}}) {
+        id
+        name
+        owner {
           id
-          name
-          owner
-          parent
+        }
+        parent {
+          id
+        }
+        registrations {
+          expiryDate
         }
       }
-    }
+  }
   `;
   const variables = {
-    parent: BigInt(getNamehash(domain)),
+    parent: domain,
   };
 
   const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl + "/subgraphs/name/name-graph", query, variables);
+  const resp = await request(graphUrl, query, variables);
 
-  return resp.subdomains.nodes;
+  const all =  resp.domains.map(((item:any) => {
+    return {
+      id: item.id,
+      name: item.name,
+      owner: item.owner.id,
+      parent: item.parent.id,
+      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
+    }
+  }));
+
+  return all.filter((item: any) => {
+    return item.owner !== '0x0000000000000000000000000000000000000000'
+  })
 }
-
-export function logout() {}
 
 export async function burn(domain: string) {
   let id = getNamehash(domain);
-  return await controller.burn(id);
+  return await pns.burn(id);
+}
+
+// 批量删除子域名
+export async function batchBurn (domains: string[]) {
+  const ABI = ['function burn(uint256 tokenId)']
+  const iface = new ethers.utils.Interface(ABI)
+  const idList = domains.map((domain) => {
+    return getNamehash(domain)
+  })
+  const calls = idList.map(id => {
+    return iface.encodeFunctionData("burn", [id])
+  })
+
+  return await controller.multicall(calls);
+}
+
+// 批量删除子域名
+export async function batchMintSubdomain (domain: string, subdomains: { label: string, owner: string }[]) {
+  const ABI = ['function mintSubdomain(address to,uint256 tokenId,string name)'] // return controller.mintSubdomain(newOwner, tokenId, label);
+  const iface = new ethers.utils.Interface(ABI)
+  const parameters = subdomains.map((subdomain) => {
+    return  {
+      label: subdomain.label,
+      owner: subdomain.owner,
+      tokenId: getNamehash(domain)
+    }
+  })
+  const calls = parameters.map(parameter => {
+    return iface.encodeFunctionData("mintSubdomain", [parameter.owner, parameter.tokenId, parameter.label])
+  })
+
+  return await controller.multicall(calls);
 }

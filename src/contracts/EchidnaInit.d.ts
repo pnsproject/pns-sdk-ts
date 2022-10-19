@@ -11,36 +11,19 @@ import {
   PopulatedTransaction,
   BaseContract,
   ContractTransaction,
-  Overrides,
-  CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IOwnableInterface extends ethers.utils.Interface {
-  functions: {
-    "root()": FunctionFragment;
-    "transferRootOwnership(address)": FunctionFragment;
-  };
-
-  encodeFunctionData(functionFragment: "root", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "transferRootOwnership",
-    values: [string]
-  ): string;
-
-  decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferRootOwnership",
-    data: BytesLike
-  ): Result;
+interface EchidnaInitInterface extends ethers.utils.Interface {
+  functions: {};
 
   events: {};
 }
 
-export class IOwnable extends BaseContract {
+export class EchidnaInit extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -81,50 +64,15 @@ export class IOwnable extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IOwnableInterface;
+  interface: EchidnaInitInterface;
 
-  functions: {
-    root(overrides?: CallOverrides): Promise<[string]>;
+  functions: {};
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  root(overrides?: CallOverrides): Promise<string>;
-
-  transferRootOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    root(overrides?: CallOverrides): Promise<string>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  callStatic: {};
 
   filters: {};
 
-  estimateGas: {
-    root(overrides?: CallOverrides): Promise<BigNumber>;
+  estimateGas: {};
 
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferRootOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+  populateTransaction: {};
 }
