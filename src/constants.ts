@@ -36,6 +36,8 @@ export const Chains: any = {
 export interface IContractAddrs {
   pns: string;
   controller: string;
+  forwarder: string;
+  priceOracle: string;
 }
 
 export interface IContractAddrsMap {
