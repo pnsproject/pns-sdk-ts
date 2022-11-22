@@ -1,20 +1,4 @@
 export const Chains: any = {
-  43113: {
-    name: "Avalanche Fuji Testnet",
-    chain: "AVAX",
-    network: "testnet",
-    rpc: ["https://api.avax-test.network/ext/bc/C/rpc"],
-    faucets: ["https://faucet.avax-test.network/"],
-    nativeCurrency: {
-      name: "Avalanche",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    infoURL: "https://cchain.explorer.avax-test.network",
-    shortName: "Fuji",
-    chainId: 43113,
-    networkId: 1,
-  },
   1284: {
     name: "Moonbeam",
     chain: "MOON",
@@ -59,41 +43,40 @@ export interface IContractAddrsMap {
 }
 
 export const ContractAddrMap: IContractAddrsMap = {
-  43113: {
-    pns: "0x98aa22cEeFc1567Ef9D573cedde00622daf23891",
-    controller: "0xF3f05C76f7c9EcEeA063A00e8d1c6eE2422d18eC"
-  },
   1284: {
     pns: "0x7d5F0398549C9fDEa03BbDde388361827cb376D5",
     controller: "0x8113e4070297b22D943241054a9dbDC395Bc6eaa",
+    forwarder: "0x46388408c8828085f70dF7f8c3e7520B16e33391",
+    priceOracle: "0x4497B606be93e773bbA5eaCFCb2ac5E2214220Eb"
   },
   1287: {
-    pns: "0xf24e64621c9df0b4b0f0bc03c74af93955f69825",
-    controller: "0xaf5B6573ADBE5126FB2fc5e60FB7964b1c225dF9",
+    pns: "0x94097B44C097070af387a0804977BC465082a633",
+    controller: "0x12D6B8B62d12c2FE731f268205e42DA5CA5d46A2",
+    forwarder: "0xba14018A84Ebd0fcaE70A863C1bDA19A7ec9C2f8",
+    priceOracle: "0x4D595fd67f0E1292d6335EE0bf3Ebe85f7AF4B9F"
+  },
+  31337: { // local testnet
+    pns: "0x",
+    controller: "0x",
+    forwarder: "0x",
+    priceOracle: "0x"
   },
 };
 
 export const PaymentAddrs: any = {
-  eth: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
-  avax: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
-  movr: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
-  bsc: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  glmr: "0x0b23E3588c906C3F723C58Ef4d6baEe7840A977c",
+  eth: "",
+  avax: "",
+  bsc: "",
   dot: "",
   ksm: "",
 };
 
-// export const RPC_URL = "https://api.avax-test.network/ext/bc/C/rpc";
 export const RPC_URL = "https://rpc.api.moonbeam.network";
 
-// export const PriceOracleAddr = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"; // ETH / USD on mainnet
-// export const PriceOracleAddr = "0x5498BB86BC934c8D34FDA08E81D444153d0D06aD"; // AVAX / USD on fuji
-// export const PriceOracleAddr = "0x3f8BFbDc1e79777511c00Ad8591cef888C2113C1"; // MOVR / USD on MOVR
-export const PriceOracleAddr = "0xdb4890df1f92Cf3915f4d8230655185902a61061"; // GLMR / USD on GLMR
-
 export const GraphUrl: any = {
-  1284: "https://moonbeamgraph.test-pns-link.com/subgraphs/name/graphprotocol/pns",
-  1287: "https://api.subquery.network/sq/pnsproject/pnstest",
-  43113: "https://fuji-graph.pns.link"
+  1284: "",
+  1287: "",
 };
 
 export const PnsApi = "https://api-rpc.pns.link";

@@ -1,11 +1,10 @@
-import { ethers, BigNumber } from "ethers";
+import { ethers, Signer, BigNumber } from "ethers";
 import { keccak_256 } from "js-sha3";
 
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider";
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer";
 
-import { RPC_URL, ContractAddrMap, PaymentAddrs, GraphUrl } from "./constants";
-import { IPNS, IController, IResolver, Controller, IPNS__factory, Controller__factory, IResolver__factory, IOwnable__factory } from "./contracts";
+import { IPNS, IController, IResolver, IOwnable, IPNS__factory, IController__factory, IResolver__factory, IOwnable__factory } from "./contracts";
 
 export const formatEther = ethers.utils.formatEther;
 export const abiCoder = ethers.utils.defaultAbiCoder;
@@ -28,6 +27,7 @@ export type DomainDetails = {
   labelhash: string;
   owner: string;
 
+  cname: string;
   content: string;
   contentType?: string;
 
@@ -39,18 +39,13 @@ export type DomainDetails = {
     key: string;
     value: string;
   }[];
-  cname: string
 };
 
 let provider: Web3Provider;
-let signer: Web3Signer | null;
+let signer: Web3Signer;
 let account: string;
 let networkId: number;
-let customGql: string;
 
-let pns: IPNS;
-let controller: Controller;
-let resolver: IResolver;
 
 let pnsAddr: string;
 let controllerAddr: string;
@@ -75,237 +70,19 @@ export function getNamehash(name: string) {
   return "0x" + node;
 }
 
-export const emptyAddress = "0x0000000000000000000000000000000000000000";
-export const weirdNode = "0x0000000000000000000000000000000000000000000000000000000000000001";
-export const emptyNode = "0x0000000000000000000000000000000000000000000000000000000000000000";
-export const baseLabel = sha3("dot");
-export const baseNode = getNamehash("dot");
-export const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
-
-export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
-export const ADDRESS_RECORD_KEYS = ['contenthash', "BTC", "ETH", "DOT", "KSM", "cname"]
-
-const tld = "dot";
-
-export function getPnsAddr(): string {
-  return pnsAddr;
-}
-
-export function getProvider(): Web3Provider {
-  return provider;
-}
-
-export function getSigner(): Web3Signer | null {
-  return signer;
-}
-
-export function getAccount(): string {
-  return account;
-}
-
-export async function setSigner(_signer?: Web3Signer) {
-  if (!_signer) throw "provider is empty";
-  signer = _signer;
-  account = await signer.getAddress();
-}
-
-export async function setProvider(_provider?: Web3Provider) {
-  if (!!_provider) {
-    provider = _provider;
-  } else if (!!window && typeof (window as any).ethereum !== "undefined") {
-    provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
-  } else {
-    console.log("cannot find a global `ethereum` object");
-    provider = new ethers.providers.StaticJsonRpcProvider(RPC_URL) as any;
-    account = "0x0";
-  }
-  // if (!_provider) throw "provider is empty";
-  // provider = _provider;
-
-  networkId = (await provider.getNetwork()).chainId;
-  console.log("network", networkId);
-  return;
-}
-
-export async function setup(
-  providerOpt?: Web3Provider,
-  pnsAddress?: string,
-  controllerAddress?: string,
-  GraphUrl?: string) {
-
-  if (providerOpt) {
-    provider = providerOpt;
-  } else {
-    provider = new ethers.providers.StaticJsonRpcProvider(RPC_URL) as any;
+export function toChecksumAddress(address: string): string {
+  address = address.toLowerCase().replace('0x', '')
+  const hash =  keccak_256(address)
+  let ret = '0x'
+  for (let i = 0; i < address.length; i++) {
+    if (parseInt(hash[i], 16) > 7) {
+      ret += address[i].toUpperCase()
+    } else {
+      ret += address[i]
+    }
   }
 
-  try {
-    signer = await provider.getSigner();
-    console.log('signer', signer)
-    const user = await signer.getAddress();
-    console.log('user', user)
-    account = user
-  } catch (e) {
-    signer = null
-  }
-
-  networkId = (await provider.getNetwork()).chainId;
-  console.log("network", networkId);
-
-
-
-
-  let addrMap = ContractAddrMap[networkId];
-  console.log("addrs", addrMap);
-
-  pnsAddress = pnsAddress || addrMap.pns;
-  controllerAddress = controllerAddress || addrMap.controller;
-
-  if (GraphUrl) {
-    customGql = GraphUrl
-  }
-
-  if (signer) {
-    pns = IPNS__factory.connect(pnsAddress, signer);
-    controller = Controller__factory.connect(controllerAddress, signer);
-    resolver = IResolver__factory.connect(pnsAddress, signer);
-  } else {
-    pns = IPNS__factory.connect(pnsAddress, provider);
-    controller = Controller__factory.connect(controllerAddress, provider);
-    resolver = IResolver__factory.connect(pnsAddress, provider);
-    account = '0x0'
-  }
-
-  pnsAddr = pnsAddress;
-
-  return {
-    provider,
-    pns,
-    controller,
-    resolver,
-  };
-}
-
-export async function setupWithContract(providerOpt: Web3Provider, pnsContract: IPNS, registrarContract: Controller, resolverContract: IResolver) {
-  await setProvider(providerOpt);
-
-  pns = pnsContract;
-  controller = registrarContract;
-  resolver = resolverContract;
-
-  pnsAddr = pns.address;
-  controllerAddr = controller.address;
-  resolverAddr = resolver.address;
-
-  return {
-    provider,
-    pns,
-    controller,
-    resolver,
-  };
-}
-
-export async function getOwner(name: DomainString): Promise<HexAddress> {
-  let tokenId = getNamehash(name);
-  if (await pns.exists(tokenId)) {
-    console.log("tokenId", tokenId);
-    return pns.ownerOf(tokenId);
-  } else {
-    return emptyAddress;
-  }
-}
-
-export async function getOwnerOf(tokenId: TokenId): Promise<HexAddress> {
-  if (await pns.exists(tokenId)) {
-    return pns.ownerOf(tokenId);
-  } else {
-    return emptyAddress;
-  }
-}
-
-export async function ownerOfName(name: DomainString): Promise<HexAddress> {
-  let tokenId = getNamehash(name);
-  return pns.ownerOf(tokenId);
-}
-
-export async function ownerOfId(tokenId: TokenId): Promise<HexAddress> {
-  return pns.ownerOf(tokenId);
-}
-
-export async function exists(name: DomainString): Promise<boolean> {
-  let tokenId = getNamehash(name);
-  return pns.exists(tokenId);
-}
-
-export async function totalRegisterPrice(name: LabelString, duration: number): Promise<BigNumber> {
-  return controller.totalRegisterPrice(name, duration);
-}
-
-export async function renewPrice(name: LabelString, duration: number): Promise<BigNumber> {
-  return controller.renewPrice(name, duration);
-}
-
-export async function getControllerRoot(): Promise<HexAddress> {
-  let ownable = IOwnable__factory.connect(controller.address, provider);
-  return ownable.root();
-}
-
-export async function transferController(newRoot: HexAddress) {
-  let ownable = IOwnable__factory.connect(controller.address, signer as Web3Signer);
-  return ownable.transferRootOwnership(newRoot);
-}
-
-export async function basePrice(name: LabelString): Promise<BigNumber> {
-  return controller.basePrice(name);
-}
-
-export async function rentPrice(name: LabelString, duration: number): Promise<BigNumber> {
-  return controller.rentPrice(name, duration);
-}
-
-export async function getPrices() {
-  return controller.getPrices();
-}
-
-export async function getTokenPrice() {
-  return controller.getTokenPrice();
-}
-
-export async function nameExpires(label: DomainString): Promise<BigNumber> {
-  label = suffixTld(label);
-  return pns.expire(getNamehash(label));
-}
-
-export async function available(label: DomainString): Promise<boolean> {
-  label = suffixTld(label);
-  return pns.available(getNamehash(label));
-}
-
-export async function register(label: DomainString, account: string, duration: number) {
-  const price = await totalRegisterPrice(label, duration);
-  return controller.nameRegister(label, account, duration, { value: price });
-}
-
-export async function registerWithConfig(name: DomainString, to: string, duration: number, data: number, keysHash: string[], values: string[]) {
-  const price = await totalRegisterPrice(name, duration);
-  return controller.nameRegisterWithConfig(name, to, duration, data, keysHash, values, { value: price });
-}
-
-export function mintSubdomain(newOwner: HexAddress, name: DomainString, label: LabelString) {
-  let tokenId = getNamehash(name);
-  return pns.mintSubdomain(newOwner, tokenId, label);
-}
-
-export async function approve(name: DomainString, approved: HexAddress) {
-  name = suffixTld(name);
-  let tokenId = getNamehash(name);
-  return pns.approve(approved, tokenId);
-}
-
-export async function getApproved(name: DomainString): Promise<HexAddress> {
-  name = suffixTld(name);
-  let tokenId = getNamehash(name);
-  return await pns.getApproved(tokenId);
+ return ret
 }
 
 export function suffixTld(label: DomainString): DomainString {
@@ -315,44 +92,6 @@ export function suffixTld(label: DomainString): DomainString {
 export function removeTld(label: DomainString): DomainString {
   return label.replace(".dot", "");
 }
-
-export async function setName(addr: HexAddress, name: DomainString, resv?: IResolver) {
-  const tokenId = getNamehash(name);
-  return resolver.setName(addr, tokenId);
-}
-
-export async function getName(addr: HexAddress, resv?: IResolver): Promise<BigNumber> {
-  return resolver.getName(addr);
-}
-
-export async function setNftName(nftAddr: HexAddress, nftTokenId: string, nameTokenId: TokenId) {
-  return resolver.setNftName(nftAddr, nftTokenId, nameTokenId);
-}
-
-export async function getNftName(nftAddr: HexAddress, nftTokenId: string) {
-  return resolver.getNftName(nftAddr, nftTokenId);
-}
-
-export async function getKey(name: DomainString, key: string, resv?: IResolver): Promise<string> {
-  const tokenId = getNamehash(name);
-  return resolver.get(key, tokenId);
-}
-
-export async function setKeysByHash(name: DomainString, keys: string[], values: string[], resv?: IResolver) {
-  const tokenId = getNamehash(name);
-  return resolver.setManyByHash(keys, values, tokenId);
-}
-
-export async function getKeys(name: DomainString, key: string[], resv?: IResolver): Promise<string[]> {
-  const tokenId = getNamehash(name);
-  return resolver.getMany(key, tokenId);
-}
-
-export async function getKeysByHash(name: DomainString, key: string[], resv?: IResolver) {
-  const tokenId: TokenId = getNamehash(name);
-  return resolver.getManyByHash(key as any, tokenId);
-}
-// return await resv.getMany(key, tokenId);
 
 function buildKeyValueObjects(keys: any, values: any) {
   let res: any[] = []
@@ -381,343 +120,220 @@ function decodeLabelhash(hash: string): string {
   return `${hash.slice(1, -1)}`;
 }
 
-export async function getDomainDetails(name: DomainString): Promise<DomainDetails> {
-  const nameArray = name.split(".");
-  const label = nameArray[0];
-  const labelhash = getLabelhash(label);
+export const emptyAddress = "0x0000000000000000000000000000000000000000";
+export const weirdNode = "0x0000000000000000000000000000000000000000000000000000000000000001";
+export const emptyNode = "0x0000000000000000000000000000000000000000000000000000000000000000";
+export const baseLabel = sha3("dot");
+export const baseNode = getNamehash("dot");
+export const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
 
-  const totalKeys = [...TEXT_RECORD_KEYS.map((key) => 'text.' + key), ...ADDRESS_RECORD_KEYS ]
-  const [owner, records] = await Promise.all([
-    getOwner(name),
-    getKeys(name, totalKeys)
-  ])
+export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
+export const ADDRESS_RECORD_KEYS = ['contenthash', "BTC", "ETH", "DOT", "KSM", "cname"]
 
-  const textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
-  const addrs = [
-    { key: "BTC", value: records[TEXT_RECORD_KEYS.length + 1] },
-    { key: "ETH", value: records[TEXT_RECORD_KEYS.length + 2] },
-    { key: "DOT", value: records[TEXT_RECORD_KEYS.length + 3] },
-    { key: "KSM", value: records[TEXT_RECORD_KEYS.length + 4] },
-  ]
+const tld = "dot";
 
-  return {
-    name,
-    label,
-    labelhash,
-    owner,
-    textRecords: textRecords,
-    addrs,
-    cname: records[TEXT_RECORD_KEYS.length + 5],
-    content: records[TEXT_RECORD_KEYS.length],
-    contentType: "ipfs",
-  };
-}
+export class SDK {
 
-export async function nameRedeem(label: DomainString, account: string, duration: number, deadline: number, code: string) {
-  return controller.nameRedeem(label, account, duration, deadline, code);
-}
+  pns: IPNS;
+  controller: IController;
+  resolver: IResolver;
+  signer: Web3Signer;
 
-export async function registerByManager(name: DomainString, to: string, duration: number, data:number, keyHashes: string[], values: string[]) {
-  return controller.nameRegisterByManager(name, to, duration, data, keyHashes || [], values || []);
-}
+  constructor(pnsAddress: string, controllerAddress: string, signer: Web3Signer) {
+    this.pns = IPNS__factory.connect(pnsAddress, signer);
+    this.resolver = IResolver__factory.connect(pnsAddress, signer);
+    this.controller = IController__factory.connect(controllerAddress, signer);
+    this.signer = signer;
+  }
 
-export async function renew(label: LabelString, duration: number) {
-  const price = await renewPrice(label, duration);
-  return controller.renew(label, duration, { value: price });
-}
+  namehash(name: string) {
+    return getNamehash(name)
+  }
 
-export async function renewByManager(label: LabelString, duration: number) {
-  return controller.renewByManager(label, duration);
-}
+  ownerOfId(tokenId: TokenId) {
+    return this.pns.ownerOf(tokenId)
+  }
 
-export async function transferName(name: DomainString, newOwner: HexAddress) {
-  let namehash = getNamehash(name);
-  let oldOwner = await getOwner(name);
-  return pns.transferFrom(oldOwner, newOwner, namehash);
-}
+  ownerOfName(name: DomainString) {
+    let tokenId = getNamehash(name);
+    return this.pns.ownerOf(tokenId);
+  }
 
-export async function registerPayWithOtherCurrency(chain: string, label: DomainString, duration: number): Promise<any> {
-  // todo : if user close before tx success, need recovering
-  let price = await totalRegisterPrice(label, duration);
-  let tx = await (signer as Web3Signer).sendTransaction({
-    to: PaymentAddrs[chain] as string,
-    value: price,
-  });
-  return {
-    data: {
-      chain: chain,
-      label: label,
-      duration: duration,
-      txhash: tx.hash,
-      value: tx.value.toString(),
-      from: tx.from,
-      to: tx.to,
-      managed: true,
-    },
-    tx: tx,
-  };
-}
+  exists(name: DomainString): Promise<boolean> {
+    let tokenId = getNamehash(name);
+    return this.pns.exists(tokenId);
+  }
 
-// sign message and generate redeem code
-
-export function abiDataEncode(data: any, datatype: string): Buffer {
-  let encoded = abiCoder.encode([datatype], [data]).slice(2);
-  return Buffer.from(encoded, "hex");
-}
-
-export function encodeMsg(nameTokenId: string, address: string, duration: number, deadline: number): Uint8Array {
-  let nameTokenIdBuffer = abiDataEncode(nameTokenId, "uint");
-  let addressBuffer = abiDataEncode(address, "uint160").slice(12);
-  let durationBuffer = abiDataEncode(duration, "uint");
-  let deadlineBuffer = abiDataEncode(deadline, "uint");
-  // console.log('data', Buffer.concat([nameTokenIdBuffer, addressBuffer, durationBuffer]).toString('hex'))
-  // address type has strange padding, which doesn't work
-  // console.log(ethers.utils.defaultAbiCoder.encode(['uint256', 'address', 'uint256'], [nameTokenId, address, duration]))
-  return Buffer.concat([nameTokenIdBuffer, addressBuffer, durationBuffer, deadlineBuffer]);
-}
-
-export function hashMsg(data: Uint8Array): Uint8Array {
-  let hashed = "0x" + keccak_256(data);
-  return ethers.utils.arrayify(hashed);
-}
-
-export async function generateRedeemCode(nameTokenId: string, address: string, duration: number, deadline: number, signer: any): Promise<string> {
-  let msg = encodeMsg(nameTokenId, address, duration, deadline);
-  let hashedMsg = hashMsg(msg);
-  return signer.signMessage(hashedMsg);
-}
-
-import { request, gql } from "graphql-request";
-
-// @ts-ignore
-BigInt.prototype.toJSON = function () {
-  return this.toString();
-};
-
-export type GraphDomainDetails = {
-  id: string;
-  name: string;
-  parent: string;
-  owner: string;
-};
-
-export function toChecksumAddress(address: string): string {
-  address = address.toLowerCase().replace('0x', '')
-  const hash =  keccak_256(address)
-  let ret = '0x'
-  for (let i = 0; i < address.length; i++) {
-    if (parseInt(hash[i], 16) > 7) {
-      ret += address[i].toUpperCase()
+  async getOwner(name: DomainString) {
+    let tokenId = getNamehash(name);
+    if (await this.pns.exists(tokenId)) {
+      return this.pns.ownerOf(tokenId);
     } else {
-      ret += address[i]
+      return emptyAddress;
     }
   }
 
- return ret
-}
-
-/** 列出用户的父级域名列表 */
-export async function getDomains(account: string): Promise<GraphDomainDetails[]> {
-  const checksumAddress = toChecksumAddress(account)
-  const query = gql`
-  query MyQuery($account: String, $parent: String) {
-  domains (where: {owner: $account parent: $parent}) {
-    id
-    name
-    owner {
-      id
-    }
-    parent {
-      id
-    }
-    registrations {
-          expiryDate
-        }
+  async totalRegisterPrice(name: LabelString, duration: number): Promise<BigNumber> {
+    return this.controller.totalRegisterPrice(name, duration);
   }
- }
-  `;
-  const variables = {
-    account: checksumAddress.toLowerCase(),
-    parent: '0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f',
-  };
 
-  const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl, query, variables);
+  async renewPrice(name: LabelString, duration: number): Promise<BigNumber> {
+    return this.controller.renewPrice(name, duration);
+  }
 
-  const all = resp.domains.map(((item:any) => {
+  async getPnsRoot(): Promise<HexAddress> {
+    let ownable = IOwnable__factory.connect(this.pns.address, this.signer);
+    return ownable.root();
+  }
+
+  async getControllerRoot(): Promise<HexAddress> {
+    let ownable = IOwnable__factory.connect(this.controller.address, this.signer);
+    return ownable.root();
+  }
+
+  async basePrice(name: LabelString): Promise<BigNumber> {
+    return this.controller.basePrice(name);
+  }
+
+  async rentPrice(name: LabelString, duration: number): Promise<BigNumber> {
+    return this.controller.rentPrice(name, duration);
+  }
+
+  async getPrices() {
+    return this.controller.getPrices();
+  }
+
+  async getTokenPrice() {
+    return this.controller.getTokenPrice();
+  }
+
+  async nameExpires(label: DomainString): Promise<BigNumber> {
+    label = suffixTld(label);
+    return this.pns.expire(getNamehash(label));
+  }
+
+  async available(label: DomainString): Promise<boolean> {
+    label = suffixTld(label);
+    return this.pns.available(getNamehash(label));
+  }
+
+  async register(label: DomainString, account: string, duration: number) {
+    const price = await this.totalRegisterPrice(label, duration);
+    return this.controller.nameRegister(label, account, duration, { value: price });
+  }
+
+  async registerWithConfig(name: DomainString, to: string, duration: number, data: number, keysHash: string[], values: string[]) {
+    const price = await this.totalRegisterPrice(name, duration);
+    return this.controller.nameRegisterWithConfig(name, to, duration, data, keysHash, values, { value: price });
+  }
+
+  async mintSubdomain(newOwner: HexAddress, name: DomainString, label: LabelString) {
+    let tokenId = getNamehash(name);
+    return this.pns.mintSubdomain(newOwner, tokenId, label);
+  }
+
+  async approve(name: DomainString, approved: HexAddress) {
+    name = suffixTld(name);
+    let tokenId = getNamehash(name);
+    return this.pns.approve(approved, tokenId);
+  }
+
+  async getApproved(name: DomainString): Promise<HexAddress> {
+    name = suffixTld(name);
+    let tokenId = getNamehash(name);
+    return await this.pns.getApproved(tokenId);
+  }
+
+  async setName(addr: HexAddress, name: DomainString, resv?: IResolver) {
+    const tokenId = getNamehash(name);
+    return this.resolver.setName(addr, tokenId);
+  }
+
+  async getName(addr: HexAddress): Promise<BigNumber> {
+    return this.resolver.getName(addr);
+  }
+
+  async setNftName(nftAddr: HexAddress, nftTokenId: string, nameTokenId: TokenId) {
+    return this.resolver.setNftName(nftAddr, nftTokenId, nameTokenId);
+  }
+
+  async getNftName(nftAddr: HexAddress, nftTokenId: string) {
+    return this.resolver.getNftName(nftAddr, nftTokenId);
+  }
+
+  async getKey(name: DomainString, key: string): Promise<string> {
+    const tokenId = getNamehash(name);
+    return this.resolver.get(key, tokenId);
+  }
+
+  async setKeysByHash(name: DomainString, keys: string[], values: string[]) {
+    const tokenId = getNamehash(name);
+    return this.resolver.setManyByHash(keys, values, tokenId);
+  }
+
+  async getKeys(name: DomainString, key: string[], resv?: IResolver): Promise<string[]> {
+    const tokenId = getNamehash(name);
+    return this.resolver.getMany(key, tokenId);
+  }
+
+  async getKeysByHash(name: DomainString, key: string[], resv?: IResolver) {
+    const tokenId: TokenId = getNamehash(name);
+    return this.resolver.getManyByHash(key as any, tokenId);
+  }
+
+  async getDomainDetails(name: DomainString): Promise<DomainDetails> {
+    const nameArray = name.split(".");
+    const label = nameArray[0];
+    const labelhash = getLabelhash(label);
+
+    const totalKeys = [...TEXT_RECORD_KEYS.map((key) => 'text.' + key), ...ADDRESS_RECORD_KEYS ]
+    const [owner, records] = await Promise.all([
+      this.getOwner(name),
+      this.getKeys(name, totalKeys)
+    ])
+
+    const textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
+    const addrs = [
+      { key: "BTC", value: records[TEXT_RECORD_KEYS.length + 1] },
+      { key: "ETH", value: records[TEXT_RECORD_KEYS.length + 2] },
+      { key: "DOT", value: records[TEXT_RECORD_KEYS.length + 3] },
+      { key: "KSM", value: records[TEXT_RECORD_KEYS.length + 4] },
+    ]
+
     return {
-      id: item.id,
-      name: item.name,
-      owner: item.owner.id,
-      parent: item.parent.id,
-      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
-    }
-  }));
-
-  return all.filter((item: any) => {
-    return item.owner !== '0x0000000000000000000000000000000000000000'
-  })
-}
-
-/** 列出所有域名列表,包括父、子域名 */
-export async function getAllDomains(account: string): Promise<GraphDomainDetails[]> {
-  const checksumAddress = toChecksumAddress(account)
-  const query = gql`
-   query MyQuery($account: String) {
-      domains (where: {owner: $account}) {
-        id
-        name
-        owner {
-          id
-        }
-        parent {
-          id
-        }
-        registrations {
-          expiryDate
-        }
-      }
+      name,
+      label,
+      labelhash,
+      owner,
+      textRecords: textRecords,
+      addrs,
+      cname: records[TEXT_RECORD_KEYS.length + 5],
+      content: records[TEXT_RECORD_KEYS.length],
+      contentType: "ipfs",
+    };
   }
-`;
-  const variables = {
-    account: checksumAddress
-  };
 
-  const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl, query, variables);
-
-  const all = resp.domains.map(((item:any) => {
-    return {
-      id: item.id,
-      name: item.name,
-      owner: item.owner.id,
-      parent: item.parent.id,
-      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
-    }
-  }));
-
-  return all.filter((item: any) => {
-    return item.owner !== '0x0000000000000000000000000000000000000000'
-  })
-}
-
-/** 列出用户的所有子域名列表 */
-export async function getAllSubdomains(owner: string): Promise<GraphDomainDetails[]> {
-  const checksumAddress = toChecksumAddress(account)
-  const query = gql`
-    query MyQuery($account: String $parent: String) {
-      domains (where: {owner: $account parent_not: $parent}) {
-        id
-        name
-        owner {
-          id
-        }
-        parent {
-          id
-        }
-        registrations {
-          expiryDate
-        }
-      }
+  async registerByManager(name: DomainString, to: string, duration: number, data:number, keyHashes: string[], values: string[]) {
+    return this.controller.nameRegisterByManager(name, to, duration, data, keyHashes || [], values || []);
   }
-  `;
-  const variables = {
-    account: checksumAddress.toLowerCase(),
-    parent: '0xce70133a0c398d9cefc8863bb1f588fc7f512b791242bc13e293a864137dce3f',
-  };
 
-  const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl, query, variables);
-
-  const all = resp.domains.map(((item:any) => {
-    return {
-      id: item.id,
-      name: item.name,
-      owner: item.owner.id,
-      parent: item.parent.id,
-      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
-    }
-  }));
-
-  return all.filter((item: any) => {
-    return item.owner !== '0x0000000000000000000000000000000000000000'
-  })
-}
-
-/** 列出父级域名下的子域名列表 */
-export async function getSubdomains(domain: string): Promise<GraphDomainDetails[]> {
-  const query = gql`
-    query MyQuery($parent: String) {
-      domains (where: {parent_: {name: $parent}}) {
-        id
-        name
-        owner {
-          id
-        }
-        parent {
-          id
-        }
-        registrations {
-          expiryDate
-        }
-      }
+  async renew(label: LabelString, duration: number) {
+    const price = await this.renewPrice(label, duration);
+    return this.controller.renew(label, duration, { value: price });
   }
-  `;
-  const variables = {
-    parent: domain,
-  };
 
-  const graphUrl = customGql || GraphUrl[networkId]
-  const resp = await request(graphUrl, query, variables);
+  async renewByManager(label: LabelString, duration: number) {
+    return this.controller.renewByManager(label, duration);
+  }
 
-  const all =  resp.domains.map(((item:any) => {
-    return {
-      id: item.id,
-      name: item.name,
-      owner: item.owner.id,
-      parent: item.parent.id,
-      expiration: item.registrations.length ? Number(item.registrations[item.registrations.length - 1].expiryDate) * 1000 : 0
-    }
-  }));
+  async transferName(name: DomainString, newOwner: HexAddress) {
+    let namehash = getNamehash(name);
+    let oldOwner = await this.getOwner(name);
+    return this.pns.transferFrom(oldOwner, newOwner, namehash);
+  }
 
-  return all.filter((item: any) => {
-    return item.owner !== '0x0000000000000000000000000000000000000000'
-  })
-}
-
-export async function burn(domain: string) {
-  let id = getNamehash(domain);
-  return await pns.burn(id);
-}
-
-// 批量删除子域名
-export async function batchBurn (domains: string[]) {
-  const ABI = ['function burn(uint256 tokenId)']
-  const iface = new ethers.utils.Interface(ABI)
-  const idList = domains.map((domain) => {
-    return getNamehash(domain)
-  })
-  const calls = idList.map(id => {
-    return iface.encodeFunctionData("burn", [id])
-  })
-
-  return await controller.multicall(calls);
-}
-
-// 批量删除子域名
-export async function batchMintSubdomain (domain: string, subdomains: { label: string, owner: string }[]) {
-  const ABI = ['function mintSubdomain(address to,uint256 tokenId,string name)'] // return controller.mintSubdomain(newOwner, tokenId, label);
-  const iface = new ethers.utils.Interface(ABI)
-  const parameters = subdomains.map((subdomain) => {
-    return  {
-      label: subdomain.label,
-      owner: subdomain.owner,
-      tokenId: getNamehash(domain)
-    }
-  })
-  const calls = parameters.map(parameter => {
-    return iface.encodeFunctionData("mintSubdomain", [parameter.owner, parameter.tokenId, parameter.label])
-  })
-
-  return await controller.multicall(calls);
+  async burn(domain: string) {
+    let id = getNamehash(domain);
+    return await this.pns.burn(id);
+  }
 }

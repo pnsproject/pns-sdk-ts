@@ -1,177 +1,76 @@
+// main
+
 import "./style.css";
 
-import {
-  setup,
-  getProvider,
-  getSigner,
-  getAccount,
-  getOwner,
-  ownerOfName,
-  exists,
-  register,
-  getKey,
-  getKeys,
-  getDomainDetails,
-  mintSubdomain,
-  getControllerRoot,
-  totalRegisterPrice,
-  rentPrice,
-  nameExpires,
-  available,
-  renew,
-  nameRedeem,
-  transferName,
-  generateRedeemCode,
-  getDomains,
-  getAllDomains,
-  getSubdomains,
-  getAllSubdomains,
-  getNamehash,
-  setProvider,
-  setName,
-  getName,
-  sha3,
-  getPrices,
-  getTokenPrice,
-  registerWithConfig
-} from "./sdk";
+import { ethers, Signer } from "ethers";
 
-import { ethers, Signer, BigNumber } from "ethers";
+import { SDK, sha3, getNamehash } from "./sdk";
+import { ContractAddrMap } from "./constants";
 
 async function main() {
-  console.log("hello");
-  // switchChain(43113)
-  // switchChain(1287)
-  await (window as any).ethereum.request({ method: 'eth_requestAccounts' })
-  const provider = new ethers.providers.Web3Provider((window as any).ethereum) as any
-  await setup(provider);
 
-  // console.log(sha3("dot"));
-  // console.log("getDomains", await getDomains("0x1c4e1d79049dae82a901ae501b0847d197395f47"));
-  // console.log("getSubdomains", await getSubdomains("dot"));
+  let provider = new ethers.providers.Web3Provider((window as any).ethereum, "any");
 
-  // console.log("dot owner", await getOwner("dot"));
-  // console.log("dot owner", await ownerOf("dot"));
-  // console.log("dot owner", await exists("dot"));
-  // console.log("dot owner", await getResolver("dot"));
+    await provider.send("eth_requestAccounts", []);
+    let chainId = (await provider.getNetwork()).chainId;
+    console.log('chainId', chainId)
 
-  // console.log("eth owner", await getOwner("eth"));
-  // console.log("eth owner", await exists("eth"));
+    let signer = await provider.getSigner()
+    let loginAddress = await signer.getAddress()
 
-  // console.log("controllerRoot", await controllerRoot());
+    console.log(loginAddress)
+    console.log(ContractAddrMap[chainId])
 
-  // console.log("gavinwood100.dot owner", await getOwner("gavinwood100.dot"));
+    let contracts = ContractAddrMap[chainId]
+    let sdk = new SDK(contracts["pns"], contracts["controller"], signer)
+    // console.log(await sdk.namehash("gavinwood000.dot"))
+    // console.log(await sdk.ownerOfId(getNamehash("gavinwood000.dot")))
+    // console.log(await sdk.ownerOfName("gavinwood000.dot"))
+    // console.log(await sdk.exists("gavinwood000.dot"))
+    // console.log(await sdk.getOwner("gavinwood000.dot"))
+    // console.log(await sdk.totalRegisterPrice("gavinwood000.dot", 86400*365))
+    // console.log(await sdk.renewPrice("gavinwood000.dot", 86400*365))
 
-  let account = getAccount();
-  console.log("account", account);
+    // console.log(await sdk.getPnsRoot())
+    // console.log(await sdk.getControllerRoot())
 
-  // let tokenPrice = (await getTokenPrice());
-  let fee = (await totalRegisterPrice("gavinwood100", 86400 * 365)).toString();
-  console.log("totalRegisterPrice", fee);
-  console.log('registerWithConfig',  await registerWithConfig('zfdzzzzzzzzzzzzzzzz', '0x0b23e3588c906c3f723c58ef4d6baee7840a977c', 31536000, 0, [],[]))
-  // console.log("getTokenPrice", tokenPrice.toString());
-  // console.log("getTokenPrice of fee", tokenPrice.mul(fee).div("100000000000000000000000000").toString());
+    // console.log(await sdk.basePrice("gavinwood000.dot"))
+    // console.log(await sdk.rentPrice("gavinwood000.dot", 86400*365))
+    // console.log(await sdk.getPrices())
+    // console.log(await sdk.getTokenPrice())
 
-  // await (await controller.nameRegister("gavinwood100", deployer, 86400 * 365, { value: fee })).wait();
-  // let tokenId = getNamehash("gavinwood100.dot");
-  // console.log("gavinwood100.dot owner:", await pns.ownerOf(tokenId));
-  // console.log("gavinwood100.dot nameExpires:", (await controller.nameExpires(getNamehash("gavinwood100.dot"))).toString());
-  // console.log("gavinwood100.dot available:", await controller.available(getNamehash("gavinwood100.dot")));
+    // console.log(await sdk.nameExpires("gavinwood000.dot"))
+    // console.log(await sdk.available("gavinwood000.dot"))
+    // console.log(await sdk.register("gavinwood000", loginAddress, 365*86400))
+    // console.log(await sdk.registerWithConfig("gavin000", loginAddress, 365*86400, 1, [], []))
+    // console.log(await sdk.mintSubdomain(loginAddress, "gavin000.dot", "sub0"))
+    // console.log(await sdk.approve("sub0.gavin000.dot", threeAddr))
+    // console.log(await sdk.getApproved("sub0.gavin000.dot"))
 
-  // await pns.setResolver(tokenId, resolver.address)
-  // console.log("pns setResolver:");
-  // console.log("pns resolver:", await pns.getResolver(tokenId));
+    // console.log(await sdk.setName(loginAddress, "gavinwood000.dot"))
+    // console.log('getName', await sdk.getName(loginAddress))
 
-  // await resolver.set("ETH", deployer, tokenId)
-  // console.log("gavinwood100.dot set:");
-  // console.log("gavinwood100.dot get:", await resolver.get("ETH", tokenId));
+    // console.log('addr', loginAddress)
+    // console.log('addr', await sdk.ownerOfName("gavinwood000.dot"))
+    // console.log(await sdk.exists("gavinwood000.dot"))
 
-  // console.log("gavinwood001.dot register", await register("gavinwood001", account, 28 * 86400));
-  // console.log("gavinwood001.dot setResolver", await setResolver("gavinwood001.dot"));
-  // console.log("gavinwood001.dot resolver", await getResolver("gavinwood001.dot"));
+    // console.log(await sdk.setNftName(sdk.pns.address, getNamehash("sub0.gavin000.dot"), getNamehash("gavin000.dot")))
+    // console.log(await sdk.getNftName(sdk.pns.address, getNamehash("sub0.gavin000.dot")))
 
-  // console.log("gavinwood001.dot mintSubdomain", await mintSubdomain("gavinwood001.dot", "sub123", account));
-  // console.log("sub123.gavinwood001.dot owner", await getOwner("sub123.gavinwood001.dot"));
+    // console.log(await sdk.setKeysByHash("gavin000.dot", [sha3("ETH")], [loginAddress]))
 
-  // console.log("gavinwood001.dot setKey", await setKey("gavinwood001.dot", "ETH", account));
-  // console.log("gavinwood001.dot getKey", await getKey("gavinwood001.dot", "ETH"));
+    // console.log(await sdk.getKey("gavin000.dot", "ETH"))
+    // console.log(await sdk.getKeys("gavin000.dot", ["ETH"]))
+    // console.log(await sdk.getKeysByHash("gavin000.dot", [sha3("ETH")]))
+    // console.log(await sdk.getDomainDetails("gavin000.dot"))
 
-  // console.log("gavinwood001.dot setKeys", await setKeys("gavinwood001.dot", ["BTC"], [account]));
-  // console.log("gavinwood001.dot getKeys", await getKeys("gavinwood001.dot", ["BTC"]));
+    // console.log(await sdk.registerByManager("gavin002", loginAddress, 365*86400, 1, [], []))
+    // console.log(await sdk.renew("gavin000", 86400*365))
+    // console.log(await sdk.renewByManager("gavin000", 86400*365))
 
-  // console.log("getDomainDetails", await getDomainDetails("gavinwood001.dot"));
-
-  // console.log("totalRegisterPrice", await totalRegisterPrice("gavinwood001", 86400 * 365));
-  // console.log("rentPrice", await rentPrice("gavinwood001", 86400 * 365));
-  // console.log("nameExpires", await nameExpires("gavinwood001.dot"));
-  // console.log("available", await available("gavinwood001.dot"));
-
-  // console.log("renew", await renew("gavinwood001", 86400 * 365));
-  // console.log("nameExpires", await nameExpires("gavinwood001.dot"));
-
-  // console.log("gavinwood196.dot owner", await getOwner("gavinwood196.dot"));
-  // console.log("mintRedeem", await mintRedeem(196, 200));
-  // let signer = getSigner()
-  // let sig = await generateRedeemCode(86400 * 365, 298, signer)
-  // console.log('redeem', sig)
-  // nameRedeemAny('gavinwood196', account, 86400*365, 196, sig)
-  // let sig = "";
-  // console.log("nameRedeemAny", await nameRedeemAny("gavinwood298", account, 86400 * 365, 298, sig));
-
-  // console.log("gavinwood298 owner", await getOwner("gavinwood298.dot"));
-  // console.log("gavinwood298 checkRedeem", await checkRedeem(298));
-
-  // console.log("gavinwood298 setName", await setName("gavinwood298.dot"));
-  // console.log(getNamehash("gavinwood298.dot"));
-  // console.log("account getName", (await getName(account)).toHexString());
-  //console.log('getDomains', await getDomains(account));
-  // console.log('getAllDomains', await getAllDomains(account));
-  // console.log("getAllSubdomains", await getAllSubdomains(account));
-  // console.log("getSubdomains", await getSubdomains('zoufangda01.dot'));
-  // console.log("getKeys", await getKeys('zoufangda01.dot', ['text.com.github', 'text.email', 'text.url', 'text.avatar']));
-  console.log("getKey", await getKey('zoufangda01.dot', 'text.com.github'));
-  console.log("getDomainDetails", await getDomainDetails('zoufangda01.dot'));
-  // console.log("getCurrencyRate", (await getCurrencyRate()).toString());
-  // console.log("getUsdBasePrices", (await getUsdBasePrices()).toString());
-  // console.log("getUsdRentPrices", (await getUsdRentPrices()).toString());
-  // console.log("getBasePrices", (await getBasePrices()).toString());
-  // console.log("getRentPrices", (await getRentPrices()).toString());
-
-  // let res = await registerPayWithOtherCurrency("avax", "gavinwood3002", 86400 * 365);
-  // console.log(res.data);
-  // await res.tx.wait();
-
-  // res = await registerWithProxy(res.data);
-  // console.log("res", res);
-
-  // let provider = getProvider()
-  // console.log('tx', await provider.getTransaction(""))
-
-  // console.log("gavinwood3001.dot owner", await getOwner("gavinwood3001.dot"));
-  // console.log("gavinwood3001.dot getDomainDetails", await getDomainDetails("gavinwood3001.dot"));
-  // console.log("checkRedeem", await checkRedeem(298));
-
-  // let keyHashes = [sha3("text.email")]
-  // let values = ["user@gmail.com"]
-  // let tokenId = getNamehash("gavinwood3001.dot")
-  // updateWithProxy({keyHashes, values, tokenId})
-
-  console.log("getControllerRoot", await getControllerRoot());
-
-  // let res = await payDomainfee("avax", "gavinwood303")
-
-  // let res = await directPay("avax", "gavinwood321", 86400 * 365, account);
-}
-
-let base = "http://localhost:8080";
-async function ping() {
-  let resp = await fetch(base + "/ping", {
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "GET",
-  });
-  return resp.json();
+    // console.log(await sdk.transferName("sub0.gavin000.dot", threeAddr))
+    // console.log(await sdk.mintSubdomain(loginAddress, "gavin000.dot", "sub1"))
+    // console.log(await sdk.burn("sub1.gavin000.dot"))
 }
 
 async function start() {
