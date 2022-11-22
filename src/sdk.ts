@@ -46,7 +46,6 @@ let signer: Web3Signer;
 let account: string;
 let networkId: number;
 
-
 let pnsAddr: string;
 let controllerAddr: string;
 let resolverAddr: string;
@@ -71,18 +70,18 @@ export function getNamehash(name: string) {
 }
 
 export function toChecksumAddress(address: string): string {
-  address = address.toLowerCase().replace('0x', '')
-  const hash =  keccak_256(address)
-  let ret = '0x'
+  address = address.toLowerCase().replace("0x", "");
+  const hash = keccak_256(address);
+  let ret = "0x";
   for (let i = 0; i < address.length; i++) {
     if (parseInt(hash[i], 16) > 7) {
-      ret += address[i].toUpperCase()
+      ret += address[i].toUpperCase();
     } else {
-      ret += address[i]
+      ret += address[i];
     }
   }
 
- return ret
+  return ret;
 }
 
 export function suffixTld(label: DomainString): DomainString {
@@ -94,15 +93,15 @@ export function removeTld(label: DomainString): DomainString {
 }
 
 function buildKeyValueObjects(keys: any, values: any) {
-  let res: any[] = []
-  const times = keys.length === values.length ? keys.length : Math.min(keys.length, values.length)
-  for (let i = 0 ;i < times; i++) {
+  let res: any[] = [];
+  const times = keys.length === values.length ? keys.length : Math.min(keys.length, values.length);
+  for (let i = 0; i < times; i++) {
     res.push({
       key: keys[i],
-      value: values[i]
-    })
+      value: values[i],
+    });
   }
-  return res
+  return res;
 }
 
 export function getLabelhash(rawlabel: string): HexAddress {
@@ -128,12 +127,11 @@ export const baseNode = getNamehash("dot");
 export const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
 
 export const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
-export const ADDRESS_RECORD_KEYS = ['contenthash', "BTC", "ETH", "DOT", "KSM", "cname"]
+export const ADDRESS_RECORD_KEYS = ["contenthash", "BTC", "ETH", "DOT", "KSM", "cname"];
 
 const tld = "dot";
 
 export class SDK {
-
   pns: IPNS;
   controller: IController;
   resolver: IResolver;
@@ -147,11 +145,11 @@ export class SDK {
   }
 
   namehash(name: string) {
-    return getNamehash(name)
+    return getNamehash(name);
   }
 
   ownerOfId(tokenId: TokenId) {
-    return this.pns.ownerOf(tokenId)
+    return this.pns.ownerOf(tokenId);
   }
 
   ownerOfName(name: DomainString) {
@@ -286,11 +284,8 @@ export class SDK {
     const label = nameArray[0];
     const labelhash = getLabelhash(label);
 
-    const totalKeys = [...TEXT_RECORD_KEYS.map((key) => 'text.' + key), ...ADDRESS_RECORD_KEYS ]
-    const [owner, records] = await Promise.all([
-      this.getOwner(name),
-      this.getKeys(name, totalKeys)
-    ])
+    const totalKeys = [...TEXT_RECORD_KEYS.map((key) => "text." + key), ...ADDRESS_RECORD_KEYS];
+    const [owner, records] = await Promise.all([this.getOwner(name), this.getKeys(name, totalKeys)]);
 
     const textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
     const addrs = [
@@ -298,7 +293,7 @@ export class SDK {
       { key: "ETH", value: records[TEXT_RECORD_KEYS.length + 2] },
       { key: "DOT", value: records[TEXT_RECORD_KEYS.length + 3] },
       { key: "KSM", value: records[TEXT_RECORD_KEYS.length + 4] },
-    ]
+    ];
 
     return {
       name,
@@ -313,7 +308,7 @@ export class SDK {
     };
   }
 
-  async registerByManager(name: DomainString, to: string, duration: number, data:number, keyHashes: string[], values: string[]) {
+  async registerByManager(name: DomainString, to: string, duration: number, data: number, keyHashes: string[], values: string[]) {
     return this.controller.nameRegisterByManager(name, to, duration, data, keyHashes || [], values || []);
   }
 
